@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: restaurante-db
+    environment:
+      POSTGRES_DB: restaurante
+      POSTGRES_USER: restaurante
+      POSTGRES_PASSWORD: restaurante123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U restaurante -d restaurante"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - restaurante-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: restaurante-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: restaurante
+      DB_USER: restaurante
+      DB_PASSWORD: restaurante123
+      JWT_SECRET: dev-secret-key-change-in-production-min-32-chars
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - restaurante-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: restaurante-frontend
+    environment:
+      NODE_ENV: production
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - restaurante-network
+
+volumes:
+  postgres_data:
+
+networks:
+  restaurante-network:
+    driver: bridge
