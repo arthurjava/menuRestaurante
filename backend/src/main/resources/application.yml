@@ -36,6 +36,19 @@ server:
   servlet:
     context-path: /api
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show: always
+      probes: true
+  health:
+    probes:
+      enabled: true
+
 app:
   jwt:
     secret: ${JWT_SECRET:dev-secret-key-change-in-production-min-32-chars}
