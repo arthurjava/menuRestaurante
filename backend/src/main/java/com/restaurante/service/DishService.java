@@ -63,16 +63,40 @@ public class DishService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<DishResponse> search(String name, UUID categoryId, Pageable pageable) {
+    public PageResponse<DishResponse> search(String name, UUID categoryId, Boolean active, Pageable pageable) {
         Page<Dish> page;
         if (name != null && categoryId != null) {
-            page = dishRepository.findByCategoryIdAndNameContainingIgnoreCaseAndActiveTrue(categoryId, name, pageable);
+            if (active != null && active) {
+                page = dishRepository.findByCategoryIdAndNameContainingIgnoreCaseAndActiveTrue(categoryId, name, pageable);
+            } else if (active != null && !active) {
+                page = dishRepository.findByCategoryIdAndActiveFalseAndNameContainingIgnoreCase(categoryId, name, pageable);
+            } else {
+                page = dishRepository.findByCategoryIdAndNameContainingIgnoreCase(categoryId, name, pageable);
+            }
         } else if (name != null) {
-            page = dishRepository.findByNameContainingIgnoreCaseAndActiveTrue(name, pageable);
+            if (active != null && active) {
+                page = dishRepository.findByNameContainingIgnoreCaseAndActiveTrue(name, pageable);
+            } else if (active != null && !active) {
+                page = dishRepository.findByNameContainingIgnoreCaseAndActiveFalse(name, pageable);
+            } else {
+                page = dishRepository.findByNameContainingIgnoreCaseAndActiveTrue(name, pageable);
+            }
         } else if (categoryId != null) {
-            page = dishRepository.findByCategoryIdAndActiveTrue(categoryId, pageable);
+            if (active != null && active) {
+                page = dishRepository.findByCategoryIdAndActiveTrue(categoryId, pageable);
+            } else if (active != null && !active) {
+                page = dishRepository.findByCategoryIdAndActiveFalse(categoryId, pageable);
+            } else {
+                page = dishRepository.findByCategoryIdAndActiveTrue(categoryId, pageable);
+            }
         } else {
-            page = dishRepository.findByActiveTrueAndCategoryActiveTrue(pageable);
+            if (active != null && active) {
+                page = dishRepository.findByActiveTrueAndCategoryActiveTrue(pageable);
+            } else if (active != null && !active) {
+                page = dishRepository.findByActiveFalseAndCategoryActiveFalse(pageable);
+            } else {
+                page = dishRepository.findByActiveTrueAndCategoryActiveTrue(pageable);
+            }
         }
         return mapPage(page);
     }

@@ -4,6 +4,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/f
 
 type InputType = 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
 
+type InputVariant = 'default' | 'decimal' | 'integer';
+
 @Component({
   selector: 'app-input',
   standalone: true,
@@ -29,9 +31,9 @@ type InputType = 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
         [id]="id()"
         [type]="type()"
         [placeholder]="placeholder()"
-        [disabled]="disabledState()"
+        [disabled]="disabledState() || appNumberOnly() ? 'readonly' : ''"
         [required]="required()"
-        [readonly]="readonly()"
+        [readonly]="readonly() || appNumberOnly()"
         [value]="value()"
         [class]="inputClasses()"
         (input)="onInput($event)"
@@ -58,6 +60,8 @@ export class InputComponent implements ControlValueAccessor {
   error = input<string>('');
   hint = input<string>('');
   submitted = input(false);
+  allowDecimal = input(false);
+  appNumberOnly = input(false);
 
   disabledState = signal(false);
 

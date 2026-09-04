@@ -31,6 +31,7 @@ public class DishController {
     public ResponseEntity<ApiResponse<PageResponse<DishResponse>>> getAll(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) UUID categoryId,
+            @RequestParam(required = false) Boolean active,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt,desc") String sort) {
