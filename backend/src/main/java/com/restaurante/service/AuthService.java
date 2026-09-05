@@ -9,12 +9,12 @@ import com.restaurante.exception.DuplicateResourceException;
 import com.restaurante.repository.UserRepository;
 import com.restaurante.security.JwtService;
 import com.restaurante.security.UserDetailsImpl;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,18 +22,19 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
-        UserDetailsImpl userDetails = (UserDetailsImpl) userRepository.findByEmail(request.getEmail())
-                .map(UserDetailsImpl::new)
-                .orElseThrow();
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + request.getEmail()));
 
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(user);
         String accessToken = jwtService.generateToken(userDetails);
+
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .expiresIn(jwtService.extractExpiration(accessToken).getTime() - System.currentTimeMillis())
@@ -60,7 +61,7 @@ public class AuthService {
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .expiresIn(jwtService.extractExpiration(accessToken).getTime() - System.currentTimeMillis())
-                .user(AuthResponse.UserInfo.from(user))
+                .user(AuthResponse.UserInfo.from(userDetails.getUser()))
                 .build();
     }
 

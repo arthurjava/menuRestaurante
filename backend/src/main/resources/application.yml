@@ -3,6 +3,8 @@ spring:
     name: restaurante-backend
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:restaurante}
     username: ${DB_USER:restaurante}
@@ -63,8 +65,16 @@ app:
 logging:
   level:
     com.restaurante: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.security: TRACE
+    org.springframework.security.web.FilterChainProxy: TRACE
+    org.springframework.security.authorization: TRACE
+    org.springframework.security.web.access: TRACE
+    org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration

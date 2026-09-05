@@ -11,5 +11,5 @@ spring:
 logging:
   level:
     com.restaurante: DEBUG
-    org.springframework.web: DEBUG
+    org.springframework.security: TRACE
     org.hibernate.SQL: DEBUG

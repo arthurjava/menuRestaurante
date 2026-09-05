@@ -23,6 +23,10 @@ public class JwtService {
         this.key = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
+    public SecretKey getSigningKey() {
+        return key;
+    }
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
