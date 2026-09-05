@@ -2,6 +2,7 @@ package com.restaurante.service;
 
 import com.restaurante.entity.Dish;
 import com.restaurante.entity.Category;
+import com.restaurante.repository.CategoryRepository;
 import com.restaurante.repository.DishRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

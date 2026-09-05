@@ -31,4 +31,6 @@ public class DishRequest {
     private String allergens;
 
     private String imageUrl;
+
+    private Integer displayOrder;
 }

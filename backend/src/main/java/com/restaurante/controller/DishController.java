@@ -38,7 +38,7 @@ public class DishController {
         String[] sortParams = sort.split(",");
         Sort.Direction direction = sortParams.length > 1 ? Sort.Direction.fromString(sortParams[1]) : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortParams[0]));
-        return ResponseEntity.ok(ApiResponse.success(dishService.search(name, categoryId, pageable)));
+        return ResponseEntity.ok(ApiResponse.success(dishService.search(name, categoryId, active, pageable)));
     }
 
     @GetMapping("/admin")

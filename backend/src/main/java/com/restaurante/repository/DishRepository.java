@@ -20,12 +20,22 @@ public interface DishRepository extends JpaRepository<Dish, UUID> {
     
     Page<Dish> findByCategoryIdAndNameContainingIgnoreCaseAndActiveTrue(UUID categoryId, String name, Pageable pageable);
     
+    Page<Dish> findByCategoryIdAndActiveFalseAndNameContainingIgnoreCase(UUID categoryId, String name, Pageable pageable);
+    
+    Page<Dish> findByCategoryIdAndNameContainingIgnoreCase(UUID categoryId, String name, Pageable pageable);
+    
+    Page<Dish> findByNameContainingIgnoreCaseAndActiveFalse(String name, Pageable pageable);
+    
+    Page<Dish> findByCategoryIdAndActiveFalse(UUID categoryId, Pageable pageable);
+    
+    Page<Dish> findByActiveFalseAndCategoryActiveFalse(Pageable pageable);
+    
     List<Dish> findByCategoryIdAndActiveTrueOrderByDisplayOrderAsc(UUID categoryId);
     
-    @Query("SELECT d FROM Dish d WHERE d.category.id = :categoryId AND d.active = true ORDER BY d.createdAt DESC")
-    List<Dish> findRecentByCategory(UUID categoryId);
+    @Query("SELECT d FROM Dish d WHERE d.active = true ORDER BY d.category.id, d.displayOrder ASC")
+    List<Dish> findAllActiveDishesOrderByCategoryAndDisplayOrder();
     
     boolean existsByNameIgnoreCaseAndCategoryId(String name, UUID categoryId);
-
+    
     long countByCategoryIdAndActiveTrue(UUID categoryId);
 }

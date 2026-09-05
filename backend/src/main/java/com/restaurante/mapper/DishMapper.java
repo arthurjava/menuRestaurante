@@ -1,10 +1,10 @@
 package com.restaurante.mapper;
 
+import com.restaurante.dto.dish.DishImageResponse;
 import com.restaurante.dto.dish.DishRequest;
 import com.restaurante.dto.dish.DishResponse;
-import com.restaurante.entity.Category;
 import com.restaurante.entity.Dish;
-import com.restaurante.entity.User;
+import com.restaurante.entity.DishImage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -42,5 +42,9 @@ public interface DishMapper {
     @Mapping(source = "request.calories", target = "calories")
     @Mapping(source = "request.allergens", target = "allergens")
     @Mapping(source = "request.imageUrl", target = "imageUrl")
+    @Mapping(source = "request.displayOrder", target = "displayOrder")
     Dish updateEntity(Dish dish, DishRequest request);
+
+    @Mapping(target = "dishId", source = "dish.id")
+    DishImageResponse toImageResponse(DishImage image);
 }
