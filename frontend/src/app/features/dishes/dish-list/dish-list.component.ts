@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { LoadingService } from '../../../core/services/loading.service';
-import { Dish, Category } from '../../core/models';
+import { Dish, Category } from '../../../core/models';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { SelectComponent } from '../../../shared/components/select/select.component';
@@ -39,8 +39,8 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
               <app-input
                 id="search"
                 placeholder="Buscar pratos..."
-                [(ngModel)]="filters.name"
-                (ngModelChange)="onSearchChange()"
+                [ngModel]="filters().name"
+                (ngModelChange)="onNameFilterChange($event)"
               ></app-input>
             </div>
             <div class="w-full sm:w-48">
@@ -48,8 +48,8 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
                 id="categoryFilter"
                 placeholder="Todas as categorias"
                 [options]="categoryOptions()"
-                [(ngModel)]="filters.categoryId"
-                (ngModelChange)="onSearchChange()"
+                [ngModel]="filters().categoryId"
+                (ngModelChange)="onCategoryFilterChange($event)"
               ></app-select>
             </div>
             <div class="w-full sm:w-48">
@@ -57,8 +57,8 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
                 id="statusFilter"
                 placeholder="Todos os status"
                 [options]="statusOptions"
-                [(ngModel)]="filters.active"
-                (ngModelChange)="onSearchChange()"
+                [ngModel]="filters().active"
+                (ngModelChange)="onStatusFilterChange($event)"
               ></app-select>
             </div>
           </div>
@@ -157,7 +157,7 @@ export class DishListComponent implements OnInit {
     }
   ];
 
-  trackById = (index: number, item: Dish) => item.id;
+  trackById = (item: Dish) => item.id;
 
   async ngOnInit(): Promise<void> {
     await Promise.all([this.loadCategories(), this.loadDishes()]);
@@ -198,6 +198,21 @@ export class DishListComponent implements OnInit {
   onSearchChange(): void {
     this.pagination.update(p => ({ ...p, page: 0 }));
     this.loadDishes();
+  }
+
+  onNameFilterChange(value: string): void {
+    this.filters.update(f => ({ ...f, name: value }));
+    this.onSearchChange();
+  }
+
+  onCategoryFilterChange(value: string): void {
+    this.filters.update(f => ({ ...f, categoryId: value }));
+    this.onSearchChange();
+  }
+
+  onStatusFilterChange(value: string): void {
+    this.filters.update(f => ({ ...f, active: value }));
+    this.onSearchChange();
   }
 
   onPageChange(page: number): void {

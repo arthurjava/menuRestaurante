@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { LoadingService } from '../../../core/services/loading.service';
-import { User } from '../../core/models';
+import { User } from '../../../core/models';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { TableComponent, TableColumn, TableAction } from '../../../shared/components/table/table.component';
@@ -131,7 +131,7 @@ export class UserListComponent implements OnInit {
     }
   ];
 
-  trackById = (index: number, item: User) => item.id;
+  trackById = (item: User) => item.id;
 
   getRoleLabel(role: string): string {
     const labels: Record<string, string> = {

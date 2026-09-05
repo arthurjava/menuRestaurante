@@ -1,16 +1,25 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, NonNullableFormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { LoadingService } from '../../../core/services/loading.service';
-import { User, UserRequest } from '../../core/models';
+import { User, UserRequest, UserRole } from '../../../core/models';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { SelectComponent } from '../../../shared/components/select/select.component';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { passwordMatchValidator } from '../../../shared/validators/password-match.validator';
+
+interface UserFormValue {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role: string;
+  active: boolean;
+}
 
 @Component({
   selector: 'app-user-form',
@@ -36,10 +45,10 @@ import { passwordMatchValidator } from '../../../shared/validators/password-matc
               id="name"
               label="Nome completo"
               placeholder="João Silva"
-              [formControl]="userForm.get('name')"
+              [formControl]="nameControl"
               [error]="nameError()"
               [submitted]="submitted()"
-              required
+              [required]="true"
             ></app-input>
           </div>
 
@@ -49,10 +58,10 @@ import { passwordMatchValidator } from '../../../shared/validators/password-matc
               label="E-mail"
               type="email"
               placeholder="joao@email.com"
-              [formControl]="userForm.get('email')"
+              [formControl]="emailControl"
               [error]="emailError()"
               [submitted]="submitted()"
-              required
+              [required]="true"
             ></app-input>
           </div>
 
@@ -63,10 +72,10 @@ import { passwordMatchValidator } from '../../../shared/validators/password-matc
                 label="Senha"
                 type="password"
                 placeholder="••••••••"
-                [formControl]="userForm.get('password')"
+                [formControl]="passwordControl"
                 [error]="passwordError()"
                 [submitted]="submitted()"
-                required
+                [required]="true"
               ></app-input>
             </div>
 
@@ -76,10 +85,10 @@ import { passwordMatchValidator } from '../../../shared/validators/password-matc
                 label="Confirmar senha"
                 type="password"
                 placeholder="••••••••"
-                [formControl]="userForm.get('confirmPassword')"
+                [formControl]="confirmPasswordControl"
                 [error]="confirmPasswordError()"
                 [submitted]="submitted()"
-                required
+                [required]="true"
               ></app-input>
             </div>
           } @else {
@@ -89,7 +98,7 @@ import { passwordMatchValidator } from '../../../shared/validators/password-matc
                 label="Nova senha (deixe em branco para não alterar)"
                 type="password"
                 placeholder="••••••••"
-                [formControl]="userForm.get('password')"
+                [formControl]="passwordControl"
                 [error]="passwordError()"
                 [submitted]="submitted()"
               ></app-input>
@@ -101,7 +110,7 @@ import { passwordMatchValidator } from '../../../shared/validators/password-matc
                 label="Confirmar nova senha"
                 type="password"
                 placeholder="••••••••"
-                [formControl]="userForm.get('confirmPassword')"
+                [formControl]="confirmPasswordControl"
                 [error]="confirmPasswordError()"
                 [submitted]="submitted()"
               ></app-input>
@@ -114,10 +123,10 @@ import { passwordMatchValidator } from '../../../shared/validators/password-matc
               label="Perfil de acesso"
               placeholder="Selecione o perfil"
               [options]="roleOptions"
-              [formControl]="userForm.get('role')"
+              [formControl]="roleControl"
               [error]="roleError()"
               [submitted]="submitted()"
-              required
+              [required]="true"
             ></app-select>
           </div>
         </div>
@@ -160,14 +169,34 @@ export class UserFormComponent implements OnInit {
     { value: 'STAFF', label: 'Equipe' }
   ];
 
-  userForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.minLength(6)]],
-    confirmPassword: [''],
-    role: ['STAFF', [Validators.required]],
-    active: [true]
+  userForm = this.fb.group({
+    name: this.fb.control('', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]),
+    email: this.fb.control('', [Validators.required, Validators.email]),
+    password: this.fb.control('', [Validators.minLength(6)]),
+    confirmPassword: this.fb.control(''),
+    role: this.fb.control('STAFF', [Validators.required]),
+    active: this.fb.control(true)
   }, { validators: passwordMatchValidator() });
+
+  get nameControl(): FormControl<string> {
+    return this.userForm.controls.name as FormControl<string>;
+  }
+
+  get emailControl(): FormControl<string> {
+    return this.userForm.controls.email as FormControl<string>;
+  }
+
+  get passwordControl(): FormControl<string> {
+    return this.userForm.controls.password as FormControl<string>;
+  }
+
+  get confirmPasswordControl(): FormControl<string> {
+    return this.userForm.controls.confirmPassword as FormControl<string>;
+  }
+
+  get roleControl(): FormControl<string> {
+    return this.userForm.controls.role as FormControl<string>;
+  }
 
   async ngOnInit(): Promise<void> {
     const id = this.route.snapshot.paramMap.get('id');
@@ -180,19 +209,22 @@ export class UserFormComponent implements OnInit {
   async loadUser(id: string): Promise<void> {
     try {
       const user = await this.apiService.getUser(id).toPromise();
-      if (user) {
-        this.userForm.patchValue({
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          active: user.active
-        });
+      if (!user) {
+        this.notificationService.error('Erro', 'Usuário não encontrado');
+        this.router.navigate(['/users']);
+        return;
       }
+      this.userForm.patchValue({
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        active: user.active
+      });
       // Remove password validators for edit mode
-      this.userForm.get('password')?.clearValidators();
-      this.userForm.get('password')?.updateValueAndValidity();
-      this.userForm.get('confirmPassword')?.clearValidators();
-      this.userForm.get('confirmPassword')?.updateValueAndValidity();
+      this.passwordControl.clearValidators();
+      this.passwordControl.updateValueAndValidity();
+      this.confirmPasswordControl.clearValidators();
+      this.confirmPasswordControl.updateValueAndValidity();
     } catch (error) {
       this.notificationService.error('Erro', 'Não foi possível carregar o usuário');
       this.router.navigate(['/users']);
@@ -200,8 +232,8 @@ export class UserFormComponent implements OnInit {
   }
 
   nameError = computed(() => {
-    const control = this.userForm.get('name');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.nameControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['required']) return 'Nome é obrigatório';
       if (control.errors['minlength']) return 'Nome deve ter pelo menos 2 caracteres';
       if (control.errors['maxlength']) return 'Nome deve ter no máximo 100 caracteres';
@@ -210,8 +242,8 @@ export class UserFormComponent implements OnInit {
   });
 
   emailError = computed(() => {
-    const control = this.userForm.get('email');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.emailControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['required']) return 'E-mail é obrigatório';
       if (control.errors['email']) return 'E-mail inválido';
     }
@@ -219,16 +251,16 @@ export class UserFormComponent implements OnInit {
   });
 
   passwordError = computed(() => {
-    const control = this.userForm.get('password');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.passwordControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['minlength']) return 'Senha deve ter pelo menos 6 caracteres';
     }
     return '';
   });
 
   confirmPasswordError = computed(() => {
-    const control = this.userForm.get('confirmPassword');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.confirmPasswordControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['required'] && !this.isEditing()) return 'Confirmação de senha é obrigatória';
       if (control.errors['passwordMismatch']) return 'As senhas não coincidem';
     }
@@ -236,8 +268,8 @@ export class UserFormComponent implements OnInit {
   });
 
   roleError = computed(() => {
-    const control = this.userForm.get('role');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.roleControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['required']) return 'Perfil é obrigatório';
     }
     return '';
@@ -254,12 +286,12 @@ export class UserFormComponent implements OnInit {
     this.loading.set(true);
 
     try {
-      const { confirmPassword, ...data } = this.userForm.value;
+      const { confirmPassword, ...data } = this.userForm.getRawValue();
       const userData: UserRequest = {
-        name: data.name,
-        email: data.email,
-        password: data.password || undefined,
-        role: data.role
+        name: data.name!,
+        email: data.email!,
+        password: data.password || (this.isEditing() ? 'unchanged' : ''),
+        role: data.role! as UserRole
       };
 
       if (this.isEditing()) {

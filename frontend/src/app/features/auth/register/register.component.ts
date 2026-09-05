@@ -1,12 +1,20 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl, NonNullableFormBuilder } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/auth/auth.service';
-import { NotificationService } from '../../core/services/notification.service';
-import { InputComponent } from '../../shared/components/input/input.component';
-import { ButtonComponent } from '../../shared/components/button/button.component';
-import { passwordMatchValidator } from '../../shared/validators/password-match.validator';
+import { AuthService } from '../../../core/auth/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { InputComponent } from '../../../shared/components/input/input.component';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { passwordMatchValidator } from '../../../shared/validators/password-match.validator';
+
+interface RegisterFormValue {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  terms: boolean;
+}
 
 @Component({
   selector: 'app-register',
@@ -33,10 +41,10 @@ import { passwordMatchValidator } from '../../shared/validators/password-match.v
             label="Nome completo"
             type="text"
             placeholder="João Silva"
-            [formControl]="registerForm.get('name')"
+            [formControl]="nameControl"
             [error]="nameError()"
             [submitted]="submitted()"
-            required
+            [required]="true"
           ></app-input>
 
           <app-input
@@ -44,10 +52,10 @@ import { passwordMatchValidator } from '../../shared/validators/password-match.v
             label="E-mail"
             type="email"
             placeholder="seu@email.com"
-            [formControl]="registerForm.get('email')"
+            [formControl]="emailControl"
             [error]="emailError()"
             [submitted]="submitted()"
-            required
+            [required]="true"
           ></app-input>
 
           <app-input
@@ -55,10 +63,10 @@ import { passwordMatchValidator } from '../../shared/validators/password-match.v
             label="Senha"
             type="password"
             placeholder="••••••••"
-            [formControl]="registerForm.get('password')"
+            [formControl]="passwordControl"
             [error]="passwordError()"
             [submitted]="submitted()"
-            required
+            [required]="true"
           ></app-input>
 
           <app-input
@@ -66,10 +74,10 @@ import { passwordMatchValidator } from '../../shared/validators/password-match.v
             label="Confirmar senha"
             type="password"
             placeholder="••••••••"
-            [formControl]="registerForm.get('confirmPassword')"
+            [formControl]="confirmPasswordControl"
             [error]="confirmPasswordError()"
             [submitted]="submitted()"
-            required
+            [required]="true"
           ></app-input>
 
           <div class="flex items-start">
@@ -82,7 +90,7 @@ import { passwordMatchValidator } from '../../shared/validators/password-match.v
           <app-button
             type="submit"
             variant="primary"
-            fullWidth="true"
+            [fullWidth]="true"
             [loading]="loading()"
           >
             Criar conta
@@ -94,23 +102,45 @@ import { passwordMatchValidator } from '../../shared/validators/password-match.v
 })
 export class RegisterComponent {
   appName = 'Restaurante Cardápio';
-  registerForm: FormGroup;
+  registerForm: FormGroup<{
+    name: FormControl<string>;
+    email: FormControl<string>;
+    password: FormControl<string>;
+    confirmPassword: FormControl<string>;
+    terms: FormControl<boolean>;
+  }>;
   loading = signal(false);
   submitted = signal(false);
 
   constructor(
-    private fb: FormBuilder,
+    private fb: NonNullableFormBuilder,
     private authService: AuthService,
     private notificationService: NotificationService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      terms: [false, [Validators.requiredTrue]]
+      name: this.fb.control('', [Validators.required, Validators.minLength(2)]),
+      email: this.fb.control('', [Validators.required, Validators.email]),
+      password: this.fb.control('', [Validators.required, Validators.minLength(6)]),
+      confirmPassword: this.fb.control('', [Validators.required]),
+      terms: this.fb.control(false, [Validators.requiredTrue])
     }, { validators: passwordMatchValidator() });
+  }
+
+  get nameControl(): FormControl<string> {
+    return this.registerForm.controls.name;
+  }
+
+  get emailControl(): FormControl<string> {
+    return this.registerForm.controls.email;
+  }
+
+  get passwordControl(): FormControl<string> {
+    return this.registerForm.controls.password;
+  }
+
+  get confirmPasswordControl(): FormControl<string> {
+    return this.registerForm.controls.confirmPassword;
   }
 
   nameError = computed(() => {
@@ -160,7 +190,7 @@ export class RegisterComponent {
     this.loading.set(true);
 
     try {
-      const { confirmPassword, terms, ...data } = this.registerForm.value;
+      const { confirmPassword, terms, ...data } = this.registerForm.getRawValue();
       await this.authService.register(data).toPromise();
       this.notificationService.success('Conta criada!', 'Bem-vindo ao Restaurante Cardápio');
       this.router.navigate(['/dashboard']);

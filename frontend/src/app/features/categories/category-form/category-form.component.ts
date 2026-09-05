@@ -1,15 +1,23 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl, NonNullableFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { LoadingService } from '../../../core/services/loading.service';
-import { Category, CategoryRequest } from '../../core/models';
+import { Category, CategoryRequest } from '../../../core/models';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { ImageUploadComponent, ImageFile } from '../../../shared/components/image-upload/image-upload.component';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
+
+interface CategoryFormValue {
+  name: string;
+  description: string;
+  imageUrl: string;
+  displayOrder: number;
+  active: boolean;
+}
 
 @Component({
   selector: 'app-category-form',
@@ -35,10 +43,10 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
               id="name"
               label="Nome da categoria"
               placeholder="Ex: Entradas, Pratos Principais, Sobremesas"
-              [formControl]="categoryForm.get('name')"
+              [formControl]="nameControl"
               [error]="nameError()"
               [submitted]="submitted()"
-              required
+              [required]="true"
             ></app-input>
           </div>
 
@@ -47,11 +55,11 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
               id="description"
               label="Descrição"
               placeholder="Descreva brevemente esta categoria..."
-              [formControl]="categoryForm.get('description')"
+              [formControl]="descriptionControl"
               [error]="descriptionError()"
               [submitted]="submitted()"
               type="textarea"
-              rows="3"
+              [rows]="3"
             ></app-input>
           </div>
 
@@ -70,10 +78,10 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
               id="displayOrder"
               label="Ordem de exibição"
               type="number"
-              [formControl]="categoryForm.get('displayOrder')"
+              [formControl]="displayOrderControl"
               [error]="displayOrderError()"
               [submitted]="submitted()"
-              appNumberOnly
+              [appNumberOnly]="true"
             ></app-input>
           </div>
         </div>
@@ -98,7 +106,7 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
 export class CategoryFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private fb = inject(FormBuilder);
+  private fb = inject(NonNullableFormBuilder);
   private apiService = inject(ApiService);
   private notificationService = inject(NotificationService);
   loadingService = inject(LoadingService);
@@ -109,13 +117,31 @@ export class CategoryFormComponent implements OnInit {
   submitted = signal(false);
   imageFiles = signal<ImageFile[]>([]);
 
-  categoryForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.maxLength(100)]],
-    description: ['', [Validators.maxLength(1000)]],
-    imageUrl: [''],
-    displayOrder: [0, [Validators.min(0)]],
-    active: [true]
+  categoryForm: FormGroup<{
+    name: FormControl<string>;
+    description: FormControl<string>;
+    imageUrl: FormControl<string>;
+    displayOrder: FormControl<number>;
+    active: FormControl<boolean>;
+  }> = this.fb.group({
+    name: this.fb.control('', [Validators.required, Validators.maxLength(100)]),
+    description: this.fb.control('', [Validators.maxLength(1000)]),
+    imageUrl: this.fb.control(''),
+    displayOrder: this.fb.control(0, [Validators.min(0)]),
+    active: this.fb.control(true)
   });
+
+  get nameControl(): FormControl<string> {
+    return this.categoryForm.controls.name;
+  }
+
+  get descriptionControl(): FormControl<string> {
+    return this.categoryForm.controls.description;
+  }
+
+  get displayOrderControl(): FormControl<number> {
+    return this.categoryForm.controls.displayOrder;
+  }
 
   async ngOnInit(): Promise<void> {
     const id = this.route.snapshot.paramMap.get('id');
@@ -128,15 +154,17 @@ export class CategoryFormComponent implements OnInit {
   async loadCategory(id: string): Promise<void> {
     try {
       const category = await this.apiService.getCategory(id).toPromise();
-      this.categoryForm.patchValue({
-        name: category.name,
-        description: category.description || '',
-        imageUrl: category.imageUrl || '',
-        displayOrder: category.displayOrder,
-        active: category.active
-      });
-      if (category.imageUrl) {
-        this.imageFiles.set([{ file: new File([], ''), preview: category.imageUrl, primary: true }]);
+      if (category) {
+        this.categoryForm.patchValue({
+          name: category.name,
+          description: category.description || '',
+          imageUrl: category.imageUrl || '',
+          displayOrder: category.displayOrder,
+          active: category.active
+        });
+        if (category.imageUrl) {
+          this.imageFiles.set([{ file: new File([], ''), preview: category.imageUrl, primary: true }]);
+        }
       }
     } catch (error) {
       this.notificationService.error('Erro', 'Não foi possível carregar a categoria');
@@ -185,11 +213,12 @@ export class CategoryFormComponent implements OnInit {
     this.loading.set(true);
 
     try {
+      const formValue = this.categoryForm.getRawValue();
       const data: CategoryRequest = {
-        name: this.categoryForm.value.name,
-        description: this.categoryForm.value.description || '',
-        imageUrl: this.categoryForm.value.imageUrl || '',
-        displayOrder: this.categoryForm.value.displayOrder
+        name: formValue.name,
+        description: formValue.description || '',
+        imageUrl: formValue.imageUrl || '',
+        displayOrder: formValue.displayOrder
       };
 
       if (this.isEditing()) {

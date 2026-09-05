@@ -1,12 +1,12 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, NonNullableFormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { LoadingService } from '../../../core/services/loading.service';
 import { ImageUploadService } from '../../../core/services/image-upload.service';
-import { Dish, Category, DishRequest, DishImage } from '../../core/models';
+import { Dish, Category, DishRequest, DishImage } from '../../../core/models';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { SelectComponent } from '../../../shared/components/select/select.component';
@@ -14,6 +14,18 @@ import { ImageUploadComponent, ImageFile } from '../../../shared/components/imag
 import { ImageGalleryComponent } from '../../../shared/components/image-gallery/image-gallery.component';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
+
+interface DishFormValue {
+  name: string;
+  description: string;
+  price: number;
+  categoryId: string;
+  prepTimeMinutes: string;
+  calories: string;
+  allergens: string;
+  imageUrl: string;
+  active: boolean;
+}
 
 @Component({
   selector: 'app-dish-form',
@@ -42,10 +54,10 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
                 id="name"
                 label="Nome do prato"
                 placeholder="Ex: Risoto de Camarão"
-                [formControl]="dishForm.get('name')"
+                [formControl]="nameControl"
                 [error]="nameError()"
                 [submitted]="submitted()"
-                required
+                [required]="true"
               ></app-input>
             </div>
 
@@ -54,11 +66,11 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
                 id="description"
                 label="Descrição"
                 placeholder="Descreva os ingredientes e preparo..."
-                [formControl]="dishForm.get('description')"
+                [formControl]="descriptionControl"
                 [error]="descriptionError()"
                 [submitted]="submitted()"
                 type="textarea"
-                rows="4"
+                [rows]="4"
               ></app-input>
             </div>
 
@@ -70,11 +82,11 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
                 step="0.01"
                 min="0.01"
                 placeholder="0,00"
-                [formControl]="dishForm.get('price')"
+                [formControl]="priceControl"
                 [error]="priceError()"
                 [submitted]="submitted()"
-                required
-                appNumberOnly
+                [required]="true"
+                [appNumberOnly]="true"
                 [allowDecimal]="true"
               ></app-input>
             </div>
@@ -85,10 +97,10 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
                 label="Categoria"
                 placeholder="Selecione uma categoria"
                 [options]="categoryOptions()"
-                [formControl]="dishForm.get('categoryId')"
+                [formControl]="categoryIdControl"
                 [error]="categoryError()"
                 [submitted]="submitted()"
-                required
+                [required]="true"
               ></app-select>
             </div>
 
@@ -99,10 +111,10 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
                 type="number"
                 min="1"
                 placeholder="Ex: 30"
-                [formControl]="dishForm.get('prepTimeMinutes')"
+                [formControl]="prepTimeMinutesControl"
                 [error]="prepTimeError()"
                 [submitted]="submitted()"
-                appNumberOnly
+                [appNumberOnly]="true"
               ></app-input>
             </div>
 
@@ -113,10 +125,10 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
                 type="number"
                 min="0"
                 placeholder="Ex: 450"
-                [formControl]="dishForm.get('calories')"
+                [formControl]="caloriesControl"
                 [error]="caloriesError()"
                 [submitted]="submitted()"
-                appNumberOnly
+                [appNumberOnly]="true"
               ></app-input>
             </div>
 
@@ -125,7 +137,7 @@ import { CurrencyBrlPipe } from '../../../shared/pipes/currency-brl.pipe';
                 id="allergens"
                 label="Alergênicos"
                 placeholder="Ex: Glúten, Lactose, Crustáceos, Amendoim"
-                [formControl]="dishForm.get('allergens')"
+                [formControl]="allergensControl"
                 [error]="allergensError()"
                 [submitted]="submitted()"
               ></app-input>
@@ -197,17 +209,45 @@ export class DishFormComponent implements OnInit {
 
   categories = signal<Category[]>([]);
 
-  dishForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.maxLength(150)]],
-    description: ['', [Validators.maxLength(5000)]],
-    price: ['', [Validators.required, Validators.min(0.01)]],
-    categoryId: ['', [Validators.required]],
-    prepTimeMinutes: ['', [Validators.min(1)]],
-    calories: ['', [Validators.min(0)]],
-    allergens: ['', [Validators.maxLength(500)]],
-    imageUrl: [''],
-    active: [true]
+  dishForm = this.fb.group({
+    name: this.fb.control('', [Validators.required, Validators.maxLength(150)]),
+    description: this.fb.control('', [Validators.maxLength(5000)]),
+    price: this.fb.control(0, [Validators.required, Validators.min(0.01)]),
+    categoryId: this.fb.control('', [Validators.required]),
+    prepTimeMinutes: this.fb.control('', [Validators.min(1)]),
+    calories: this.fb.control('', [Validators.min(0)]),
+    allergens: this.fb.control('', [Validators.maxLength(500)]),
+    imageUrl: this.fb.control(''),
+    active: this.fb.control(true)
   });
+
+  get nameControl(): FormControl<string> {
+    return this.dishForm.controls.name as FormControl<string>;
+  }
+
+  get descriptionControl(): FormControl<string> {
+    return this.dishForm.controls.description as FormControl<string>;
+  }
+
+  get priceControl(): FormControl<number> {
+    return this.dishForm.controls.price as FormControl<number>;
+  }
+
+  get categoryIdControl(): FormControl<string> {
+    return this.dishForm.controls.categoryId as FormControl<string>;
+  }
+
+  get prepTimeMinutesControl(): FormControl<string> {
+    return this.dishForm.controls.prepTimeMinutes as FormControl<string>;
+  }
+
+  get caloriesControl(): FormControl<string> {
+    return this.dishForm.controls.calories as FormControl<string>;
+  }
+
+  get allergensControl(): FormControl<string> {
+    return this.dishForm.controls.allergens as FormControl<string>;
+  }
 
   categoryOptions = computed(() => 
     this.categories().map(c => ({ value: c.id, label: c.name }))
@@ -239,13 +279,18 @@ export class DishFormComponent implements OnInit {
   async loadDish(id: string): Promise<void> {
     try {
       const dish = await this.apiService.getDish(id).toPromise();
+      if (!dish) {
+        this.notificationService.error('Erro', 'Prato não encontrado');
+        this.router.navigate(['/dishes']);
+        return;
+      }
       this.dishForm.patchValue({
         name: dish.name,
         description: dish.description || '',
         price: dish.price,
         categoryId: dish.categoryId,
-        prepTimeMinutes: dish.prepTimeMinutes || '',
-        calories: dish.calories || '',
+        prepTimeMinutes: dish.prepTimeMinutes != null ? String(dish.prepTimeMinutes) : '',
+        calories: dish.calories != null ? String(dish.calories) : '',
         allergens: dish.allergens || '',
         imageUrl: dish.imageUrl || '',
         active: dish.active
@@ -289,8 +334,8 @@ export class DishFormComponent implements OnInit {
   }
 
   nameError = computed(() => {
-    const control = this.dishForm.get('name');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.nameControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['required']) return 'Nome é obrigatório';
       if (control.errors['maxlength']) return 'Nome deve ter no máximo 150 caracteres';
     }
@@ -298,16 +343,16 @@ export class DishFormComponent implements OnInit {
   });
 
   descriptionError = computed(() => {
-    const control = this.dishForm.get('description');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.descriptionControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['maxlength']) return 'Descrição deve ter no máximo 5000 caracteres';
     }
     return '';
   });
 
   priceError = computed(() => {
-    const control = this.dishForm.get('price');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.priceControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['required']) return 'Preço é obrigatório';
       if (control.errors['min']) return 'Preço deve ser maior que zero';
     }
@@ -315,32 +360,32 @@ export class DishFormComponent implements OnInit {
   });
 
   categoryError = computed(() => {
-    const control = this.dishForm.get('categoryId');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.categoryIdControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['required']) return 'Categoria é obrigatória';
     }
     return '';
   });
 
   prepTimeError = computed(() => {
-    const control = this.dishForm.get('prepTimeMinutes');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.prepTimeMinutesControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['min']) return 'Tempo deve ser maior que zero';
     }
     return '';
   });
 
   caloriesError = computed(() => {
-    const control = this.dishForm.get('calories');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.caloriesControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['min']) return 'Calorias deve ser maior ou igual a zero';
     }
     return '';
   });
 
   allergensError = computed(() => {
-    const control = this.dishForm.get('allergens');
-    if (control?.errors && (control.touched || this.submitted())) {
+    const control = this.allergensControl;
+    if (control.errors && (control.touched || this.submitted())) {
       if (control.errors['maxlength']) return 'Alergênicos deve ter no máximo 500 caracteres';
     }
     return '';
@@ -357,23 +402,32 @@ export class DishFormComponent implements OnInit {
     this.loading.set(true);
 
     try {
+      const formValue = this.dishForm.getRawValue();
       const data: DishRequest = {
-        name: this.dishForm.value.name,
-        description: this.dishForm.value.description || '',
-        price: this.dishForm.value.price,
-        categoryId: this.dishForm.value.categoryId,
-        prepTimeMinutes: this.dishForm.value.prepTimeMinutes || undefined,
-        calories: this.dishForm.value.calories || undefined,
-        allergens: this.dishForm.value.allergens || '',
-        imageUrl: this.dishForm.value.imageUrl || ''
+        name: formValue.name!,
+        description: formValue.description || '',
+        price: formValue.price!,
+        categoryId: formValue.categoryId!,
+        prepTimeMinutes: formValue.prepTimeMinutes ? Number(formValue.prepTimeMinutes) : undefined,
+        calories: formValue.calories ? Number(formValue.calories) : undefined,
+        allergens: formValue.allergens || '',
+        imageUrl: formValue.imageUrl || ''
       };
 
       let dish: Dish;
       if (this.isEditing()) {
-        dish = await this.apiService.updateDish(this.dishId()!, data).toPromise();
+        const updatedDish = await this.apiService.updateDish(this.dishId()!, data).toPromise();
+        if (!updatedDish) {
+          throw new Error('Falha ao atualizar o prato');
+        }
+        dish = updatedDish;
         this.notificationService.success('Sucesso', 'Prato atualizado');
       } else {
-        dish = await this.apiService.createDish(data).toPromise();
+        const createdDish = await this.apiService.createDish(data).toPromise();
+        if (!createdDish) {
+          throw new Error('Falha ao criar o prato');
+        }
+        dish = createdDish;
         this.notificationService.success('Sucesso', 'Prato criado');
       }
 

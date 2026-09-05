@@ -86,7 +86,7 @@ interface MenuCategory {
                           type="button"
                           class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                           (click)="openDishModal(dish)"
-                          aria-label="Ver detalhes de {{ dish.name }}"
+                          [attr.aria-label]="'Ver detalhes de ' + dish.name"
                         >
                           <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7z"></path></svg>
                         </button>
@@ -136,32 +136,32 @@ interface MenuCategory {
       [large]="true"
       (close)="closeDishModal()"
     >
-      @if (selectedDish()) {
+      @if (selectedDish(); as dish) {
         <div class="space-y-6">
           <app-image-gallery
-            [images]="[{ url: selectedDish()!.imageUrl || '', alt: selectedDish()!.name, primary: true }]"
+            [images]="[{ url: dish.imageUrl || '', alt: dish.name, primary: true }]"
           ></app-image-gallery>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="md:col-span-2">
-              <p class="text-gray-700 whitespace-pre-wrap">{{ selectedDish()?.description || 'Sem descrição' }}</p>
+              <p class="text-gray-700 whitespace-pre-wrap">{{ dish.description || 'Sem descrição' }}</p>
             </div>
             <div class="text-center md:text-right">
-              <p class="text-3xl font-bold text-primary-600">{{ selectedDish()?.price | currencyBrl }}</p>
-              @if (selectedDish()?.prepTimeMinutes) {
+              <p class="text-3xl font-bold text-primary-600">{{ dish.price | currencyBrl }}</p>
+              @if (dish.prepTimeMinutes) {
                 <p class="text-sm text-gray-500 mt-1 flex items-center justify-end gap-1">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  {{ selectedDish()?.prepTimeMinutes }} min
+                  {{ dish.prepTimeMinutes }} min
                 </p>
               }
             </div>
           </div>
 
-          @if (selectedDish()?.allergens) {
+          @if (dish.allergens) {
             <div class="pt-4 border-t border-gray-200">
               <h4 class="font-medium text-gray-900 mb-2">Alergênicos:</h4>
               <div class="flex flex-wrap gap-2">
-                @for (allergen of selectedDish()!.allergens.split(','); track allergen) {
+                @for (allergen of dish.allergens.split(','); track allergen) {
                   <app-badge variant="warning">{{ allergen.trim() }}</app-badge>
                 }
               </div>
