@@ -7,9 +7,12 @@ Sistema completo de gerenciamento de cardápio para restaurantes com frontend An
 ## 🚀 Tecnologias
 
 ### Backend
-- **Java 21** + **Spring Boot 3.3.2**
-- **Spring Data JPA** + Hibernate
-- **Spring Security** + JWT (jjwt 0.12.x) - stateless
+- **Java 25** + **Spring Boot 3.3.2**
+- **Spring Data JPA** + Hibernate 6.5.2
+- **Spring Security 6.3.1** + JWT (jjwt 0.12.6) - stateless
+- **OAuth2 Resource Server** com `JwtDecoder` (Nimbus) + `JwtAuthenticationConverter`
+- **MapStruct 1.6.3** + **Lombok 1.18.38**
+- **Maven Compiler Plugin 3.14.0** (release 25)
 - **PostgreSQL 16** + **Flyway 11** (migrações)
 - **MapStruct** (DTO mapping)
 - **Lombok** (boilerplate reduction)
@@ -194,18 +197,30 @@ Role: ADMIN
 
 ## 🛠️ Desenvolvimento
 
-### Backend (local)
-```bash
-cd backend
-./mvnw spring-boot:run
-```
+---
 
-### Frontend (local)
-```bash
-cd frontend
-npm install
-npm start
-```
+## 🔐 Segurança
+
+### Configuração JWT
+- **OAuth2 Resource Server** com `JwtDecoder` (Nimbus JwtDecoder) + `JwtAuthenticationConverter`
+- Claims extraídas: `sub` (subject/email) + `roles` (authorities com prefixo `ROLE_`)
+- Filtro JWT customizado (`JwtAuthenticationFilter`) estende `OncePerRequestFilter`
+- **Context path** `/api` tratado via `AntPathRequestMatcher` em `/auth/**`
+
+### Endpoints Públicos
+| Path | Descrição |
+|------|-----------|
+| `/auth/**` | Login, registro, refresh, logout |
+| `/actuator/**` | Health checks |
+| `/v3/api-docs/**` | OpenAPI docs |
+| `/swagger-ui/**` | Swagger UI |
+| `/uploads/**` | Arquivos estáticos |
+
+### Proteção
+- `anyRequest().authenticated()` para endpoints protegidos
+- Stateless session (`STATELESS`)
+- CSRF, Form Login, HTTP Basic desabilitados
+- CORS configurado para `http://localhost:4200`
 
 ### Testes
 ```bash
@@ -219,12 +234,17 @@ cd frontend && npm test
 ### Build para Produção
 
 ```bash
-# Backend
+# Backend (requires Java 25)
 cd backend && ./mvnw clean package -DskipTests
 
 # Frontend
 cd frontend && npm run build
 ```
+
+### Requisitos de Build
+- **Java 25** (Temurin/OpenJDK)
+- **Maven 3.9+** 
+- **maven-compiler-plugin 3.14.0** (suporte a release 25)
 
 ---
 
@@ -302,9 +322,10 @@ Desenvolvido com ❤️ para gestão de restaurantes
 
 | Data | Versão | Descrição |
 |------|--------|-----------|
-| 2026-09-04 | 1.0 | Versão inicial - Estrutura do projeto |
-| 2026-09-04 | 1.1 | Adição de segurança headers, CORS env var, actuator restrições |
-| 2026-09-04 | 1.2 | Testes JUnit5+Mockito, Actuator config, production config |
+| 2026-09-05 | 1.4 | **Java 25** + Spring Boot 3.3.2, maven-compiler-plugin 3.14.0, Lombok 1.18.38, MapStruct 1.6.3, fix SecurityConfig import (SecurityFilterChain), OAuth2 Resource Server com JWT, Spring Security 6.3.1 |
 | 2026-09-04 | 1.3 | Pipeline GitHub Actions CI/CD, SSL configuration |
+| 2026-09-04 | 1.2 | Testes JUnit5+Mockito, Actuator config, production config |
+| 2026-09-04 | 1.1 | Adição de segurança headers, CORS env var, actuator restrições |
+| 2026-09-04 | 1.0 | Versão inicial - Estrutura do projeto |
 
 ---
