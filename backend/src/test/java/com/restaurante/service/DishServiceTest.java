@@ -1,5 +1,6 @@
 package com.restaurante.service;
 
+import com.restaurante.dto.dish.DishRequest;
 import com.restaurante.entity.Dish;
 import com.restaurante.entity.Category;
 import com.restaurante.repository.CategoryRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -43,25 +45,29 @@ class DishServiceTest {
     @Test
     void search_shouldReturnDishesWithNameAndCategory() {
         UUID categoryId = UUID.randomUUID();
+        Category category = new Category();
+        category.setId(categoryId);
+        category.setName("Teste");
+
         Dish dish1 = new Dish();
         dish1.setId(UUID.randomUUID());
         dish1.setName("Risoto");
-        dish1.setPrice(45.50);
-        dish1.setCategoryId(categoryId);
+        dish1.setPrice(new BigDecimal("45.50"));
+        dish1.setCategory(category);
         dish1.setActive(true);
 
         Dish dish2 = new Dish();
         dish2.setId(UUID.randomUUID());
         dish2.setName("Lasanha");
-        dish2.setPrice(55.00);
-        dish2.setCategoryId(categoryId);
+        dish2.setPrice(new BigDecimal("55.00"));
+        dish2.setCategory(category);
         dish2.setActive(true);
 
         when(dishRepository.findByCategoryIdAndNameContainingIgnoreCaseAndActiveTrue(
-                any(), anyString(), any()))
-                .thenReturn(Arrays.asList(dish1, dish2));
+                any(UUID.class), anyString(), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(Arrays.asList(dish1, dish2)));
 
-        var result = dishService.search("Risoto", categoryId, null);
+        var result = dishService.search("Risoto", categoryId, true, Pageable.unpaged());
 
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getContent().get(0).getName()).isEqualTo("Risoto");
@@ -78,7 +84,11 @@ class DishServiceTest {
         when(dishRepository.findById(dishId))
                 .thenReturn(java.util.Optional.of(dish));
         when(dishRepository.save(any(Dish.class)))
-                .thenReturn(dish);
+                .thenAnswer(invocation -> {
+                    Dish d = invocation.getArgument(0);
+                    d.setActive(false);
+                    return d;
+                });
 
         var result = dishService.toggleActive(dishId);
 
@@ -91,7 +101,7 @@ class DishServiceTest {
         var request = new DishRequest();
         request.setName("Teste");
         request.setCategoryId(categoryId);
-        request.setPrice(25.00);
+        request.setPrice(new BigDecimal("25.00"));
 
         Category category = new Category();
         category.setId(categoryId);
@@ -99,13 +109,14 @@ class DishServiceTest {
 
         when(categoryRepository.findById(categoryId))
                 .thenReturn(java.util.Optional.of(category));
-
+        when(dishRepository.existsByNameIgnoreCaseAndCategoryId(anyString(), any(UUID.class)))
+                .thenReturn(false);
         when(dishRepository.save(any(Dish.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         var result = dishService.create(request, null);
 
         assertThat(result.getName()).isEqualTo("Teste");
-        assertThat(result.getCategory().getId()).isEqualTo(categoryId);
+        assertThat(result.getCategoryId()).isEqualTo(categoryId);
     }
 }

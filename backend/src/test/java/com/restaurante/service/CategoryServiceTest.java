@@ -11,9 +11,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -72,7 +75,7 @@ class CategoryServiceTest {
         var result = categoryService.getById(categoryId);
 
         assertThat(result).isNotNull();
-        assertThat(result.get().getName()).isEqualTo("Teste");
+        assertThat(result.getName()).isEqualTo("Teste");
     }
 
     @Test
@@ -82,14 +85,9 @@ class CategoryServiceTest {
         when(categoryRepository.findById(categoryId))
                 .thenReturn(Optional.empty());
 
-        org.springframework.web.server.ResponseStatusException exception = 
-            org.springframework.web.server.ResponseStatusException.builder(
-                org.http.HttpStatus.NOT_FOUND)
-                .build();
-
         try {
             categoryService.getById(categoryId);
-        } catch (org.springframework.web.server.ResponseStatusException e) {
+        } catch (ResponseStatusException e) {
             assertThat(e.getStatusCode().value()).isEqualTo(404);
         }
     }

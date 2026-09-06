@@ -1,6 +1,7 @@
 package com.restaurante.controller;
 
 import com.restaurante.entity.User;
+import com.restaurante.entity.Role;
 import com.restaurante.repository.UserRepository;
 import com.restaurante.dto.user.UserResponse;
 import com.restaurante.dto.common.ApiResponse;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +41,7 @@ class UserControllerTest {
         user.setId(UUID.randomUUID());
         user.setEmail("admin@restaurante.com");
         user.setName("Administrador");
-        user.setRole("ADMIN");
+        user.setRole(Role.ADMIN);
         user.setActive(true);
 
         when(userRepository.findByEmail(anyString()))
