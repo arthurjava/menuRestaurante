@@ -8,12 +8,13 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 import { jwtInterceptor } from './app/core/auth/jwt.interceptor';
+import { apiResponseInterceptor } from './app/core/interceptors/api-response.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideAnimations(),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([jwtInterceptor])),
+    provideHttpClient(withInterceptors([jwtInterceptor, apiResponseInterceptor])),
     provideRouter(routes),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
