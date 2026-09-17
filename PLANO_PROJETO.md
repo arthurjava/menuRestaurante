@@ -1,19 +1,20 @@
 # Plano de Desenvolvimento - Sistema de Cardápio de Restaurante
 
 ## 1. Visão Geral
-Sistema completo de gerenciamento de cardápio para restaurante com frontend Angular 17, backend Spring Boot 3.x, banco PostgreSQL, containerizado com Docker.
+Sistema completo de gerenciamento de cardápio para restaurante com frontend Angular 21, backend Spring Boot 3.5.x, banco PostgreSQL, containerizado com Docker.
 
 ---
 
 ## 2. Stack Tecnológica
 
 ### Backend
-- **Java**: 25 LTS
-- **Spring Boot**: 3.3.x
+- **Java**: 25.0.4.1 (language level 25)
+- **Spring Boot**: 3.5.x
+- **Spring Framework**: 6.2.x
 - **Spring Data JPA** + Hibernate
-- **Spring Security** + JWT (jjwt 0.12.x)
+- **Spring Security** 6.x + JWT (jjwt 0.12.x)
 - **Spring Validation** (Bean Validation)
-- **PostgreSQL Driver**: 42.7.x
+- **PostgreSQL Driver**
 - **Flyway** (migrações de banco)
 - **MapStruct** (DTO mapping)
 - **Lombok**
@@ -21,13 +22,13 @@ Sistema completo de gerenciamento de cardápio para restaurante com frontend Ang
 - **Maven** 3.9.x
 
 ### Frontend
-- **Angular**: 17.x (standalone components, signals)
-- **TypeScript**: 5.3+
+- **Angular**: 21.x (standalone components, signals)
+- **TypeScript**: 5.9.x
 - **RxJS**: 7.8+
-- **Angular Material** 17 (UI components)
+- **Angular Material** 21 (UI components)
 - **Tailwind CSS** 3.4+ (estilização)
 - **Angular Reactive Forms**
-- **NgRx Signals** ou **Angular Signals** nativo (state management)
+- **Angular Signals** nativo (state management)
 - **JWT Interceptor** (autenticação)
 
 ### Infraestrutura
@@ -360,7 +361,7 @@ public enum Role {
 
 ---
 
-## 6. Frontend Angular 17 - Estrutura Detalhada
+## 6. Frontend Angular 21 - Estrutura Detalhada
 
 ### 6.1 Core Module (`src/app/core/`)
 ```
@@ -663,7 +664,7 @@ networks:
 
 #### Backend `Dockerfile.dev`
 ```dockerfile
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:25-jdk-alpine
 
 WORKDIR /app
 
@@ -681,7 +682,7 @@ CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp
 
 #### Backend `Dockerfile.prod`
 ```dockerfile
-FROM eclipse-temurin:21-jdk-alpine AS builder
+FROM eclipse-temurin:25-jdk-alpine AS builder
 
 WORKDIR /app
 
@@ -690,7 +691,7 @@ COPY src ./src
 
 RUN ./mvnw clean package -DskipTests -B
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 WORKDIR /app
 
@@ -709,11 +710,11 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 #### Frontend `Dockerfile.dev`
 ```dockerfile
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
-RUN npm install -g @angular/cli@17
+RUN npm install -g @angular/cli@21
 
 COPY package*.json ./
 
@@ -728,7 +729,7 @@ CMD ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "2000"]
 
 #### Frontend `Dockerfile.prod`
 ```dockerfile
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -980,7 +981,7 @@ INSERT INTO users (email, password, name, role) VALUES
 - [x] Estrutura base Angular (core, shared, layout) - ✅ Estrutura corrigida
 - [x] InputComponent - ✅ Adicionados allowDecimal e appNumberOnly inputs
 - [x] Settings components - ✅ Criados restaurant-info, business-hours, contact-info, profile
-- [x] Authentication service e guards - ✅ Implementado com Angular 17 signals
+- [x] Authentication service e guards - ✅ Implementado com Angular 21 signals
 
 ### Fase 2 - CRUD Categorias (Semana 2-3)
 - [ ] Entidade Category + Repository + Service
@@ -1085,7 +1086,7 @@ INSERT INTO users (email, password, name, role) VALUES
 - ✅ Container backend e PostgreSQL em execução
 - ✅ Flyway migrations executadas - 4 tabelas + admin user criado
 - ✅ Frontend build - Corrigido InputComponent e components faltando
-- ✅ Authentication service e guards - Implementado com Angular 17 signals
+- ✅ Authentication service e guards - Implementado com Angular 21 signals
 - ✅ API Services - Categorias, Pratos, Usuários, Menu públicos mapeados
 - ✅ Filtro ativo em pratos - Corrigido em DishService e DishController
 - ✅ Cardápio Público - Componente menu funcional conectado ao backend
@@ -1110,11 +1111,11 @@ INSERT INTO users (email, password, name, role) VALUES
 - [x] Docker Compose development (docker-compose.yml) - Backend + PostgreSQL rodando
 - [x] Docker Compose production (docker-compose.prod.yml) - Criado com nginx
 - [x] Nginx configuration (nginx/nginx.conf) - Reverse proxy com proxy_pass para backend
-- [x] Dockerfile.prod backend - Multi-stage build com OpenJDK 21 Alpine
-- [x] Dockerfile.prod frontend - Multi-stage build com Node 20 + Nginx Alpine
+- [x] Dockerfile.prod backend - Multi-stage build com OpenJDK 25 Alpine
+- [x] Dockerfile.prod frontend - Multi-stage build com Node 22 + Nginx Alpine
 - [x] Variáveis de ambiente (.env.example) - DB, JWT, CORS configurados
-- [x] Backend produção ready - Spring Boot 3.3.2 com perfis dev/prod
-- [x] Frontend production build - Angular 17 com SSR ready
+- [x] Backend produção ready - Spring Boot 3.5.x com perfis dev/prod
+- [x] Frontend production build - Angular 21 com SSR ready
 - [x] Monitoramento Spring Boot Actuator - Endpoints health, info, metrics expostos
 
 ---
@@ -1135,11 +1136,11 @@ INSERT INTO users (email, password, name, role) VALUES
 - [x] Docker Compose development (docker-compose.yml) - Backend + PostgreSQL rodando
 - [x] Docker Compose production (docker-compose.prod.yml) - Criado com nginx
 - [x] Nginx configuration (nginx/nginx.conf) - Reverse proxy com proxy_pass para backend
-- [x] Dockerfile.prod backend - Multi-stage build com OpenJDK 21 Alpine
-- [x] Dockerfile.prod frontend - Multi-stage build com Node 20 + Nginx Alpine
+- [x] Dockerfile.prod backend - Multi-stage build com OpenJDK 25 Alpine
+- [x] Dockerfile.prod frontend - Multi-stage build com Node 22 + Nginx Alpine
 - [x] Variáveis de ambiente (.env.example) - DB, JWT, CORS configurados
-- [x] Backend produção ready - Spring Boot 3.3.2 com perfis dev/prod
-- [x] Frontend production build - Angular 17 com SSR ready
+- [x] Backend produção ready - Spring Boot 3.5.x com perfis dev/prod
+- [x] Frontend production build - Angular 21 com SSR ready
 - [x] Monitoramento Spring Boot Actuator - Endpoints health, info, metrics expostos
 - [x] Testes automatizados - JUnit5 + Mockito no backend, Jest no frontend
 
