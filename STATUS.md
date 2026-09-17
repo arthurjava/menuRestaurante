@@ -6,7 +6,7 @@
 
 ## 📊 Resumo Executivo
 
-O projeto está **funcionalmente completo** para desenvolvimento e **pronto para produção** — faltando apenas infraestrutura de deploy final (SSL, backup, DNS, monitoramento avançado).
+O projeto está **funcionalmente completo no backend** e **estrutura do frontend criada** para desenvolvimento. O frontend Angular 21 possui todos os componentes, services, guards e features implementados, mas **pendente de correção de erros de build** (TypeScript/template) para validação completa. Faltando apenas infraestrutura de deploy final (SSL, backup, DNS, monitoramento avançado) e validação do build do frontend.
 
 ---
 
@@ -22,7 +22,7 @@ O projeto está **funcionalmente completo** para desenvolvimento e **pronto para
 - [x] Springdoc OpenAPI (Swagger UI)
 - [x] Perfis dev/prod configurados
 
-### Frontend (Angular 21 + Signals)
+### Frontend (Angular 21 + Signals) — Estrutura Criada / Build Pendente
 - [x] Auth: Login, Register, Guards, JWT Interceptor, Token Storage
 - [x] Core: ApiService, NotificationService, LoadingService, ImageUploadService
 - [x] Shared Components: Button, Input, Select, Modal, Table, ImageUpload, ImageGallery, Badge
@@ -35,6 +35,7 @@ O projeto está **funcionalmente completo** para desenvolvimento e **pronto para
   - Menu Público (responsivo, modal detalhes, filtro categoria, busca)
   - Settings (restaurant-info, business-hours, contact-info, profile)
 - [x] Tailwind CSS + Angular Material 21
+- [⚠️] **Build falhando**: Erros TypeScript/template (boolean inputs, modal nesting, missing properties, $index, new Date() em templates) — correção necessária antes de `npm run build` passar
 
 ### Infraestrutura & DevOps
 - [x] Docker Compose dev (backend + PostgreSQL)
@@ -43,7 +44,7 @@ O projeto está **funcionalmente completo** para desenvolvimento e **pronto para
 - [x] Nginx reverse proxy (proxy_pass para backend, SPA fallback)
 - [x] Variáveis de ambiente (.env.example)
 - [x] Spring Boot Actuator (health, info, metrics)
-- [x] Testes: JUnit5 + Mockito (backend), Jest (frontend)
+- [x] Testes: JUnit5 + Mockito (backend), Jest (frontend — estrutura criada, pendente execução após correção de build)
 - [x] GitHub Actions CI/CD (build + test)
 
 ---
@@ -90,9 +91,9 @@ O projeto está **funcionalmente completo** para desenvolvimento e **pronto para
 
 ## 📝 Observações
 
-- Build frontend/backend validados localmente
-- Testes de integração frontend-backend passando
-- Warnings menores de build podem existir, mas funcionalidade operacional
+- Build backend validado localmente
+- **Frontend: estrutura completa criada (Angular 21, Signals, Material 21, Tailwind), mas build falha com erros TypeScript/template — correção necessária**
+- Testes de integração frontend-backend **pendentes de validação** (aguardam build do frontend)
 - Arquitetura segue separação Controller → Service → Repository → Entity
 - DTOs + MapStruct para isolamento de contratos
 - Lazy loading em relacionamentos JPA (N+1 mitigado com fetch joins onde necessário)

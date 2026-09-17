@@ -1085,28 +1085,29 @@ INSERT INTO users (email, password, name, role) VALUES
 - ✅ Repositório Git inicializado
 - ✅ Container backend e PostgreSQL em execução
 - ✅ Flyway migrations executadas - 4 tabelas + admin user criado
-- ✅ Frontend build - Corrigido InputComponent e components faltando
+- ✅ Frontend **estrutura completa criada** (Angular 21, Signals, Material 21, Tailwind) — **build pendente de correção**
 - ✅ Authentication service e guards - Implementado com Angular 21 signals
 - ✅ API Services - Categorias, Pratos, Usuários, Menu públicos mapeados
 - ✅ Filtro ativo em pratos - Corrigido em DishService e DishController
 - ✅ Cardápio Público - Componente menu funcional conectado ao backend
 - ✅ Gestão Usuários - Formulário e listagem completos com CRUD
-- ⚠️ Testes de integração Frontend-Backend completados com sucesso
-- ⚠️ Warnings menores de build podem existir, mas funcionalidade está operacional
+- ⚠️ **Frontend build falhando** - Erros TypeScript/template (boolean inputs, modal nesting, missing properties, $index, new Date() em templates) — correção necessária
+- ⚠️ Testes de integração Frontend-Backend **pendentes** (aguardam build do frontend)
 
 ---
 
 ## 18. Próximos Passos Imediatos
 
-1. **Fase 6 - Polimento & Produção** - Docker production configuration, CI/CD setup
-2. **Otimização de performance** - Lazy loading otimizado, change detection
-3. **Testes automatizados** - Unitários backend e frontend
-4. **Documentação Swagger** - Validar endpoints expostos
-5. **Preparação para deploy** - Variáveis de ambiente produção, Nginx config
+1. **Corrigir build do frontend Angular 21** - Resolver erros TypeScript/template (boolean inputs, modal nesting, missing properties, $index, new Date() em templates)
+2. **Fase 6 - Polimento & Produção** - Docker production configuration, CI/CD setup
+3. **Otimização de performance** - Lazy loading otimizado, change detection
+4. **Testes automatizados** - Unitários backend e frontend
+5. **Documentação Swagger** - Validar endpoints expostos
+6. **Preparação para deploy** - Variáveis de ambiente produção, Nginx config
 
 ---
 
-## 20. Checklist de Produção Concluído ✅
+## 20. Checklist de Produção — Backend ✅ / Frontend ⚠️
 
 - [x] Docker Compose development (docker-compose.yml) - Backend + PostgreSQL rodando
 - [x] Docker Compose production (docker-compose.prod.yml) - Criado com nginx
@@ -1115,23 +1116,24 @@ INSERT INTO users (email, password, name, role) VALUES
 - [x] Dockerfile.prod frontend - Multi-stage build com Node 22 + Nginx Alpine
 - [x] Variáveis de ambiente (.env.example) - DB, JWT, CORS configurados
 - [x] Backend produção ready - Spring Boot 3.5.x com perfis dev/prod
-- [x] Frontend production build - Angular 21 com SSR ready
+- [⚠️] **Frontend production build - Angular 21 estrutura criada, pendente correção de erros de build**
 - [x] Monitoramento Spring Boot Actuator - Endpoints health, info, metrics expostos
 
 ---
 
 ## 21. Próximos Passos Finais
 
-1. **GitHub Actions CI/CD** - Pipeline de testes e build automatizados (concluído)
-2. **Script de deploy** - Scripts de deploy para produção
-3. **HTTPS com certificado SSL** - Configuração via Nginx/Let's Encrypt
-4. **Otimização de performance** - Lazy loading otimizado, change detection
-5. **Documentação Swagger** - Validar endpoints expostos
-6. **Monitoramento avançado** - Prometheus/Grafana integration
+1. **Corrigir build do frontend Angular 21** - Resolver erros TypeScript/template
+2. **GitHub Actions CI/CD** - Pipeline de testes e build automatizados (concluído)
+3. **Script de deploy** - Scripts de deploy para produção
+4. **HTTPS com certificado SSL** - Configuração via Nginx/Let's Encrypt
+5. **Otimização de performance** - Lazy loading otimizado, change detection
+6. **Documentação Swagger** - Validar endpoints expostos
+7. **Monitoramento avançado** - Prometheus/Grafana integration
 
 ---
 
-## 22. Checklist de Produção Concluído ✅
+## 22. Checklist de Produção — Backend ✅ / Frontend ⚠️
 
 - [x] Docker Compose development (docker-compose.yml) - Backend + PostgreSQL rodando
 - [x] Docker Compose production (docker-compose.prod.yml) - Criado com nginx
@@ -1140,9 +1142,9 @@ INSERT INTO users (email, password, name, role) VALUES
 - [x] Dockerfile.prod frontend - Multi-stage build com Node 22 + Nginx Alpine
 - [x] Variáveis de ambiente (.env.example) - DB, JWT, CORS configurados
 - [x] Backend produção ready - Spring Boot 3.5.x com perfis dev/prod
-- [x] Frontend production build - Angular 21 com SSR ready
+- [⚠️] **Frontend production build - Angular 21 estrutura criada, pendente correção de erros de build**
 - [x] Monitoramento Spring Boot Actuator - Endpoints health, info, metrics expostos
-- [x] Testes automatizados - JUnit5 + Mockito no backend, Jest no frontend
+- [⚠️] **Testes automatizados - Backend JUnit5+Mockito ok, Frontend Jest estrutura criada pendente execução**
 
 ---
 

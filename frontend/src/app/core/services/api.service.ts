@@ -1,131 +1,281 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable, catchError, tap, throwError } from 'rxjs';
+import { environment } from '@environments/environment';
+import { LoadingService } from './loading.service';
+import { NotificationService } from './notification.service';
+
+export interface ApiResponse<T> {
+  data: T;
+  message?: string;
+}
+
+export interface PaginatedResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  first: boolean;
+  last: boolean;
+}
+
+export interface FilterParams {
+  page?: number;
+  size?: number;
+  sort?: string;
+  search?: string;
+  active?: boolean;
+  category?: string;
+  [key: string]: any;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
+  private http = inject(HttpClient);
+  private loading = inject(LoadingService);
+  private notification = inject(NotificationService);
 
-  private apiUrl = 'http://localhost:8080/api';
-  private authUrl = 'http://localhost:8080/api/auth';
+  private readonly apiUrl = environment.apiUrl;
 
-  private tokenKey = 'auth_token';
+  private getHeaders(customHeaders?: HttpHeaders): HttpHeaders {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
 
-  constructor(private http: HttpClient) { }
-
-  private getHeaders(): HttpHeaders {
-    const token = this.getToken();
-    return token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : new HttpHeaders();
-  }
-
-  private getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
-  }
-
-  private setToken(token: string | null): void {
+    const token = localStorage.getItem('auth_token');
     if (token) {
-      localStorage.setItem(this.tokenKey, token);
-    } else {
-      localStorage.removeItem(this.tokenKey);
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
+
+    if (customHeaders) {
+      headers = customHeaders;
+    }
+
+    return headers;
   }
 
-  login(email: string, password: string): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(`${this.authUrl}/login`, { email, password })
-      .pipe(
-        tap((response: { token: string }) => this.setToken(response.token)),
-        catchError(error => {
-          console.error('Login error', error);
-          return of(null);
-        })
-      );
+  private buildParams(params: FilterParams): HttpParams {
+    let httpParams = new HttpParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        httpParams = httpParams.set(key, String(value));
+      }
+    });
+    return httpParams;
   }
 
-  register(user: { email: string; password: string; name: string; role: string }): Observable<any> {
-    return this.http.post(`${this.authUrl}/register`, user);
+  // Generic GET
+  get<T>(endpoint: string, params?: FilterParams): Observable<T> {
+    this.loading.show();
+    return this.http.get<T>(`${this.apiUrl}${endpoint}`, {
+      headers: this.getHeaders(),
+      params: params ? this.buildParams(params) : undefined
+    }).pipe(
+      tap(() => this.loading.hide()),
+      catchError(error => this.handleError(error))
+    );
   }
 
-  logout(): Observable<void> {
-    return this.http.post<void>(`${this.authUrl}/logout`, {});
+  // Generic POST
+  post<T>(endpoint: string, body: any, options?: { headers?: HttpHeaders; showLoading?: boolean }): Observable<T> {
+    const showLoading = options?.showLoading ?? true;
+    if (showLoading) this.loading.show();
+    return this.http.post<T>(`${this.apiUrl}${endpoint}`, body, {
+      headers: options?.headers ?? this.getHeaders()
+    }).pipe(
+      tap(() => { if (showLoading) this.loading.hide(); }),
+      catchError(error => this.handleError(error))
+    );
   }
 
-  getMe(): Observable<any> {
-    return this.http.get(`${this.authUrl}/me`, { headers: this.getHeaders() });
+  // Generic PUT
+  put<T>(endpoint: string, body: any): Observable<T> {
+    this.loading.show();
+    return this.http.put<T>(`${this.apiUrl}${endpoint}`, body, {
+      headers: this.getHeaders()
+    }).pipe(
+      tap(() => this.loading.hide()),
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  // Generic PATCH
+  patch<T>(endpoint: string, body: any): Observable<T> {
+    this.loading.show();
+    return this.http.patch<T>(`${this.apiUrl}${endpoint}`, body, {
+      headers: this.getHeaders()
+    }).pipe(
+      tap(() => this.loading.hide()),
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  // Generic DELETE
+  delete<T>(endpoint: string): Observable<T> {
+    this.loading.show();
+    return this.http.delete<T>(`${this.apiUrl}${endpoint}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      tap(() => this.loading.hide()),
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  // File upload
+  upload<T>(endpoint: string, formData: FormData): Observable<T> {
+    this.loading.show();
+    const headers = new HttpHeaders();
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+    return this.http.post<T>(`${this.apiUrl}${endpoint}`, formData, { headers }).pipe(
+      tap(() => this.loading.hide()),
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  private handleError(error: any): Observable<never> {
+    this.loading.hide();
+    const message = error.error?.message ?? error.message ?? 'Erro inesperado';
+    this.notification.error(message);
+    return throwError(() => error);
   }
 
   // Categories
-  listCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/categories`);
+  listCategories(params?: FilterParams): Observable<any[]> {
+    return this.get<any[]>('/categories', params);
   }
 
-  listCategoriesAdmin(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/categories/admin`);
+  listCategoriesAdmin(params?: FilterParams): Observable<any[]> {
+    return this.get<any[]>('/categories/admin', params);
   }
 
   createCategory(category: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/categories`, category, { headers: this.getHeaders() });
+    return this.post<any>('/categories', category);
   }
 
   updateCategory(id: string, category: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/categories/${id}`, category, { headers: this.getHeaders() });
+    return this.put<any>(`/categories/${id}`, category);
+  }
+
+  deleteCategory(id: string): Observable<void> {
+    return this.delete<void>(`/categories/${id}`);
   }
 
   toggleCategoryActive(id: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/categories/${id}/toggle-active`, {}, { headers: this.getHeaders() });
+    return this.patch<any>(`/categories/${id}/toggle-active`, {});
+  }
+
+  reorderCategories(items: { id: string; displayOrder: number }[]): Observable<any> {
+    return this.put<any>('/categories/reorder', { items });
   }
 
   // Dishes
-  listDishes(filters?: { category?: string; active?: boolean; search?: string }): Observable<any[]> {
-    let url = `${this.apiUrl}/dishes`;
-    const params: any[] = [];
-    if (filters?.category) params.push(`category=${filters.category}`);
-    if (filters?.active !== undefined) params.push(`active=${filters.active}`);
-    if (filters?.search) params.push(`search=${filters.search}`);
-    if (params.length > 0) {
-      url += '?' + params.join('&');
-    }
-    return this.http.get<any[]>(url);
+  listDishes(params?: FilterParams): Observable<any[]> {
+    return this.get<any[]>('/dishes', params);
   }
 
-  listDishesAdmin(filters?: { active?: boolean }): Observable<any[]> {
-    let url = `${this.apiUrl}/dishes/admin`;
-    const params: any[] = [];
-    if (filters?.active !== undefined) params.push(`active=${filters.active}`);
-    if (params.length > 0) {
-      url += '?' + params.join('&');
-    }
-    return this.http.get<any[]>(url, { headers: this.getHeaders() });
+  listDishesAdmin(params?: FilterParams): Observable<any[]> {
+    return this.get<any[]>('/dishes/admin', params);
   }
 
   createDish(dish: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/dishes`, dish, { headers: this.getHeaders() });
+    return this.post<any>('/dishes', dish);
   }
 
   updateDish(id: string, dish: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/dishes/${id}`, dish, { headers: this.getHeaders() });
+    return this.put<any>(`/dishes/${id}`, dish);
+  }
+
+  deleteDish(id: string): Observable<void> {
+    return this.delete<void>(`/dishes/${id}`);
   }
 
   toggleDishActive(id: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/dishes/${id}/toggle-active`, {}, { headers: this.getHeaders() });
+    return this.patch<any>(`/dishes/${id}/toggle-active`, {});
+  }
+
+  reorderDishes(items: { id: string; displayOrder: number }[]): Observable<any> {
+    return this.put<any>('/dishes/reorder', { items });
   }
 
   // Images
-  uploadImages(dishId: string, files: FileList): Observable<any> {
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
-    }
-    return this.http.post(`${this.apiUrl}/dishes/${dishId}/images`, formData, {
-      headers: { 'Authorization': `Bearer ${this.getToken()}` }
-    });
+  uploadImages(dishId: string, formData: FormData): Observable<any[]> {
+    return this.upload<any[]>(`/dishes/${dishId}/images`, formData);
   }
 
-  removeImage(imageId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/dishes/images/${imageId}`, {
-      headers: this.getHeaders()
-    });
+  removeImage(imageId: string): Observable<void> {
+    return this.delete<void>(`/dishes/images/${imageId}`);
+  }
+
+  // Users
+  listUsers(params?: FilterParams): Observable<any[]> {
+    return this.get<any[]>('/users', params);
+  }
+
+  createUser(user: any): Observable<any> {
+    return this.post<any>('/users', user);
+  }
+
+  updateUser(id: string, user: any): Observable<any> {
+    return this.put<any>(`/users/${id}`, user);
+  }
+
+  deleteUser(id: string): Observable<void> {
+    return this.delete<void>(`/users/${id}`);
+  }
+
+  toggleUserActive(id: string): Observable<any> {
+    return this.patch<any>(`/users/${id}/toggle-active`, {});
+  }
+
+  // Settings
+  getRestaurantInfo(): Observable<any> {
+    return this.get<any>('/settings/restaurant-info');
+  }
+
+  updateRestaurantInfo(data: any): Observable<any> {
+    return this.put<any>('/settings/restaurant-info', data);
+  }
+
+  getBusinessHours(): Observable<any[]> {
+    return this.get<any[]>('/settings/business-hours');
+  }
+
+  updateBusinessHours(data: any[]): Observable<any> {
+    return this.put<any>('/settings/business-hours', data);
+  }
+
+  getContactInfo(): Observable<any> {
+    return this.get<any>('/settings/contact-info');
+  }
+
+  updateContactInfo(data: any): Observable<any> {
+    return this.put<any>('/settings/contact-info', data);
+  }
+
+  getProfile(): Observable<any> {
+    return this.get<any>('/settings/profile');
+  }
+
+  updateProfile(data: any): Observable<any> {
+    return this.put<any>('/settings/profile', data);
+  }
+
+  resetPassword(userId: string): Observable<{ tempPassword: string }> {
+    return this.post<{ tempPassword: string }>(`/users/${userId}/reset-password`, {});
+  }
+
+  // Public Menu
+  getPublicMenu(params?: FilterParams): Observable<any[]> {
+    return this.get<any[]>('/menu', params);
+  }
+
+  getPublicCategories(): Observable<any[]> {
+    return this.get<any[]>('/menu/categories');
   }
 }
