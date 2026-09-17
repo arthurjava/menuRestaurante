@@ -1,6 +1,7 @@
 package com.restaurante.service;
 
 import com.restaurante.entity.Category;
+import com.restaurante.exception.ResourceNotFoundException;
 import com.restaurante.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

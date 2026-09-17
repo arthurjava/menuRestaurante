@@ -70,13 +70,12 @@ public class CategoryController {
     }
 
     @PutMapping("/reorder")
-    public ResponseEntity<Void> reorder(@RequestBody java.util.List<UUID> ids) {
-        // Reorder categories based on the provided IDs list
+    public ResponseEntity<Void> reorder(@RequestBody List<UUID> ids) {
         int order = 0;
         for (UUID id : ids) {
             Category category = categoryService.findById(id);
             category.setDisplayOrder(order);
-            categoryService.updateCategory(id, categoryMapper.toDTO(category));
+            categoryService.updateCategory(id, category);
             order++;
         }
         return ResponseEntity.ok().build();
@@ -84,7 +83,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable UUID id) {
-        categoryService.deletar(id);
+        categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
 }

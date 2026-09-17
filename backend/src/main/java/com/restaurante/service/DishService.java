@@ -3,12 +3,15 @@ package com.restaurante.service;
 import com.restaurante.entity.Dish;
 import com.restaurante.entity.Category;
 import com.restaurante.entity.User;
+import com.restaurante.exception.ResourceNotFoundException;
 import com.restaurante.repository.DishRepository;
 import com.restaurante.repository.CategoryRepository;
 import com.restaurante.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,7 +41,7 @@ public class DishService {
     }
 
     public Dish findById(UUID id) {
-        return dishRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prato não encontrando"));
+        return dishRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prato não encontrado"));
     }
 
     public List<Dish> findAllActive() {
@@ -48,7 +51,11 @@ public class DishService {
     public List<Dish> findByCategory(UUID categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
-        return dishRepository.findByCategoryAndActive(categoryId, true);
+        return dishRepository.findByCategoryIdAndActive(categoryId, true);
+    }
+
+    public List<Dish> findAllInactive() {
+        return dishRepository.findByIsActiveFalse();
     }
 
     public Dish updateDish(UUID id, Dish dishDetails) {

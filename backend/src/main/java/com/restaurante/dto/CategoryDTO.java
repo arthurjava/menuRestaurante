@@ -1,6 +1,7 @@
 package com.restaurante.dto;
 
 import lombok.Data;
+import java.util.List;
 import java.util.UUID;
 import java.time.LocalDateTime;
 

@@ -2,6 +2,7 @@ package com.restaurante.service;
 
 import com.restaurante.entity.DishImage;
 import com.restaurante.entity.Dish;
+import com.restaurante.exception.ResourceNotFoundException;
 import com.restaurante.repository.DishImageRepository;
 import com.restaurante.repository.DishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class DishImageService {
     }
 
     public List<DishImage> findByDish(UUID dishId) {
-        return dishImageRepository.findByDish(dishId);
+        return dishImageRepository.findByDishId(dishId);
     }
 
     public DishImage setPrimaryImage(UUID imageId) {
@@ -41,7 +42,7 @@ public class DishImageService {
                 .orElseThrow(() -> new ResourceNotFoundException("Imagem não encontrada"));
         
         // Desmarca todas as imagens principais do prato
-        dishImageRepository.findByDish(image.getDish().getId()).forEach(img -> img.setPrimary(false));
+        dishImageRepository.findByDishId(image.getDish().getId()).forEach(img -> img.setPrimary(false));
         
         // Marca esta imagem como principal
         image.setPrimary(true);

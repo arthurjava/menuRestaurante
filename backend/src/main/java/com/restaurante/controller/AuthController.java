@@ -6,7 +6,10 @@ import com.restaurante.security.JWTUtil;
 import com.restaurante.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,14 +21,27 @@ public class AuthController {
     @Autowired
     private JWTUtil jwtUtil;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         User user = userService.findByEmail(loginRequest.getEmail());
-        if (user == null || !userService.getPasswordEncoder().equals(loginRequest.getPassword())) {
+        if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             return ResponseEntity.badRequest().body("Credenciais inválidas");
         }
         
-        String token = jwtUtil.generateToken(user);
+        org.springframework.security.core.userdetails.UserDetails userDetails = 
+            org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities(user.getRole().name())
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .disabled(!user.isActive())
+                .build();
+        
+        String token = jwtUtil.generateToken(userDetails);
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
@@ -37,6 +53,9 @@ public class AuthController {
         userDTO.setEmail(createdUser.getEmail());
         userDTO.setName(createdUser.getName());
         userDTO.setRole(createdUser.getRole().name());
+        userDTO.setActive(createdUser.isActive());
+        userDTO.setCreatedAt(createdUser.getCreatedAt());
+        userDTO.setUpdatedAt(createdUser.getUpdatedAt());
         return ResponseEntity.ok(userDTO);
     }
 
@@ -44,10 +63,6 @@ public class AuthController {
     public ResponseEntity<UserDTO> me() {
         // TODO: get from security context
         return ResponseEntity.ok(new UserDTO());
-    }
-
-    private BCryptPasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     static class LoginRequest {
