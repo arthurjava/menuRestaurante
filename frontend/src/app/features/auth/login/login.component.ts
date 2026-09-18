@@ -72,7 +72,7 @@ import { InputComponent } from '@shared/components/input/input.component';
             type="submit"
             variant="primary"
             size="lg"
-            fullWidth
+            [fullWidth]="true"
             [label]="loading() ? 'Entrando...' : 'Entrar'"
             [loading]="loading()"
             [disabled]="loginForm.invalid || loading()">

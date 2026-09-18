@@ -45,11 +45,6 @@ export class ApiService {
       'Content-Type': 'application/json'
     });
 
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
     if (customHeaders) {
       headers = customHeaders;
     }
@@ -124,15 +119,10 @@ export class ApiService {
     );
   }
 
-  // File upload
+  // File upload - don't set Content-Type, let browser set it with boundary
   upload<T>(endpoint: string, formData: FormData): Observable<T> {
     this.loading.show();
-    const headers = new HttpHeaders();
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
-    }
-    return this.http.post<T>(`${this.apiUrl}${endpoint}`, formData, { headers }).pipe(
+    return this.http.post<T>(`${this.apiUrl}${endpoint}`, formData).pipe(
       tap(() => this.loading.hide()),
       catchError(error => this.handleError(error))
     );

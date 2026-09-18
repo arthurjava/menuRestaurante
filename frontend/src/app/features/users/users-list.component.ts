@@ -1,6 +1,6 @@
 import { Component, signal, computed, inject, OnInit, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,25 +8,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatOptionModule } from '@angular/material/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ApiService } from '@core/services/api.service';
 import { NotificationService } from '@core/services/notification.service';
 import { LoadingService } from '@core/services/loading.service';
 import { User } from '@core/models/user.model';
 import { AuthService } from '@core/services/auth.service';
-import { ButtonComponent } from '@shared/components/button/button.component';
-import { InputComponent } from '@shared/components/input/input.component';
-import { SelectComponent } from '@shared/components/select/select.component';
-import { BadgeComponent } from '@shared/components/badge/badge.component';
-import { ModalComponent } from '@shared/components/modal/modal.component';
 import { TableComponent, ColumnDef, TableAction } from '@shared/components/table/table.component';
+import { UserFormComponent, UserFormData } from '@shared/components/modal/user-form.component';
+import { DelConfirmComponent } from '@shared/components/modal/del-confirm.component';
 
 interface UserWithRole extends User {
   roleLabel: string;
@@ -51,13 +48,10 @@ interface UserWithRole extends User {
     MatProgressSpinnerModule,
     MatMenuModule,
     MatTooltipModule,
-    MatDialogModule,
-    ButtonComponent,
-    InputComponent,
-    SelectComponent,
-    BadgeComponent,
-    ModalComponent,
-    TableComponent
+    MatOptionModule,
+    TableComponent,
+    UserFormComponent,
+    DelConfirmComponent
   ],
   template: `
     <div class="p-6 space-y-6">
@@ -67,58 +61,55 @@ interface UserWithRole extends User {
           <h1 class="text-2xl font-bold text-gray-900">Usuários</h1>
           <p class="text-gray-600 mt-1">Gerencie os usuários do sistema</p>
         </div>
-        <app-button
-          variant="primary"
-          icon="person_add"
-          label="Novo Usuário"
-          (clicked)="openCreateModal()">
-        </app-button>
+        <button mat-flat-button color="primary" (click)="openCreateModal()" class="flex items-center gap-2">
+          <mat-icon>person_add</mat-icon>
+          Novo Usuário
+        </button>
       </div>
 
       <!-- Search & Filters -->
       <mat-card class="p-4">
         <div class="flex flex-col sm:flex-row gap-4">
-          <app-input
-            placeholder="Buscar usuários..."
-            prefixIcon="search"
-            [value]="searchTerm()"
-            (valueChange)="onSearch($event)"
-            class="flex-1">
-          </app-input>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Buscar usuários...</mat-label>
+            <input matInput [formControl]="searchControl" placeholder="Buscar usuários...">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
 
-          <app-select
-            [options]="roleOptions"
-            placeholder="Perfil"
-            [value]="roleFilter()"
-            (valueChange)="onRoleFilterChange($event)"
-            class="w-full sm:w-48">
-          </app-select>
+          <mat-form-field appearance="outline" class="w-full sm:w-48">
+            <mat-label>Perfil</mat-label>
+            <mat-select [formControl]="roleFilterControl">
+              @for (opt of roleOptions; track opt.value) {
+                <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
 
-          <app-select
-            [options]="statusOptions"
-            placeholder="Status"
-            [value]="statusFilter()"
-            (valueChange)="onStatusFilterChange($event)"
-            class="w-full sm:w-40">
-          </app-select>
+          <mat-form-field appearance="outline" class="w-full sm:w-40">
+            <mat-label>Status</mat-label>
+            <mat-select [formControl]="statusFilterControl">
+              @for (opt of statusOptions; track opt.value) {
+                <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
 
-          <app-button
-            variant="outline"
-            icon="filter_list"
-            label="Filtros"
-            (clicked)="toggleFilters()">
-          </app-button>
+          <button mat-stroked-button (click)="toggleFilters()" class="flex items-center gap-2">
+            <mat-icon>filter_list</mat-icon>
+            Filtros
+          </button>
         </div>
 
         @if (showFilters()) {
           <div class="mt-4 flex gap-4">
-            <app-select
-              [options]="sortOptions"
-              placeholder="Ordenar por"
-              [value]="sortBy()"
-              (valueChange)="onSortByChange($event)"
-              class="w-full sm:w-56">
-            </app-select>
+            <mat-form-field appearance="outline" class="w-full sm:w-56">
+              <mat-label>Ordenar por</mat-label>
+              <mat-select [formControl]="sortByControl">
+                @for (opt of sortOptions; track opt.value) {
+                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
           </div>
         }
       </mat-card>
@@ -142,116 +133,57 @@ interface UserWithRole extends User {
         (actionClick)="onActionClick($event)">
       </app-table>
 
-      <!-- Create/Edit Modal -->
-      <app-modal
+      <!-- Create/Edit User Modal -->
+      <app-user-form
         [isOpen]="modalOpen()"
         [title]="editingUser() ? 'Editar Usuário' : 'Novo Usuário'"
         [description]="editingUser() ? 'Atualize as informações do usuário' : 'Preencha os dados para criar um novo usuário'"
         [confirmLabel]="editingUser() ? 'Salvar alterações' : 'Criar usuário'"
         [confirmLoading]="modalLoading()"
+        [roleOptions]="userRoleOptions"
+        [initialData]="editingUser() ? {
+          name: editingUser()!.name,
+          email: editingUser()!.email,
+          password: '',
+          confirmPassword: '',
+          role: editingUser()!.role,
+          active: editingUser()!.active
+        } : null"
+        [editing]="!!editingUser()"
         [size]="'md'"
-        (isOpenChange)="closeModal()"
-        (confirmed)="saveUser()"
+        (isOpenChange)="modalOpen.set($event)"
+        (confirmed)="onUserFormConfirmed($event)"
         (cancelled)="closeModal()">
-        <form [formGroup]="userForm" class="space-y-4">
-          <app-input
-            formControlName="name"
-            label="Nome completo"
-            type="text"
-            placeholder="João Silva"
-            [error]="nameError()">
-          </app-input>
-
-          <app-input
-            formControlName="email"
-            label="E-mail"
-            type="email"
-            placeholder="joao@email.com"
-            [error]="emailError()">
-          </app-input>
-
-          @if (!editingUser()) {
-            <app-input
-              formControlName="password"
-              label="Senha"
-              type="password"
-              placeholder="••••••••"
-              [error]="passwordError()">
-            </app-input>
-
-            <app-input
-              formControlName="confirmPassword"
-              label="Confirmar senha"
-              type="password"
-              placeholder="••••••••"
-              [error]="confirmPasswordError()">
-            </app-input>
-          } @else {
-            <div class="text-sm text-gray-500">
-              Deixe a senha em branco para manter a atual
-            </div>
-            <app-input
-              formControlName="password"
-              label="Nova senha (opcional)"
-              type="password"
-              placeholder="••••••••"
-              [error]="passwordError()">
-            </app-input>
-
-            <app-input
-              formControlName="confirmPassword"
-              label="Confirmar nova senha"
-              type="password"
-              placeholder="••••••••"
-              [error]="confirmPasswordError()">
-            </app-input>
-          }
-
-          <app-select
-            formControlName="role"
-            label="Perfil"
-            [options]="userRoleOptions"
-            placeholder="Selecione o perfil"
-            [error]="roleError()">
-          </app-select>
-
-          <div class="flex items-center gap-4">
-            <label class="flex items-center gap-2 cursor-pointer flex-1">
-              <input type="checkbox" formControlName="active" class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
-              <span class="text-sm text-gray-600">Usuário ativo</span>
-            </label>
-          </div>
-        </form>
-      </app-modal>
+      </app-user-form>
 
       <!-- Delete Confirmation Modal -->
-      <app-modal
+      <app-del-confirm
         [isOpen]="deleteModalOpen()"
-        title="Excluir Usuário"
-        [description]="'Tem certeza que deseja excluir o usuário \"' + userToDelete()?.name + '\"? Esta ação não pode ser desfeita.'"
-        icon="warning"
-        iconColor="text-yellow-600"
-        confirmLabel="Excluir"
-        confirmVariant="danger"
+        [title]="'Excluir Usuário'"
+        [description]="deleteDescription()"
+        [icon]="'warning'"
+        [iconColor]="'text-yellow-600'"
+        [confirmLabel]="'Excluir'"
+        [confirmVariant]="'danger'"
         [confirmLoading]="deleteLoading()"
-        size="sm"
-        (isOpenChange)="closeDeleteModal()"
+        [size]="'sm'"
+        (isOpenChange)="deleteModalOpen.set($event)"
         (confirmed)="confirmDelete()"
         (cancelled)="closeDeleteModal()">
-      </app-modal>
+      </app-del-confirm>
 
       <!-- Reset Password Modal -->
-      <app-modal
+      <app-del-confirm
         [isOpen]="resetPasswordModalOpen()"
-        title="Redefinir Senha"
-        [description]="'Gerar nova senha temporária para \"' + userToResetPassword()?.name + '\"? A nova senha será exibida apenas uma vez.'"
-        icon="key"
-        iconColor="text-indigo-600"
-        confirmLabel="Redefinir"
-        confirmVariant="primary"
+        [title]="'Redefinir Senha'"
+        [description]="resetPasswordDescription()"
+        [icon]="'key'"
+        [iconColor]="'text-indigo-600'"
+        [confirmLabel]="'Redefinir'"
+        [confirmVariant]="'primary'"
         [confirmLoading]="resetPasswordLoading()"
-        size="sm"
-        (isOpenChange)="closeResetPasswordModal()"
+        [size]="'sm'"
+        (isOpenChange)="resetPasswordModalOpen.set($event)"
         (confirmed)="confirmResetPassword()"
         (cancelled)="closeResetPasswordModal()">
         @if (newTempPassword()) {
@@ -259,18 +191,15 @@ interface UserWithRole extends User {
             <p class="text-sm text-gray-600">Nova senha temporária:</p>
             <div class="flex items-center gap-2">
               <code class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg font-mono text-base">{{ newTempPassword() }}</code>
-              <app-button
-                variant="secondary"
-                size="sm"
-                icon="content_copy"
-                label="Copiar"
-                (clicked)="copyTempPassword()">
-              </app-button>
+              <button mat-stroked-button size="sm" (click)="copyTempPassword()" class="flex items-center gap-2">
+                <mat-icon>content_copy</mat-icon>
+                Copiar
+              </button>
             </div>
             <p class="text-xs text-gray-500">Copie e envie esta senha para o usuário. Ela deve ser alterada no primeiro login.</p>
           </div>
         }
-      </app-modal>
+      </app-del-confirm>
     </div>
   `,
   styles: [`
@@ -293,21 +222,26 @@ export class UsersListComponent implements OnInit {
   private notification = inject(NotificationService);
   private loadingService = inject(LoadingService);
   private authService = inject(AuthService);
-  private fb = inject(FormBuilder);
 
   // State
   loading = signal(false);
   users = signal<UserWithRole[]>([]);
-  searchTerm = signal('');
-  roleFilter = signal<'all' | 'ADMIN' | 'MANAGER' | 'STAFF'>('all');
-  statusFilter = signal<'all' | 'active' | 'inactive'>('all');
+  searchControl = new FormControl('');
+  roleFilterControl = new FormControl<'all' | 'ADMIN' | 'MANAGER' | 'STAFF'>('all', { nonNullable: true });
+  statusFilterControl = new FormControl<'all' | 'active' | 'inactive'>('all', { nonNullable: true });
+  sortByControl = new FormControl<'name' | 'email' | 'role' | 'createdAt'>('name', { nonNullable: true });
   showFilters = signal(false);
-  sortBy = signal<'name' | 'email' | 'role' | 'createdAt'>('name');
   pageIndex = signal(0);
   pageSize = signal(10);
   sortActive = signal('name');
   sortDirection = signal<'asc' | 'desc'>('asc');
   totalItems = signal(0);
+
+  // Derived signals from FormControls
+  searchTerm = signal('');
+  roleFilter = signal<'all' | 'ADMIN' | 'MANAGER' | 'STAFF'>('all');
+  statusFilter = signal<'all' | 'active' | 'inactive'>('all');
+  sortBy = signal<'name' | 'email' | 'role' | 'createdAt'>('name');
 
   // Modal state
   modalOpen = signal(false);
@@ -324,23 +258,6 @@ export class UsersListComponent implements OnInit {
   resetPasswordLoading = signal(false);
   userToResetPassword = signal<UserWithRole | null>(null);
   newTempPassword = signal<string | null>(null);
-
-  // Form
-  userForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.minLength(6), Validators.maxLength(50)]],
-    confirmPassword: [''],
-    role: ['STAFF', [Validators.required]],
-    active: [true]
-  }, { validators: this.passwordMatchValidator });
-
-  passwordMatchValidator(form: FormGroup): { passwordMismatch: boolean } | null {
-    const password = form.get('password')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-    if (!password && !confirmPassword) return null;
-    return password === confirmPassword ? null : { passwordMismatch: true };
-  }
 
   // Table config
   columns: ColumnDef<UserWithRole>[] = [
@@ -457,8 +374,37 @@ export class UsersListComponent implements OnInit {
     return filtered;
   });
 
+  deleteDescription = computed(() => {
+    const user = this.userToDelete();
+    return user ? `Tem certeza que deseja excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.` : 'Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.';
+  });
+
+  resetPasswordDescription = computed(() => {
+    const user = this.userToResetPassword();
+    return user ? `Gerar nova senha temporária para "${user.name}"? A nova senha será exibida apenas uma vez.` : 'Gerar nova senha temporária? A nova senha será exibida apenas uma vez.';
+  });
+
   ngOnInit(): void {
     this.loadUsers();
+    this.setupFilterSubscriptions();
+  }
+
+  private setupFilterSubscriptions(): void {
+    this.searchControl.valueChanges.subscribe(value => {
+      this.searchTerm.set(value ?? '');
+      this.pageIndex.set(0);
+    });
+    this.roleFilterControl.valueChanges.subscribe(value => {
+      this.roleFilter.set(value);
+      this.pageIndex.set(0);
+    });
+    this.statusFilterControl.valueChanges.subscribe(value => {
+      this.statusFilter.set(value);
+      this.pageIndex.set(0);
+    });
+    this.sortByControl.valueChanges.subscribe(value => {
+      this.sortBy.set(value);
+    });
   }
 
   loadUsers(): void {
@@ -489,25 +435,6 @@ export class UsersListComponent implements OnInit {
     });
   }
 
-  onSearch(term: string): void {
-    this.searchTerm.set(term);
-    this.pageIndex.set(0);
-  }
-
-  onRoleFilterChange(value: string): void {
-    this.roleFilter.set(value as any);
-    this.pageIndex.set(0);
-  }
-
-  onStatusFilterChange(value: string): void {
-    this.statusFilter.set(value as any);
-    this.pageIndex.set(0);
-  }
-
-  onSortByChange(value: string): void {
-    this.sortBy.set(value as any);
-  }
-
   toggleFilters(): void {
     this.showFilters.update(v => !v);
   }
@@ -536,45 +463,34 @@ export class UsersListComponent implements OnInit {
 
   openCreateModal(): void {
     this.editingUser.set(null);
-    this.userForm.reset({ name: '', email: '', password: '', confirmPassword: '', role: 'STAFF', active: true });
     this.modalOpen.set(true);
   }
 
   openEditModal(user: UserWithRole): void {
     this.editingUser.set(user);
-    this.userForm.patchValue({
-      name: user.name,
-      email: user.email,
-      password: '',
-      confirmPassword: '',
-      role: user.role,
-      active: user.active
-    });
     this.modalOpen.set(true);
   }
 
   closeModal(): void {
     this.modalOpen.set(false);
     this.editingUser.set(null);
-    this.userForm.reset({ name: '', email: '', password: '', confirmPassword: '', role: 'STAFF', active: true });
   }
 
-  saveUser(): void {
-    if (this.userForm.invalid || this.modalLoading()) return;
+  onUserFormConfirmed(formData: UserFormData): void {
+    if (this.modalLoading()) return;
 
     this.modalLoading.set(true);
-    const formValue = this.userForm.value;
     const editing = this.editingUser();
 
     const userData: any = {
-      name: formValue.name,
-      email: formValue.email,
-      role: formValue.role,
-      active: formValue.active
+      name: formData.name,
+      email: formData.email,
+      role: formData.role,
+      active: formData.active
     };
 
-    if (formValue.password) {
-      userData.password = formValue.password;
+    if (formData.password) {
+      userData.password = formData.password;
     }
 
     if (editing) {
@@ -675,50 +591,4 @@ export class UsersListComponent implements OnInit {
       this.notification.success('Senha copiada para a área de transferência');
     }
   }
-
-  // Validation helpers
-  nameError = computed(() => {
-    const control = this.userForm.get('name');
-    if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Nome é obrigatório';
-      if (control.errors['minlength']) return 'Nome deve ter no mínimo 2 caracteres';
-      if (control.errors['maxlength']) return 'Nome deve ter no máximo 100 caracteres';
-    }
-    return '';
-  });
-
-  emailError = computed(() => {
-    const control = this.userForm.get('email');
-    if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'E-mail é obrigatório';
-      if (control.errors['email']) return 'E-mail inválido';
-    }
-    return '';
-  });
-
-  passwordError = computed(() => {
-    const control = this.userForm.get('password');
-    if (control?.touched && control?.errors) {
-      if (control.errors['minlength']) return 'Senha deve ter no mínimo 6 caracteres';
-      if (control.errors['maxlength']) return 'Senha deve ter no máximo 50 caracteres';
-    }
-    return '';
-  });
-
-  confirmPasswordError = computed(() => {
-    const formErrors = this.userForm.errors;
-    const control = this.userForm.get('confirmPassword');
-    if (control?.touched && formErrors?.['passwordMismatch']) {
-      return 'As senhas não coincidem';
-    }
-    return '';
-  });
-
-  roleError = computed(() => {
-    const control = this.userForm.get('role');
-    if (control?.touched && control?.errors?.['required']) {
-      return 'Perfil é obrigatório';
-    }
-    return '';
-  });
 }

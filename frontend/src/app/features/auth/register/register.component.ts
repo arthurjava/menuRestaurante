@@ -109,7 +109,7 @@ import { SelectComponent } from '@shared/components/select/select.component';
             type="submit"
             variant="primary"
             size="lg"
-            fullWidth
+            [fullWidth]="true"
             [label]="loading() ? 'Criando conta...' : 'Criar conta'"
             [loading]="loading()"
             [disabled]="registerForm.invalid || loading()">

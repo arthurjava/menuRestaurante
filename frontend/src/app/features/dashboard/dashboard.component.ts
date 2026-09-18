@@ -81,7 +81,7 @@ interface ActivityItem {
                   @if (stat.change !== undefined) {
                     <p class="text-xs" [class]="stat.change >= 0 ? 'text-green-600' : 'text-red-600'">
                       <mat-icon class="inline align-middle text-xs">{{ stat.change >= 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
-                      {{ Math.abs(stat.change) }}%
+                      {{ getAbsChange(stat.change) }}%
                     </p>
                   }
                 </div>
@@ -101,35 +101,35 @@ interface ActivityItem {
           <mat-card-content class="space-y-3">
             <app-button
               variant="outline"
-              fullWidth
+              [fullWidth]="true"
               icon="restaurant_menu"
               label="Gerenciar Categorias"
               (clicked)="navigateTo('/categories')">
             </app-button>
             <app-button
               variant="outline"
-              fullWidth
+              [fullWidth]="true"
               icon="restaurant"
               label="Gerenciar Pratos"
               (clicked)="navigateTo('/dishes')">
             </app-button>
             <app-button
               variant="outline"
-              fullWidth
+              [fullWidth]="true"
               icon="people"
               label="Gerenciar Usuários"
               (clicked)="navigateTo('/users')">
             </app-button>
             <app-button
               variant="outline"
-              fullWidth
+              [fullWidth]="true"
               icon="settings"
               label="Configurações"
               (clicked)="navigateTo('/settings')">
             </app-button>
             <app-button
               variant="outline"
-              fullWidth
+              [fullWidth]="true"
               icon="menu_book"
               label="Ver Cardápio Público"
               (clicked)="navigateTo('/menu')">
@@ -253,10 +253,10 @@ export class DashboardComponent implements OnInit {
   activity = computed(() => this.statsData()?.recentActivity ?? []);
 
   statCards = [
-    { label: 'Categorias', value: 0, icon: 'category', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
-    { label: 'Total de Pratos', value: 0, icon: 'restaurant', iconBg: 'bg-green-100', iconColor: 'text-green-600' },
-    { label: 'Pratos Ativos', value: 0, icon: 'check_circle', iconBg: 'bg-indigo-100', iconColor: 'text-indigo-600' },
-    { label: 'Usuários', value: 0, icon: 'people', iconBg: 'bg-purple-100', iconColor: 'text-purple-600' }
+    { label: 'Categorias', value: 0, icon: 'category', iconBg: 'bg-blue-100', iconColor: 'text-blue-600', change: 0 },
+    { label: 'Total de Pratos', value: 0, icon: 'restaurant', iconBg: 'bg-green-100', iconColor: 'text-green-600', change: 0 },
+    { label: 'Pratos Ativos', value: 0, icon: 'check_circle', iconBg: 'bg-indigo-100', iconColor: 'text-indigo-600', change: 0 },
+    { label: 'Usuários', value: 0, icon: 'people', iconBg: 'bg-purple-100', iconColor: 'text-purple-600', change: 0 }
   ];
 
   ngOnInit(): void {
@@ -380,5 +380,9 @@ export class DashboardComponent implements OnInit {
       case 'image_uploaded': return 'warning';
       default: return 'gray';
     }
+  }
+
+  getAbsChange(value: number): number {
+    return Math.abs(value);
   }
 }

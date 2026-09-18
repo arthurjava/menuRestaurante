@@ -2,7 +2,6 @@ import { Component, input, output, computed, signal, effect, inject, viewChild, 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatSortModule, MatSort, SortDirection } from '@angular/material/sort';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
@@ -50,7 +49,6 @@ export interface TableConfig {
     CommonModule,
     FormsModule,
     MatTableModule,
-    MatSortModule,
     MatPaginatorModule,
     MatCheckboxModule,
     MatIconModule,
@@ -70,7 +68,6 @@ export interface TableConfig {
         <table
           mat-table
           [dataSource]="dataSource()"
-          [matSort]="sortInstance()"
           class="mat-elevation-z0 w-full"
           role="grid">
           
@@ -106,17 +103,7 @@ export interface TableConfig {
                 [style.width]="column.width"
                 [style.min-width]="column.width"
                 [style.max-width]="column.width">
-                @if (column.sortable && config().sorting) {
-                  <button
-                    mat-sort-header
-                    class="flex items-center gap-1"
-                    (click)="$event.stopPropagation()">
-                    <span>{{ column.header }}</span>
-                    <mat-icon class="text-xs">arrow_upward</mat-icon>
-                  </button>
-                } @else {
-                  <span>{{ column.header }}</span>
-                }
+                <span>{{ column.header }}</span>
               </th>
               <td
                 mat-cell
@@ -244,7 +231,7 @@ export class TableComponent<T> {
   pageIndex = input<number>(0);
   pageSize = input<number>(10);
   sortActive = input<string>('');
-  sortDirection = input<SortDirection>('asc');
+  sortDirection = input<'asc' | 'desc'>('asc');
   loading = input<boolean>(false);
 
   rowClickable = input<boolean>(false);
@@ -260,15 +247,7 @@ export class TableComponent<T> {
   selection = new SelectionModel<T>(true, []);
   dataSource = signal<MatTableDataSource<T>>(new MatTableDataSource<T>([]));
 
-  sort = viewChild<MatSort>(MatSort);
   paginator = viewChild<MatPaginator>(MatPaginator);
-
-  sortInstance = computed(() => {
-    if (this.config().sorting) {
-      return this.sort();
-    }
-    return null;
-  });
 
   displayedColumns = computed(() => {
     const cols = this.columns().map(c => c.key);
@@ -280,15 +259,8 @@ export class TableComponent<T> {
   constructor() {
     effect(() => {
       const ds = new MatTableDataSource<T>(this.data());
-      ds.sort = this.sort();
       ds.paginator = this.paginator();
       this.dataSource.set(ds);
-    });
-
-    effect(() => {
-      if (this.sort()) {
-        this.dataSource().sort = this.sort()!;
-      }
     });
 
     effect(() => {
@@ -330,14 +302,6 @@ export class TableComponent<T> {
 
   onPageChange(event: PageEvent): void {
     this.pageChange.emit(event);
-  }
-
-  onSortChange(): void {
-    const sort = this.sort();
-    if (sort) {
-      const direction: 'asc' | 'desc' = sort.direction === 'desc' ? 'desc' : 'asc';
-      this.sortChange.emit({ active: sort.active, direction });
-    }
   }
 
   getCellValue(row: T, key: string): any {

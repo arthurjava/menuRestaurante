@@ -21,8 +21,6 @@ import { ImageUploadService, UploadedImage } from '@core/services/image-upload.s
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { InputComponent } from '@shared/components/input/input.component';
 import { SelectComponent } from '@shared/components/select/select.component';
-import { BadgeComponent } from '@shared/components/badge/badge.component';
-import { ModalComponent } from '@shared/components/modal/modal.component';
 import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
 
 interface BusinessHour {
@@ -81,8 +79,6 @@ const DAYS_OF_WEEK = [
     ButtonComponent,
     InputComponent,
     SelectComponent,
-    BadgeComponent,
-    ModalComponent,
     ImageUploadComponent
   ],
   template: `
@@ -136,7 +132,7 @@ const DAYS_OF_WEEK = [
                   <app-image-upload
                     [maxFiles]="1"
                     [maxFileSizeMB]="2"
-                    [existingImages]="restaurantLogo() ? [{ id: 'logo', url: restaurantLogo(), filename: 'logo', displayOrder: 0, isMain: true }] : []"
+                    [existingImages]="getLogoExistingImages()"
                     (imagesChange)="onLogoChange($event)"
                     (uploadComplete)="onLogoUploadComplete($event)"
                     (uploadError)="onImageError($event)">
@@ -148,7 +144,7 @@ const DAYS_OF_WEEK = [
                   <app-image-upload
                     [maxFiles]="1"
                     [maxFileSizeMB]="5"
-                    [existingImages]="restaurantCover() ? [{ id: 'cover', url: restaurantCover(), filename: 'cover', displayOrder: 0, isMain: true }] : []"
+                    [existingImages]="getCoverExistingImages()"
                     (imagesChange)="onCoverChange($event)"
                     (uploadComplete)="onCoverUploadComplete($event)"
                     (uploadError)="onImageError($event)">
@@ -333,7 +329,7 @@ const DAYS_OF_WEEK = [
                   <app-image-upload
                     [maxFiles]="1"
                     [maxFileSizeMB]="2"
-                    [existingImages]="profileAvatar() ? [{ id: 'avatar', url: profileAvatar(), filename: 'avatar', displayOrder: 0, isMain: true }] : []"
+                    [existingImages]="getAvatarExistingImages()"
                     (imagesChange)="onAvatarChange($event)"
                     (uploadComplete)="onAvatarUploadComplete($event)"
                     (uploadError)="onImageError($event)">
@@ -801,4 +797,19 @@ export class SettingsComponent implements OnInit {
   });
 
   dayOptions = DAYS_OF_WEEK.map(d => ({ value: d.value, label: d.label }));
+
+  getLogoExistingImages(): UploadedImage[] {
+    const logo = this.restaurantLogo();
+    return logo ? [{ id: 'logo', url: logo, filename: 'logo', displayOrder: 0, isMain: true }] : [];
+  }
+
+  getCoverExistingImages(): UploadedImage[] {
+    const cover = this.restaurantCover();
+    return cover ? [{ id: 'cover', url: cover, filename: 'cover', displayOrder: 0, isMain: true }] : [];
+  }
+
+  getAvatarExistingImages(): UploadedImage[] {
+    const avatar = this.profileAvatar();
+    return avatar ? [{ id: 'avatar', url: avatar, filename: 'avatar', displayOrder: 0, isMain: true }] : [];
+  }
 }

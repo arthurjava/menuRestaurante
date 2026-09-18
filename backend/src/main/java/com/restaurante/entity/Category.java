@@ -46,6 +46,5 @@ public class Category {
     private LocalDateTime updatedAt;
     
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    @OrderBy("displayOrder ASC")
     private List<Dish> dishes;
 }

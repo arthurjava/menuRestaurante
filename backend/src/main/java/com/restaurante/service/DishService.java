@@ -8,6 +8,8 @@ import com.restaurante.repository.DishRepository;
 import com.restaurante.repository.CategoryRepository;
 import com.restaurante.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
@@ -32,12 +34,24 @@ public class DishService {
                     .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
             dish.setCategory(category);
         }
-        if (dish.getCreatedBy() != null) {
+        if (dish.getCreatedBy() == null) {
+            dish.setCreatedBy(getCurrentUser());
+        } else {
             User user = userRepository.findById(dish.getCreatedBy().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
             dish.setCreatedBy(user);
         }
         return dishRepository.save(dish);
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            return userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuário autenticado não encontrado: " + email));
+        }
+        throw new IllegalStateException("Nenhum usuário autenticado");
     }
 
     public Dish findById(UUID id) {

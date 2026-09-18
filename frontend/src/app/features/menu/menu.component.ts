@@ -260,7 +260,7 @@ interface PublicCategory {
             </div>
           </div>
           <mat-divider class="my-8 border-gray-800"></mat-divider>
-          <p class="text-center text-gray-500 text-sm">&copy; {{ new Date().getFullYear() }} {{ restaurantInfo().name ?? 'Nosso Restaurante' }}. Todos os direitos reservados.</p>
+          <p class="text-center text-gray-500 text-sm">&copy; {{ currentYear() }} {{ restaurantInfo().name ?? 'Nosso Restaurante' }}. Todos os direitos reservados.</p>
         </div>
       </footer>
 
@@ -284,7 +284,7 @@ interface PublicCategory {
       <app-modal
         [isOpen]="detailModalOpen()"
         [title]="detailDish()?.name ?? 'Detalhes do Prato'"
-        [description]="detailDish()?.description"
+        [description]="getDetailDescription()"
         [confirmLabel]="'Fechar'"
         [showFooter]="true"
         size="lg"
@@ -292,29 +292,29 @@ interface PublicCategory {
         (confirmed)="closeDetailModal()"
         (cancelled)="closeDetailModal()">
         <div class="space-y-4">
-          @if (detailDish()?.images.length) {
-            <div class="aspect-[4/3] rounded-xl overflow-hidden">
-              <img
-                [src]="detailDish()!.images[0].url"
-                [alt]="detailDish()!.name"
-                class="w-full h-full object-cover">
-            </div>
+          @if (getDetailImages().length > 0) {
+          <div class="aspect-[4/3] rounded-xl overflow-hidden">
+          <img
+          [src]="getDetailImages()[0].url"
+          [alt]="getDetailDish()!.name"
+          class="w-full h-full object-cover">
+          </div>
           }
           <div class="flex items-center justify-between">
-            <span class="text-2xl font-bold text-indigo-600">R$ {{ detailDish()?.price.toFixed(2).replace('.', ',') }}</span>
-            <app-badge
-              [label]="detailDish()?.categoryName ?? ''"
-              variant="primary"
-              size="md">
-            </app-badge>
+          <span class="text-2xl font-bold text-indigo-600">R$ {{ getDetailPrice() }}</span>
+          <app-badge
+          [label]="getDetailDish()?.categoryName ?? ''"
+          variant="primary"
+          size="md">
+          </app-badge>
           </div>
-          @if (detailDish()?.description) {
-            <p class="text-gray-600">{{ detailDish()!.description }}</p>
+          @if (getDetailDescription()) {
+          <p class="text-gray-600">{{ getDetailDescription() }}</p>
           }
           <div class="flex gap-3 pt-4">
             <app-button
               variant="primary"
-              fullWidth
+              [fullWidth]="true"
               icon="add_shopping_cart"
               label="Adicionar ao Pedido"
               (clicked)="addToOrder(detailDish()!)">
@@ -322,7 +322,7 @@ interface PublicCategory {
             @if (detailDish()!.images.length > 1) {
               <app-button
                 variant="outline"
-                fullWidth
+                [fullWidth]="true"
                 icon="photo_library"
                 label="Ver Imagens"
                 (clicked)="openImageGallery(detailDish()!)">
@@ -544,5 +544,26 @@ export class MenuComponent implements OnInit {
   onEscape(): void {
     if (this.galleryModalOpen()) this.closeGalleryModal();
     if (this.detailModalOpen()) this.closeDetailModal();
+  }
+
+  currentYear(): number {
+    return new Date().getFullYear();
+  }
+
+  getDetailPrice(): string {
+    const dish = this.detailDish();
+    return dish ? dish.price.toFixed(2).replace('.', ',') : '0,00';
+  }
+
+  getDetailDish(): PublicDish | null {
+    return this.detailDish();
+  }
+
+  getDetailImages(): { id: string; url: string; isMain: boolean }[] {
+    return this.detailDish()?.images ?? [];
+  }
+
+  getDetailDescription(): string {
+    return this.detailDish()?.description ?? '';
   }
 }

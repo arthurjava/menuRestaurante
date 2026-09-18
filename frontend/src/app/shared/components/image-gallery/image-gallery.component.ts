@@ -31,7 +31,7 @@ export interface GalleryImage {
             <button
               type="button"
               class="fullscreen-btn"
-              (click)="openFullscreen($index)"
+              (click)="openFullscreen(currentIndex())"
               aria-label="Ver em tela cheia"
               matTooltip="Ver em tela cheia">
               <mat-icon>fullscreen</mat-icon>

@@ -1,19 +1,19 @@
 import { Component, signal, computed, inject, OnInit, effect, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatOptionModule } from '@angular/material/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ApiService } from '@core/services/api.service';
@@ -21,9 +21,9 @@ import { NotificationService } from '@core/services/notification.service';
 import { LoadingService } from '@core/services/loading.service';
 import { Category } from '@core/models/category.model';
 import { ButtonComponent } from '@shared/components/button/button.component';
-import { InputComponent } from '@shared/components/input/input.component';
-import { BadgeComponent } from '@shared/components/badge/badge.component';
-import { ModalComponent } from '@shared/components/modal/modal.component';
+import { CatFormComponent, CategoryFormData } from '@shared/components/modal/cat-form.component';
+import { DelConfirmComponent } from '@shared/components/modal/del-confirm.component';
+import { ReorderWrapperComponent, ReorderItem, ReorderModalConfig } from '@shared/components/modal/reorder-wrapper.component';
 import { TableComponent, ColumnDef, TableAction } from '@shared/components/table/table.component';
 
 @Component({
@@ -44,12 +44,12 @@ import { TableComponent, ColumnDef, TableAction } from '@shared/components/table
     MatProgressSpinnerModule,
     MatMenuModule,
     MatTooltipModule,
-    MatDialogModule,
+    MatOptionModule,
     DragDropModule,
     ButtonComponent,
-    InputComponent,
-    BadgeComponent,
-    ModalComponent,
+    CatFormComponent,
+    DelConfirmComponent,
+    ReorderWrapperComponent,
     TableComponent
   ],
   template: `
@@ -71,30 +71,27 @@ import { TableComponent, ColumnDef, TableAction } from '@shared/components/table
       <!-- Search & Filters -->
       <mat-card class="p-4">
         <div class="flex flex-col sm:flex-row gap-4">
-          <app-input
-            placeholder="Buscar categorias..."
-            prefixIcon="search"
-            [value]="searchTerm()"
-            (valueChange)="onSearch($event)"
-            class="flex-1">
-          </app-input>
-          <app-button
-            variant="outline"
-            icon="filter_list"
-            label="Filtros"
-            (clicked)="toggleFilters()">
-          </app-button>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Buscar categorias...</mat-label>
+            <input matInput [formControl]="searchControl" placeholder="Buscar categorias...">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          <button mat-stroked-button (click)="toggleFilters()" class="flex items-center gap-2">
+            <mat-icon>filter_list</mat-icon>
+            Filtros
+          </button>
         </div>
 
         @if (showFilters()) {
           <div class="mt-4 flex flex-col sm:flex-row gap-4">
-            <app-select
-              [options]="statusOptions"
-              placeholder="Status"
-              [value]="statusFilter()"
-              (valueChange)="onStatusFilterChange($event)"
-              class="w-full sm:w-48">
-            </app-select>
+            <mat-form-field appearance="outline" class="w-full sm:w-48">
+              <mat-label>Status</mat-label>
+              <mat-select [formControl]="statusFilter">
+                @for (opt of statusOptions; track opt.value) {
+                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
           </div>
         }
       </mat-card>
@@ -118,99 +115,56 @@ import { TableComponent, ColumnDef, TableAction } from '@shared/components/table
         (actionClick)="onActionClick($event)">
       </app-table>
 
-      <!-- Create/Edit Modal -->
-      <app-modal
+<!-- Create/Edit Modal -->
+      <app-cat-form
         [isOpen]="modalOpen()"
         [title]="editingCategory() ? 'Editar Categoria' : 'Nova Categoria'"
         [description]="editingCategory() ? 'Atualize as informações da categoria' : 'Preencha os dados para criar uma nova categoria'"
         [confirmLabel]="editingCategory() ? 'Salvar alterações' : 'Criar categoria'"
         [confirmLoading]="modalLoading()"
+        [initialData]="editingCategory() ? {
+          name: editingCategory()!.name,
+          description: editingCategory()!.description ?? '',
+          active: editingCategory()!.active,
+          displayOrder: editingCategory()!.displayOrder,
+          displayInMenu: true
+        } : null"
         [size]="'md'"
         (isOpenChange)="closeModal()"
-        (confirmed)="saveCategory()"
-        (cancelled)="closeModal()">
-        <form [formGroup]="categoryForm" class="space-y-4">
-          <app-input
-            formControlName="name"
-            label="Nome"
-            type="text"
-            placeholder="Ex: Pratos Principais"
-            [error]="nameError()">
-          </app-input>
-
-          <app-input
-            formControlName="description"
-            label="Descrição"
-            type="text"
-            placeholder="Descrição da categoria"
-            [error]="descriptionError()">
-          </app-input>
-
-          <div class="flex items-center gap-4">
-            <label class="flex items-center gap-2 cursor-pointer flex-1">
-              <input type="checkbox" formControlName="active" class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
-              <span class="text-sm text-gray-600">Categoria ativa</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer flex-1">
-              <input type="checkbox" formControlName="displayOrder" class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
-              <span class="text-sm text-gray-600">Exibir no cardápio público</span>
-            </label>
-          </div>
-
-          <div class="mt-4">
-            <label class="label">Ordem de exibição</label>
-            <input
-              type="number"
-              formControlName="displayOrder"
-              class="input w-24"
-              min="0"
-              step="1" />
-          </div>
-        </form>
-      </app-modal>
+        (confirmed)="onCategoryConfirmed($event)"
+        (cancelled)="closeModal()" />
 
       <!-- Delete Confirmation Modal -->
-      <app-modal
+      <app-del-confirm
         [isOpen]="deleteModalOpen()"
-        title="Excluir Categoria"
-        [description]="'Tem certeza que deseja excluir a categoria \"' + categoryToDelete()?.name + '\"? Esta ação não pode ser desfeita.'"
-        icon="warning"
-        iconColor="text-yellow-600"
-        confirmLabel="Excluir"
-        confirmVariant="danger"
+        [title]="deleteConfirmTitle()"
+        [description]="deleteConfirmDescription()"
+        [icon]="'warning'"
+        [iconColor]="'text-yellow-600'"
+        [confirmLabel]="'Excluir'"
+        [confirmVariant]="'danger'"
         [confirmLoading]="deleteLoading()"
-        size="sm"
+        [cancelLabel]="'Cancelar'"
+        [size]="'sm'"
         (isOpenChange)="closeDeleteModal()"
         (confirmed)="confirmDelete()"
         (cancelled)="closeDeleteModal()">
-      </app-modal>
+      </app-del-confirm>
 
       <!-- Reorder Modal -->
-      <app-modal
+      <app-reorder-list
         [isOpen]="reorderModalOpen()"
-        title="Reordenar Categorias"
-        description="Arraste e solte as categorias para definir a ordem de exibição"
-        confirmLabel="Salvar ordem"
+        [title]="'Reordenar Categorias'"
+        [description]="'Arraste e solte as categorias para definir a ordem de exibição'"
+        [confirmLabel]="'Salvar ordem'"
         [confirmLoading]="reorderLoading()"
-        size="lg"
+        [items]="reorderCategories()"
+        [config]="reorderConfig()"
+        [size]="'lg'"
         (isOpenChange)="closeReorderModal()"
-        (confirmed)="saveReorder()"
+        (confirmed)="onReorderConfirmed($event)"
         (cancelled)="closeReorderModal()">
-        <div cdkDropList (cdkDropListDropped)="onReorderDrop($event)" class="space-y-2">
-          @for (cat of reorderCategories(); track cat.id; let i = $index) {
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cdk-drag">
-              <mat-icon class="text-gray-400 cursor-grab">drag_indicator</mat-icon>
-              <span class="font-medium">{{ i + 1 }}</span>
-              <span class="flex-1">{{ cat.name }}</span>
-              <app-badge
-                [label]="cat.active ? 'Ativa' : 'Inativa'"
-                [variant]="cat.active ? 'success' : 'gray'"
-                size="sm">
-              </app-badge>
-            </div>
-          }
-        </div>
-      </app-modal>
+      </app-reorder-list>
     </div>
   `,
   styles: [`
@@ -244,19 +198,20 @@ export class CategoriesListComponent implements OnInit {
   private apiService = inject(ApiService);
   private notification = inject(NotificationService);
   private loadingService = inject(LoadingService);
-  private fb = inject(FormBuilder);
 
   // State
   loading = signal(false);
   categories = signal<Category[]>([]);
-  searchTerm = signal('');
-  statusFilter = signal<'all' | 'active' | 'inactive'>('all');
+  searchControl = new FormControl('');
+  statusFilter = new FormControl<'all' | 'active' | 'inactive'>('all', { nonNullable: true });
   showFilters = signal(false);
   pageIndex = signal(0);
   pageSize = signal(10);
   sortActive = signal('displayOrder');
   sortDirection = signal<'asc' | 'desc'>('asc');
   totalItems = signal(0);
+
+  searchTerm = signal('');
 
   // Modal state
   modalOpen = signal(false);
@@ -272,14 +227,6 @@ export class CategoriesListComponent implements OnInit {
   reorderModalOpen = signal(false);
   reorderLoading = signal(false);
   reorderCategories = signal<Category[]>([]);
-
-  // Form
-  categoryForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.maxLength(100)]],
-    description: ['', [Validators.maxLength(500)]],
-    active: [true],
-    displayOrder: [0, [Validators.min(0)]]
-  });
 
   // Table config
   columns: ColumnDef<Category>[] = [
@@ -325,6 +272,25 @@ export class CategoriesListComponent implements OnInit {
     { value: 'inactive', label: 'Inativas' }
   ];
 
+  reorderConfig(): ReorderModalConfig {
+    return {
+      title: 'Reordenar Categorias',
+      description: 'Arraste e solte as categorias para definir a ordem de exibição',
+      confirmLabel: 'Salvar ordem',
+      emptyMessage: 'Nenhuma categoria para reordenar',
+      getItemStatus: (cat: Category) => ({
+        label: cat.active ? 'Ativa' : 'Inativa',
+        variant: cat.active ? 'success' : 'gray'
+      })
+    };
+  }
+
+  deleteConfirmTitle = computed(() => 'Excluir Categoria');
+  deleteConfirmDescription = computed(() => {
+    const cat = this.categoryToDelete();
+    return cat ? `Tem certeza que deseja excluir a categoria "${cat.name}"? Esta ação não pode ser desfeita.` : '';
+  });
+
   filteredCategories = computed(() => {
     let filtered = this.categories();
 
@@ -336,8 +302,8 @@ export class CategoriesListComponent implements OnInit {
       );
     }
 
-    if (this.statusFilter() !== 'all') {
-      filtered = filtered.filter(cat => cat.active === (this.statusFilter() === 'active'));
+    if (this.statusFilter.value !== 'all') {
+      filtered = filtered.filter(cat => cat.active === (this.statusFilter.value === 'active'));
     }
 
     return filtered;
@@ -345,6 +311,11 @@ export class CategoriesListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCategories();
+    this.statusFilter.valueChanges.subscribe(() => this.pageIndex.set(0));
+    this.searchControl.valueChanges.subscribe(value => {
+      this.searchTerm.set(value ?? '');
+      this.pageIndex.set(0);
+    });
   }
 
   loadCategories(): void {
@@ -368,16 +339,6 @@ export class CategoriesListComponent implements OnInit {
         this.loading.set(false);
       }
     });
-  }
-
-  onSearch(term: string): void {
-    this.searchTerm.set(term);
-    this.pageIndex.set(0);
-  }
-
-  onStatusFilterChange(value: string): void {
-    this.statusFilter.set(value as 'all' | 'active' | 'inactive');
-    this.pageIndex.set(0);
   }
 
   toggleFilters(): void {
@@ -408,39 +369,30 @@ export class CategoriesListComponent implements OnInit {
 
   openCreateModal(): void {
     this.editingCategory.set(null);
-    this.categoryForm.reset({ name: '', description: '', active: true, displayOrder: 0 });
     this.modalOpen.set(true);
   }
 
   openEditModal(category: Category): void {
     this.editingCategory.set(category);
-    this.categoryForm.patchValue({
-      name: category.name,
-      description: category.description ?? '',
-      active: category.active,
-      displayOrder: category.displayOrder
-    });
     this.modalOpen.set(true);
   }
 
   closeModal(): void {
     this.modalOpen.set(false);
     this.editingCategory.set(null);
-    this.categoryForm.reset({ name: '', description: '', active: true, displayOrder: 0 });
   }
 
-  saveCategory(): void {
-    if (this.categoryForm.invalid || this.modalLoading()) return;
+  onCategoryConfirmed(formData: CategoryFormData): void {
+    if (this.modalLoading()) return;
 
     this.modalLoading.set(true);
-    const formValue = this.categoryForm.value;
     const editing = this.editingCategory();
 
     const categoryData = {
-      name: formValue.name,
-      description: formValue.description,
-      active: formValue.active,
-      displayOrder: formValue.displayOrder
+      name: formData.name,
+      description: formData.description,
+      active: formData.active,
+      displayOrder: formData.displayOrder
     };
 
     if (editing) {
@@ -511,19 +463,11 @@ export class CategoriesListComponent implements OnInit {
     this.reorderModalOpen.set(false);
   }
 
-  onReorderDrop(event: CdkDragDrop<Category[]>): void {
-    this.reorderCategories.update(cats => {
-      const updated = [...cats];
-      moveItemInArray(updated, event.previousIndex, event.currentIndex);
-      return updated.map((cat, index) => ({ ...cat, displayOrder: index }));
-    });
-  }
-
-  saveReorder(): void {
+  onReorderConfirmed(items: ReorderItem[]): void {
     if (this.reorderLoading()) return;
 
     this.reorderLoading.set(true);
-    const reordered = this.reorderCategories().map(cat => ({ id: cat.id, displayOrder: cat.displayOrder }));
+    const reordered = items.map(cat => ({ id: cat.id, displayOrder: cat.displayOrder }));
 
     this.apiService.reorderCategories(reordered).subscribe({
       next: () => {
@@ -535,21 +479,4 @@ export class CategoriesListComponent implements OnInit {
       error: () => this.reorderLoading.set(false)
     });
   }
-
-  nameError = computed(() => {
-    const control = this.categoryForm.get('name');
-    if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Nome é obrigatório';
-      if (control.errors['maxlength']) return 'Nome deve ter no máximo 100 caracteres';
-    }
-    return '';
-  });
-
-  descriptionError = computed(() => {
-    const control = this.categoryForm.get('description');
-    if (control?.touched && control?.errors?.['maxlength']) {
-      return 'Descrição deve ter no máximo 500 caracteres';
-    }
-    return '';
-  });
 }

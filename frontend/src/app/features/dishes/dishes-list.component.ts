@@ -1,6 +1,6 @@
 import { Component, signal, computed, inject, OnInit, effect, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,13 +8,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -24,14 +23,11 @@ import { NotificationService } from '@core/services/notification.service';
 import { LoadingService } from '@core/services/loading.service';
 import { ImageUploadService, UploadedImage } from '@core/services/image-upload.service';
 import { Category } from '@core/models/category.model';
-import { ButtonComponent } from '@shared/components/button/button.component';
-import { InputComponent } from '@shared/components/input/input.component';
-import { SelectComponent } from '@shared/components/select/select.component';
-import { BadgeComponent } from '@shared/components/badge/badge.component';
-import { ModalComponent } from '@shared/components/modal/modal.component';
 import { TableComponent, ColumnDef, TableAction } from '@shared/components/table/table.component';
-import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
 import { ImageGalleryComponent, GalleryImage } from '@shared/components/image-gallery/image-gallery.component';
+import { DishFormComponent, DishFormData } from '@shared/components/modal/dish-form.component';
+import { DelConfirmComponent } from '@shared/components/modal/del-confirm.component';
+import { ReorderWrapperComponent, ReorderItem } from '@shared/components/modal/reorder-wrapper.component';
 
 interface Dish {
   id: string;
@@ -66,18 +62,14 @@ interface Dish {
     MatProgressSpinnerModule,
     MatMenuModule,
     MatTooltipModule,
-    MatDialogModule,
     MatTabsModule,
     MatSlideToggleModule,
     DragDropModule,
-    ButtonComponent,
-    InputComponent,
-    SelectComponent,
-    BadgeComponent,
-    ModalComponent,
     TableComponent,
-    ImageUploadComponent,
-    ImageGalleryComponent
+    ImageGalleryComponent,
+    DishFormComponent,
+    DelConfirmComponent,
+    ReorderWrapperComponent
   ],
   template: `
     <div class="p-6 space-y-6">
@@ -87,58 +79,59 @@ interface Dish {
           <h1 class="text-2xl font-bold text-gray-900">Pratos</h1>
           <p class="text-gray-600 mt-1">Gerencie os pratos do cardápio</p>
         </div>
-        <app-button
-          variant="primary"
-          icon="add"
-          label="Novo Prato"
-          (clicked)="openCreateModal()">
-        </app-button>
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="openCreateModal()"
+          class="flex items-center gap-2">
+          <mat-icon>add</mat-icon>
+          Novo Prato
+        </button>
       </div>
 
       <!-- Search & Filters -->
       <mat-card class="p-4">
         <div class="flex flex-col sm:flex-row gap-4">
-          <app-input
-            placeholder="Buscar pratos..."
-            prefixIcon="search"
-            [value]="searchTerm()"
-            (valueChange)="onSearch($event)"
-            class="flex-1">
-          </app-input>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Buscar pratos...</mat-label>
+            <input matInput [formControl]="searchControl" placeholder="Buscar pratos...">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
 
-          <app-select
-            [options]="categoryOptions()"
-            placeholder="Categoria"
-            [value]="categoryFilter()"
-            (valueChange)="onCategoryFilterChange($event)"
-            class="w-full sm:w-56">
-          </app-select>
+          <mat-form-field appearance="outline" class="w-full sm:w-56">
+            <mat-label>Categoria</mat-label>
+            <mat-select [formControl]="categoryFilterControl" [compareWith]="compareById">
+              @for (opt of categoryOptions(); track opt.value) {
+                <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
 
-          <app-select
-            [options]="statusOptions"
-            placeholder="Status"
-            [value]="statusFilter()"
-            (valueChange)="onStatusFilterChange($event)"
-            class="w-full sm:w-40">
-          </app-select>
+          <mat-form-field appearance="outline" class="w-full sm:w-40">
+            <mat-label>Status</mat-label>
+            <mat-select [formControl]="statusFilterControl">
+              @for (opt of statusOptions; track opt.value) {
+                <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
 
-          <app-button
-            variant="outline"
-            icon="filter_list"
-            label="Filtros"
-            (clicked)="toggleFilters()">
-          </app-button>
+          <button mat-stroked-button (click)="toggleFilters()" class="flex items-center gap-2">
+            <mat-icon>filter_list</mat-icon>
+            Filtros
+          </button>
         </div>
 
         @if (showFilters()) {
           <div class="mt-4 flex flex-col sm:flex-row gap-4">
-            <app-select
-              [options]="sortOptions"
-              placeholder="Ordenar por"
-              [value]="sortBy()"
-              (valueChange)="onSortByChange($event)"
-              class="w-full sm:w-56">
-            </app-select>
+            <mat-form-field appearance="outline" class="w-full sm:w-56">
+              <mat-label>Ordenar por</mat-label>
+              <mat-select [formControl]="sortByControl">
+                @for (opt of sortOptions; track opt.value) {
+                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
           </div>
         }
       </mat-card>
@@ -162,163 +155,81 @@ interface Dish {
         (actionClick)="onActionClick($event)">
       </app-table>
 
-      <!-- Create/Edit Modal -->
-      <app-modal
+      <!-- Create/Edit Dish Modal -->
+      <app-dish-form
         [isOpen]="modalOpen()"
         [title]="editingDish() ? 'Editar Prato' : 'Novo Prato'"
         [description]="editingDish() ? 'Atualize as informações do prato' : 'Preencha os dados para criar um novo prato'"
         [confirmLabel]="editingDish() ? 'Salvar alterações' : 'Criar prato'"
         [confirmLoading]="modalLoading()"
+        [categoryOptions]="categoryOptions()"
+        [initialData]="editingDish() ? {
+          name: editingDish()!.name,
+          description: editingDish()!.description ?? '',
+          price: editingDish()!.price,
+          categoryId: editingDish()!.categoryId,
+          active: editingDish()!.active,
+          displayOrder: editingDish()!.displayOrder
+        } : null"
+        [existingImages]="editingDish()?.images ?? []"
+        [editingDishId]="editingDish()?.id ?? ''"
         [size]="'xl'"
-        (isOpenChange)="closeModal()"
-        (confirmed)="saveDish()"
-        (cancelled)="closeModal()">
-        <form [formGroup]="dishForm" class="space-y-4">
-          <mat-tab-group animationDuration="200ms" class="w-full">
-            <!-- Basic Info Tab -->
-            <mat-tab label="Informações Básicas">
-              <div class="p-4 space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <app-input
-                    formControlName="name"
-                    label="Nome do Prato *"
-                    type="text"
-                    placeholder="Ex: Salmão Grelhado"
-                    [error]="nameError()">
-                  </app-input>
-
-                  <app-select
-                    formControlName="categoryId"
-                    label="Categoria *"
-                    [options]="categoryOptions()"
-                    placeholder="Selecione a categoria"
-                    [error]="categoryError()">
-                  </app-select>
-                </div>
-
-                <app-input
-                  formControlName="description"
-                  label="Descrição"
-                  type="textarea"
-                  placeholder="Descreva o prato, ingredientes, modo de preparo..."
-                  [error]="descriptionError()"
-                  class="min-h-[100px]">
-                </app-input>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label class="label">Preço (R$) *</label>
-                    <input
-                      type="number"
-                      formControlName="price"
-                      class="input"
-                      step="0.01"
-                      min="0"
-                      placeholder="0,00" />
-                    @if (priceError()) {
-                      <p class="text-sm text-red-600 mt-1">{{ priceError() }}</p>
-                    }
-                  </div>
-
-                  <div>
-                    <label class="label">Ordem de exibição</label>
-                    <input
-                      type="number"
-                      formControlName="displayOrder"
-                      class="input"
-                      min="0"
-                      step="1" />
-                  </div>
-
-                  <div class="flex items-end">
-                    <label class="flex items-center gap-2 cursor-pointer w-full">
-                      <mat-slide-toggle formControlName="active" class="w-auto"></mat-slide-toggle>
-                      <span class="text-sm text-gray-600">Prato ativo</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </mat-tab>
-
-            <!-- Images Tab -->
-            <mat-tab label="Imagens">
-              <div class="p-4">
-                <app-image-upload
-                  [dishId]="editingDish()?.id ?? ''"
-                  [maxFiles]="5"
-                  [maxFileSizeMB]="5"
-                  [existingImages]="editingDish()?.images ?? []"
-                  (imagesChange)="onImagesChange($event)"
-                  (uploadComplete)="onImagesUploadComplete($event)"
-                  (uploadError)="onImageError($event)">
-                </app-image-upload>
-              </div>
-            </mat-tab>
-          </mat-tab-group>
-        </form>
-      </app-modal>
+        (isOpenChange)="modalOpen.set($event)"
+        (confirmed)="onDishFormConfirmed($event)"
+        (cancelled)="closeModal()"
+        (uploadError)="onImageError($event)">
+      </app-dish-form>
 
       <!-- Delete Confirmation Modal -->
-      <app-modal
+      <app-del-confirm
         [isOpen]="deleteModalOpen()"
         title="Excluir Prato"
-        [description]="'Tem certeza que deseja excluir o prato \"' + dishToDelete()?.name + '\"? Esta ação não pode ser desfeita.'"
+        [description]="deleteDescription()"
         icon="warning"
         iconColor="text-yellow-600"
         confirmLabel="Excluir"
         confirmVariant="danger"
         [confirmLoading]="deleteLoading()"
         size="sm"
-        (isOpenChange)="closeDeleteModal()"
+        (isOpenChange)="deleteModalOpen.set($event)"
         (confirmed)="confirmDelete()"
         (cancelled)="closeDeleteModal()">
-      </app-modal>
+      </app-del-confirm>
 
       <!-- Reorder Modal -->
-      <app-modal
+      <app-reorder-list
         [isOpen]="reorderModalOpen()"
         title="Reordenar Pratos"
         description="Arraste e solte os pratos para definir a ordem de exibição"
         confirmLabel="Salvar ordem"
         [confirmLoading]="reorderLoading()"
+        [items]="reorderDishes()"
+        [config]="reorderConfig()"
         size="lg"
-        (isOpenChange)="closeReorderModal()"
-        (confirmed)="saveReorder()"
+        (isOpenChange)="reorderModalOpen.set($event)"
+        (confirmed)="onReorderConfirmed($event)"
         (cancelled)="closeReorderModal()">
-        <div cdkDropList (cdkDropListDropped)="onReorderDrop($event)" class="space-y-2 max-h-96 overflow-y-auto">
-          @for (dish of reorderDishes(); track dish.id; let i = $index) {
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cdk-drag">
-              <mat-icon class="text-gray-400 cursor-grab">drag_indicator</mat-icon>
-              <span class="font-medium">{{ i + 1 }}</span>
-              <div class="flex-1 min-w-0">
-                <p class="font-medium truncate">{{ dish.name }}</p>
-                <p class="text-sm text-gray-500 truncate">{{ dish.categoryName }}</p>
-              </div>
-              <app-badge
-                [label]="dish.active ? 'Ativo' : 'Inativo'"
-                [variant]="dish.active ? 'success' : 'gray'"
-                size="sm">
-              </app-badge>
-            </div>
-          }
-        </div>
-      </app-modal>
+      </app-reorder-list>
 
       <!-- Image Gallery Modal -->
-      <app-modal
+      <app-del-confirm
         [isOpen]="galleryModalOpen()"
-        [title]="'Imagens de ' + galleryDish()?.name"
-        [confirmLabel]="'Fechar'"
+        [title]="galleryTitle()"
+        description=" "
+        icon="photo_library"
+        iconColor="text-indigo-600"
+        confirmLabel="Fechar"
+        confirmVariant="secondary"
         [showFooter]="true"
         size="xl"
-        (isOpenChange)="closeGalleryModal()"
+        (isOpenChange)="galleryModalOpen.set($event)"
         (confirmed)="closeGalleryModal()"
         (cancelled)="closeGalleryModal()">
         <app-image-gallery
           [images]="galleryImages()"
           (imageSelected)="onGalleryImageSelect($event)">
         </app-image-gallery>
-      </app-modal>
+      </app-del-confirm>
     </div>
   `,
   styles: [`
@@ -366,18 +277,12 @@ export class DishesListComponent implements OnInit {
   private apiService = inject(ApiService);
   private notification = inject(NotificationService);
   private loadingService = inject(LoadingService);
-  private imageUploadService = inject(ImageUploadService);
-  private fb = inject(FormBuilder);
 
   // State
   loading = signal(false);
   dishes = signal<Dish[]>([]);
   categories = signal<Category[]>([]);
-  searchTerm = signal('');
-  categoryFilter = signal<string>('');
-  statusFilter = signal<'all' | 'active' | 'inactive'>('all');
   showFilters = signal(false);
-  sortBy = signal<'name' | 'price' | 'category' | 'displayOrder'>('displayOrder');
   pageIndex = signal(0);
   pageSize = signal(10);
   sortActive = signal('displayOrder');
@@ -388,7 +293,6 @@ export class DishesListComponent implements OnInit {
   modalOpen = signal(false);
   modalLoading = signal(false);
   editingDish = signal<Dish | null>(null);
-  dishFormImages = signal<UploadedImage[]>([]);
 
   // Delete modal
   deleteModalOpen = signal(false);
@@ -398,22 +302,12 @@ export class DishesListComponent implements OnInit {
   // Reorder modal
   reorderModalOpen = signal(false);
   reorderLoading = signal(false);
-  reorderDishes = signal<Dish[]>([]);
+  reorderDishes = signal<ReorderItem[]>([]);
 
   // Gallery modal
   galleryModalOpen = signal(false);
   galleryDish = signal<Dish | null>(null);
   galleryImages = signal<GalleryImage[]>([]);
-
-  // Form
-  dishForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.maxLength(100)]],
-    description: ['', [Validators.maxLength(1000)]],
-    price: [0, [Validators.required, Validators.min(0)]],
-    categoryId: ['', [Validators.required]],
-    active: [true],
-    displayOrder: [0, [Validators.min(0)]]
-  });
 
   // Table config
   columns: ColumnDef<Dish>[] = [
@@ -523,8 +417,40 @@ export class DishesListComponent implements OnInit {
     ...this.categories().filter(c => c.active).map(c => ({ value: c.id, label: c.name }))
   ]);
 
+  // FormControls for filters (reactive)
+  searchControl = new FormControl('');
+  categoryFilterControl = new FormControl('');
+  statusFilterControl = new FormControl<'all' | 'active' | 'inactive'>('all');
+  sortByControl = new FormControl<'displayOrder' | 'name' | 'price' | 'category'>('displayOrder');
+
+  // Derived signals from FormControls
+  searchTerm = signal('');
+  categoryFilter = signal('');
+  statusFilter = signal<'all' | 'active' | 'inactive'>('all');
+  sortBy = signal<'displayOrder' | 'name' | 'price' | 'category'>('displayOrder');
+
   ngOnInit(): void {
+    this.setupFilterSubscriptions();
     this.loadData();
+  }
+
+  private setupFilterSubscriptions(): void {
+    this.searchControl.valueChanges.subscribe(value => {
+      this.searchTerm.set(value ?? '');
+      this.pageIndex.set(0);
+    });
+    this.categoryFilterControl.valueChanges.subscribe(value => {
+      this.categoryFilter.set(value ?? '');
+      this.pageIndex.set(0);
+    });
+    this.statusFilterControl.valueChanges.subscribe(value => {
+      this.statusFilter.set((value as 'all' | 'active' | 'inactive') ?? 'all');
+      this.pageIndex.set(0);
+      this.loadDishes();
+    });
+    this.sortByControl.valueChanges.subscribe(value => {
+      this.sortBy.set((value as any) ?? 'displayOrder');
+    });
   }
 
   loadData(): void {
@@ -567,26 +493,6 @@ export class DishesListComponent implements OnInit {
     });
   }
 
-  onSearch(term: string): void {
-    this.searchTerm.set(term);
-    this.pageIndex.set(0);
-  }
-
-  onCategoryFilterChange(value: string): void {
-    this.categoryFilter.set(value);
-    this.pageIndex.set(0);
-  }
-
-  onStatusFilterChange(value: string): void {
-    this.statusFilter.set(value as 'all' | 'active' | 'inactive');
-    this.pageIndex.set(0);
-    this.loadDishes();
-  }
-
-  onSortByChange(value: string): void {
-    this.sortBy.set(value as any);
-  }
-
   toggleFilters(): void {
     this.showFilters.update(v => !v);
   }
@@ -615,46 +521,32 @@ export class DishesListComponent implements OnInit {
 
   openCreateModal(): void {
     this.editingDish.set(null);
-    this.dishFormImages.set([]);
-    this.dishForm.reset({ name: '', description: '', price: 0, categoryId: '', active: true, displayOrder: 0 });
     this.modalOpen.set(true);
   }
 
   openEditModal(dish: Dish): void {
     this.editingDish.set(dish);
-    this.dishFormImages.set(dish.images ?? []);
-    this.dishForm.patchValue({
-      name: dish.name,
-      description: dish.description ?? '',
-      price: dish.price,
-      categoryId: dish.categoryId,
-      active: dish.active,
-      displayOrder: dish.displayOrder
-    });
     this.modalOpen.set(true);
   }
 
   closeModal(): void {
     this.modalOpen.set(false);
     this.editingDish.set(null);
-    this.dishFormImages.set([]);
-    this.dishForm.reset({ name: '', description: '', price: 0, categoryId: '', active: true, displayOrder: 0 });
   }
 
-  saveDish(): void {
-    if (this.dishForm.invalid || this.modalLoading()) return;
+  onDishFormConfirmed(formData: DishFormData): void {
+    if (this.modalLoading()) return;
 
     this.modalLoading.set(true);
-    const formValue = this.dishForm.value;
     const editing = this.editingDish();
 
     const dishData = {
-      name: formValue.name,
-      description: formValue.description,
-      price: formValue.price,
-      categoryId: formValue.categoryId,
-      active: formValue.active,
-      displayOrder: formValue.displayOrder
+      name: formData.name,
+      description: formData.description,
+      price: formData.price,
+      categoryId: formData.categoryId,
+      active: formData.active,
+      displayOrder: formData.displayOrder
     };
 
     if (editing) {
@@ -669,7 +561,7 @@ export class DishesListComponent implements OnInit {
       });
     } else {
       this.apiService.createDish(dishData).subscribe({
-        next: (newDish: any) => {
+        next: () => {
           this.notification.success('Prato criado com sucesso!');
           this.loadDishes();
           this.closeModal();
@@ -725,19 +617,11 @@ export class DishesListComponent implements OnInit {
     this.reorderModalOpen.set(false);
   }
 
-  onReorderDrop(event: CdkDragDrop<Dish[]>): void {
-    this.reorderDishes.update(dishes => {
-      const updated = [...dishes];
-      moveItemInArray(updated, event.previousIndex, event.currentIndex);
-      return updated.map((dish, index) => ({ ...dish, displayOrder: index }));
-    });
-  }
-
-  saveReorder(): void {
+  onReorderConfirmed(items: ReorderItem[]): void {
     if (this.reorderLoading()) return;
 
     this.reorderLoading.set(true);
-    const reordered = this.reorderDishes().map(dish => ({ id: dish.id, displayOrder: dish.displayOrder }));
+    const reordered = items.map(dish => ({ id: dish.id, displayOrder: dish.displayOrder }));
 
     this.apiService.reorderDishes(reordered).subscribe({
       next: () => {
@@ -750,13 +634,27 @@ export class DishesListComponent implements OnInit {
     });
   }
 
-  onImagesChange(images: any[]): void {
-    this.dishFormImages.set(images);
-  }
+  reorderConfig = computed(() => ({
+    title: 'Reordenar Pratos',
+    description: 'Arraste e solte os pratos para definir a ordem de exibição',
+    confirmLabel: 'Salvar ordem',
+    emptyMessage: 'Nenhum prato para reordenar',
+    getItemSubtitle: (item: ReorderItem) => item.subtitle ?? '',
+    getItemStatus: (item: ReorderItem) => ({
+      label: item.active ? 'Ativo' : 'Inativo',
+      variant: item.active ? 'success' as const : 'gray' as const
+    })
+  }));
 
-  onImagesUploadComplete(images: UploadedImage[]): void {
-    this.dishFormImages.update(current => [...current, ...images]);
-  }
+  deleteDescription = computed(() => {
+    const dish = this.dishToDelete();
+    return dish ? `Tem certeza que deseja excluir o prato "${dish.name}"? Esta ação não pode ser desfeita.` : 'Tem certeza que deseja excluir este prato? Esta ação não pode ser desfeita.';
+  });
+
+  galleryTitle = computed(() => {
+    const dish = this.galleryDish();
+    return dish ? `Imagens de ${dish.name}` : 'Imagens';
+  });
 
   onImageError(error: string): void {
     this.notification.error(error);
@@ -784,38 +682,5 @@ export class DishesListComponent implements OnInit {
     // Handle image selection if needed
   }
 
-  // Validation helpers
-  nameError = computed(() => {
-    const control = this.dishForm.get('name');
-    if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Nome é obrigatório';
-      if (control.errors['maxlength']) return 'Nome deve ter no máximo 100 caracteres';
-    }
-    return '';
-  });
-
-  descriptionError = computed(() => {
-    const control = this.dishForm.get('description');
-    if (control?.touched && control?.errors?.['maxlength']) {
-      return 'Descrição deve ter no máximo 1000 caracteres';
-    }
-    return '';
-  });
-
-  priceError = computed(() => {
-    const control = this.dishForm.get('price');
-    if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Preço é obrigatório';
-      if (control.errors['min']) return 'Preço deve ser maior ou igual a zero';
-    }
-    return '';
-  });
-
-  categoryError = computed(() => {
-    const control = this.dishForm.get('categoryId');
-    if (control?.touched && control?.errors?.['required']) {
-      return 'Categoria é obrigatória';
-    }
-    return '';
-  });
+  compareById = (a: string, b: string) => a === b;
 }
