@@ -1,0 +1,2 @@
+$env:PGPASSWORD="MeloA1000"
+& "C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -h 127.0.0.1 -d postgres -c "CREATE DATABASE restaurante; CREATE USER restaurante WITH PASSWORD 'restaurante123'; GRANT ALL PRIVILEGES ON DATABASE restaurante TO restaurante; ALTER USER restaurante CREATEDB;"
