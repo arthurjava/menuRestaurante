@@ -45,7 +45,7 @@ public class DishService {
     }
 
     public List<Dish> findAllActive() {
-        return dishRepository.findByActiveTrueOrderByDisplayOrderAsc();
+        return dishRepository.findByActiveTrueOrderByNameAsc();
     }
 
     public List<Dish> findByCategory(UUID categoryId) {
@@ -55,7 +55,7 @@ public class DishService {
     }
 
     public List<Dish> findAllInactive() {
-        return dishRepository.findByIsActiveFalse();
+        return dishRepository.findByActiveFalse();
     }
 
     public Dish updateDish(UUID id, Dish dishDetails) {

@@ -11,6 +11,6 @@ import java.util.UUID;
 public interface DishRepository extends JpaRepository<Dish, UUID> {
     Optional<Dish> findByName(String name);
     List<Dish> findByCategoryIdAndActive(UUID categoryId, boolean active);
-    java.util.List<Dish> findByIsActiveFalse();
-    List<Dish> findByActiveTrueOrderByDisplayOrderAsc();
+    List<Dish> findByActiveFalse();
+    List<Dish> findByActiveTrueOrderByNameAsc();
 }
