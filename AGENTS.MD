@@ -1035,5 +1035,19 @@ Documentar.
 ```
 
 Em caso de conflito entre conveniência e segurança, preservar a segurança.
-
 Em caso de conflito entre uma solução rápida e a arquitetura existente, investigar a causa antes de alterar a arquitetura.
+
+## Agente de Aprendizagem
+
+O agente de aprendizagem está definido em:
+
+.agents/learning.md
+
+Durante tarefas relevantes, conhecimentos arquiteturais, padrões recorrentes,
+soluções de troubleshooting e decisões técnicas confirmadas podem ser
+registrados em:
+
+.agents/knowledge/
+
+Conhecimento deve ser baseado em evidências e não deve conter secrets,
+tokens, credenciais ou dados sensíveis.
