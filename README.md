@@ -885,9 +885,5 @@ npm run test
 
 ---
 
-## Caminho do Arquivo
-`D:\Projetos\restaurante\frontend\README.md`
-
----
 
 **Documentação gerada com base na implementação real (commit `4b36cff`)** — não contém funcionalidades inventadas ou planejadas sem evidência no código.
