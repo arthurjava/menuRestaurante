@@ -1,0 +1,538 @@
+import {
+  MatLine,
+  MatLineModule,
+  setLines
+} from "./chunk-E4Y4NLWR.js";
+import {
+  MAT_OPTGROUP,
+  MAT_OPTION_PARENT_COMPONENT,
+  MatOptgroup,
+  MatOption,
+  MatOptionModule,
+  MatOptionSelectionChange,
+  MatPseudoCheckbox,
+  MatPseudoCheckboxModule,
+  _countGroupLabelsBeforeOption,
+  _getOptionScrollPosition
+} from "./chunk-CAXJL6OA.js";
+import {
+  ErrorStateMatcher,
+  ShowOnDirtyErrorStateMatcher,
+  _ErrorStateTracker
+} from "./chunk-K4CC5AJX.js";
+import {
+  _MatInternalFormField
+} from "./chunk-7S2XM24S.js";
+import {
+  MatRippleLoader
+} from "./chunk-6X3DNCIH.js";
+import {
+  MatRippleModule
+} from "./chunk-ZRSYJLVA.js";
+import {
+  MAT_RIPPLE_GLOBAL_OPTIONS,
+  MatRipple,
+  RippleRef,
+  RippleRenderer,
+  RippleState,
+  defaultRippleAnimationConfig
+} from "./chunk-XII4S5CL.js";
+import {
+  _StructuralStylesLoader
+} from "./chunk-PVSRXKYI.js";
+import "./chunk-NC4C7V7M.js";
+import "./chunk-VON75VBJ.js";
+import "./chunk-42QFQP6S.js";
+import "./chunk-CIL46H7S.js";
+import "./chunk-WE737E2B.js";
+import "./chunk-JVV2ZMEC.js";
+import "./chunk-ARLFDNNM.js";
+import {
+  MATERIAL_ANIMATIONS,
+  _animationsDisabled,
+  _getAnimationsState
+} from "./chunk-RHO6POIB.js";
+import "./chunk-7FAOF5LX.js";
+import "./chunk-6AYG2EI6.js";
+import "./chunk-N4DOILP3.js";
+import "./chunk-HO4QMAMZ.js";
+import "./chunk-GUGIMSVJ.js";
+import "./chunk-KKB42ZF4.js";
+import "./chunk-UC4NCK7B.js";
+import "./chunk-UWL3PLIL.js";
+import "./chunk-TOJQCRGT.js";
+import "./chunk-5H3MQH5H.js";
+import {
+  Injectable,
+  InjectionToken,
+  LOCALE_ID,
+  NgModule,
+  Version,
+  inject,
+  setClassMetadata,
+  ɵɵdefineInjectable,
+  ɵɵdefineInjector,
+  ɵɵdefineNgModule
+} from "./chunk-OQXX7NQU.js";
+import {
+  Subject
+} from "./chunk-RSS3ODKE.js";
+import {
+  __spreadProps,
+  __spreadValues
+} from "./chunk-WDMUDEB6.js";
+
+// node_modules/@angular/material/fesm2022/_date-formats-chunk.mjs
+var MAT_DATE_LOCALE = new InjectionToken("MAT_DATE_LOCALE", {
+  providedIn: "root",
+  factory: () => inject(LOCALE_ID)
+});
+var NOT_IMPLEMENTED = "Method not implemented";
+var DateAdapter = class {
+  locale;
+  _localeChanges = new Subject();
+  localeChanges = this._localeChanges;
+  setTime(target, hours, minutes, seconds) {
+    throw new Error(NOT_IMPLEMENTED);
+  }
+  getHours(date) {
+    throw new Error(NOT_IMPLEMENTED);
+  }
+  getMinutes(date) {
+    throw new Error(NOT_IMPLEMENTED);
+  }
+  getSeconds(date) {
+    throw new Error(NOT_IMPLEMENTED);
+  }
+  parseTime(value, parseFormat) {
+    throw new Error(NOT_IMPLEMENTED);
+  }
+  addSeconds(date, amount) {
+    throw new Error(NOT_IMPLEMENTED);
+  }
+  getValidDateOrNull(obj) {
+    return this.isDateInstance(obj) && this.isValid(obj) ? obj : null;
+  }
+  deserialize(value) {
+    if (value == null || this.isDateInstance(value) && this.isValid(value)) {
+      return value;
+    }
+    return this.invalid();
+  }
+  setLocale(locale) {
+    this.locale = locale;
+    this._localeChanges.next();
+  }
+  compareDate(first, second) {
+    return this.getYear(first) - this.getYear(second) || this.getMonth(first) - this.getMonth(second) || this.getDate(first) - this.getDate(second);
+  }
+  compareTime(first, second) {
+    return this.getHours(first) - this.getHours(second) || this.getMinutes(first) - this.getMinutes(second) || this.getSeconds(first) - this.getSeconds(second);
+  }
+  sameDate(first, second) {
+    if (first && second) {
+      let firstValid = this.isValid(first);
+      let secondValid = this.isValid(second);
+      if (firstValid && secondValid) {
+        return !this.compareDate(first, second);
+      }
+      return firstValid == secondValid;
+    }
+    return first == second;
+  }
+  sameTime(first, second) {
+    if (first && second) {
+      const firstValid = this.isValid(first);
+      const secondValid = this.isValid(second);
+      if (firstValid && secondValid) {
+        return !this.compareTime(first, second);
+      }
+      return firstValid == secondValid;
+    }
+    return first == second;
+  }
+  clampDate(date, min, max) {
+    if (min && this.compareDate(date, min) < 0) {
+      return min;
+    }
+    if (max && this.compareDate(date, max) > 0) {
+      return max;
+    }
+    return date;
+  }
+};
+var MAT_DATE_FORMATS = new InjectionToken("mat-date-formats");
+
+// node_modules/@angular/material/fesm2022/core.mjs
+var VERSION = new Version("21.2.14");
+var ISO_8601_REGEX = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|(?:(?:\+|-)\d{2}:\d{2}))?)?$/;
+var TIME_REGEX = /^(\d?\d)[:.](\d?\d)(?:[:.](\d?\d))?\s*(AM|PM)?$/i;
+function range(length, valueFunction) {
+  const valuesArray = Array(length);
+  for (let i = 0; i < length; i++) {
+    valuesArray[i] = valueFunction(i);
+  }
+  return valuesArray;
+}
+var NativeDateAdapter = class _NativeDateAdapter extends DateAdapter {
+  _matDateLocale = inject(MAT_DATE_LOCALE, {
+    optional: true
+  });
+  constructor() {
+    super();
+    const matDateLocale = inject(MAT_DATE_LOCALE, {
+      optional: true
+    });
+    if (matDateLocale !== void 0) {
+      this._matDateLocale = matDateLocale;
+    }
+    super.setLocale(this._matDateLocale);
+  }
+  getYear(date) {
+    return date.getFullYear();
+  }
+  getMonth(date) {
+    return date.getMonth();
+  }
+  getDate(date) {
+    return date.getDate();
+  }
+  getDayOfWeek(date) {
+    return date.getDay();
+  }
+  getMonthNames(style) {
+    const dtf = new Intl.DateTimeFormat(this.locale, {
+      month: style,
+      timeZone: "utc"
+    });
+    return range(12, (i) => this._format(dtf, new Date(2017, i, 1)));
+  }
+  getDateNames() {
+    const dtf = new Intl.DateTimeFormat(this.locale, {
+      day: "numeric",
+      timeZone: "utc"
+    });
+    return range(31, (i) => this._format(dtf, new Date(2017, 0, i + 1)));
+  }
+  getDayOfWeekNames(style) {
+    const dtf = new Intl.DateTimeFormat(this.locale, {
+      weekday: style,
+      timeZone: "utc"
+    });
+    return range(7, (i) => this._format(dtf, new Date(2017, 0, i + 1)));
+  }
+  getYearName(date) {
+    const dtf = new Intl.DateTimeFormat(this.locale, {
+      year: "numeric",
+      timeZone: "utc"
+    });
+    return this._format(dtf, date);
+  }
+  getFirstDayOfWeek() {
+    if (typeof Intl !== "undefined" && Intl.Locale) {
+      const locale = new Intl.Locale(this.locale);
+      const firstDay = (locale.getWeekInfo?.() || locale.weekInfo)?.firstDay ?? 0;
+      return firstDay === 7 ? 0 : firstDay;
+    }
+    return 0;
+  }
+  getNumDaysInMonth(date) {
+    return this.getDate(this._createDateWithOverflow(this.getYear(date), this.getMonth(date) + 1, 0));
+  }
+  clone(date) {
+    return new Date(date.getTime());
+  }
+  createDate(year, month, date) {
+    if (typeof ngDevMode === "undefined" || ngDevMode) {
+      if (month < 0 || month > 11) {
+        throw Error(`Invalid month index "${month}". Month index has to be between 0 and 11.`);
+      }
+      if (date < 1) {
+        throw Error(`Invalid date "${date}". Date has to be greater than 0.`);
+      }
+    }
+    let result = this._createDateWithOverflow(year, month, date);
+    if (result.getMonth() != month && (typeof ngDevMode === "undefined" || ngDevMode)) {
+      throw Error(`Invalid date "${date}" for month with index "${month}".`);
+    }
+    return result;
+  }
+  today() {
+    return /* @__PURE__ */ new Date();
+  }
+  parse(value, parseFormat) {
+    if (typeof value == "number") {
+      return new Date(value);
+    }
+    return value ? new Date(Date.parse(value)) : null;
+  }
+  format(date, displayFormat) {
+    if (!this.isValid(date)) {
+      throw Error("NativeDateAdapter: Cannot format invalid date.");
+    }
+    const dtf = new Intl.DateTimeFormat(this.locale, __spreadProps(__spreadValues({}, displayFormat), {
+      timeZone: "utc"
+    }));
+    return this._format(dtf, date);
+  }
+  addCalendarYears(date, years) {
+    return this.addCalendarMonths(date, years * 12);
+  }
+  addCalendarMonths(date, months) {
+    let newDate = this._createDateWithOverflow(this.getYear(date), this.getMonth(date) + months, this.getDate(date));
+    if (this.getMonth(newDate) != ((this.getMonth(date) + months) % 12 + 12) % 12) {
+      newDate = this._createDateWithOverflow(this.getYear(newDate), this.getMonth(newDate), 0);
+    }
+    return newDate;
+  }
+  addCalendarDays(date, days) {
+    return this._createDateWithOverflow(this.getYear(date), this.getMonth(date), this.getDate(date) + days);
+  }
+  toIso8601(date) {
+    return [date.getUTCFullYear(), this._2digit(date.getUTCMonth() + 1), this._2digit(date.getUTCDate())].join("-");
+  }
+  deserialize(value) {
+    if (typeof value === "string") {
+      if (!value) {
+        return null;
+      }
+      if (ISO_8601_REGEX.test(value)) {
+        let date = new Date(value);
+        if (this.isValid(date)) {
+          return date;
+        }
+      }
+    }
+    return super.deserialize(value);
+  }
+  isDateInstance(obj) {
+    return obj instanceof Date;
+  }
+  isValid(date) {
+    return !isNaN(date.getTime());
+  }
+  invalid() {
+    return /* @__PURE__ */ new Date(NaN);
+  }
+  setTime(target, hours, minutes, seconds) {
+    if (typeof ngDevMode === "undefined" || ngDevMode) {
+      if (!inRange(hours, 0, 23)) {
+        throw Error(`Invalid hours "${hours}". Hours value must be between 0 and 23.`);
+      }
+      if (!inRange(minutes, 0, 59)) {
+        throw Error(`Invalid minutes "${minutes}". Minutes value must be between 0 and 59.`);
+      }
+      if (!inRange(seconds, 0, 59)) {
+        throw Error(`Invalid seconds "${seconds}". Seconds value must be between 0 and 59.`);
+      }
+    }
+    const clone = this.clone(target);
+    clone.setHours(hours, minutes, seconds, 0);
+    return clone;
+  }
+  getHours(date) {
+    return date.getHours();
+  }
+  getMinutes(date) {
+    return date.getMinutes();
+  }
+  getSeconds(date) {
+    return date.getSeconds();
+  }
+  parseTime(userValue, parseFormat) {
+    if (typeof userValue !== "string") {
+      return userValue instanceof Date ? new Date(userValue.getTime()) : null;
+    }
+    const value = userValue.trim();
+    if (value.length === 0) {
+      return null;
+    }
+    let result = this._parseTimeString(value);
+    if (result === null) {
+      const withoutExtras = value.replace(/[^0-9:(AM|PM)]/gi, "").trim();
+      if (withoutExtras.length > 0) {
+        result = this._parseTimeString(withoutExtras);
+      }
+    }
+    return result || this.invalid();
+  }
+  addSeconds(date, amount) {
+    return new Date(date.getTime() + amount * 1e3);
+  }
+  _createDateWithOverflow(year, month, date) {
+    const d = /* @__PURE__ */ new Date();
+    d.setFullYear(year, month, date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  _2digit(n) {
+    return ("00" + n).slice(-2);
+  }
+  _format(dtf, date) {
+    const d = /* @__PURE__ */ new Date();
+    d.setUTCFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+    d.setUTCHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+    return dtf.format(d);
+  }
+  _parseTimeString(value) {
+    const parsed = value.toUpperCase().match(TIME_REGEX);
+    if (parsed) {
+      let hours = parseInt(parsed[1]);
+      const minutes = parseInt(parsed[2]);
+      let seconds = parsed[3] == null ? void 0 : parseInt(parsed[3]);
+      const amPm = parsed[4];
+      if (hours === 12) {
+        hours = amPm === "AM" ? 0 : hours;
+      } else if (amPm === "PM") {
+        hours += 12;
+      }
+      if (inRange(hours, 0, 23) && inRange(minutes, 0, 59) && (seconds == null || inRange(seconds, 0, 59))) {
+        return this.setTime(this.today(), hours, minutes, seconds || 0);
+      }
+    }
+    return null;
+  }
+  static ɵfac = function NativeDateAdapter_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NativeDateAdapter)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _NativeDateAdapter,
+    factory: _NativeDateAdapter.ɵfac
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NativeDateAdapter, [{
+    type: Injectable
+  }], () => [], null);
+})();
+function inRange(value, min, max) {
+  return !isNaN(value) && value >= min && value <= max;
+}
+var MAT_NATIVE_DATE_FORMATS = {
+  parse: {
+    dateInput: null,
+    timeInput: null
+  },
+  display: {
+    dateInput: {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric"
+    },
+    timeInput: {
+      hour: "numeric",
+      minute: "numeric"
+    },
+    monthYearLabel: {
+      year: "numeric",
+      month: "short"
+    },
+    dateA11yLabel: {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    },
+    monthYearA11yLabel: {
+      year: "numeric",
+      month: "long"
+    },
+    timeOptionLabel: {
+      hour: "numeric",
+      minute: "numeric"
+    }
+  }
+};
+var NativeDateModule = class _NativeDateModule {
+  static ɵfac = function NativeDateModule_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NativeDateModule)();
+  };
+  static ɵmod = ɵɵdefineNgModule({
+    type: _NativeDateModule
+  });
+  static ɵinj = ɵɵdefineInjector({
+    providers: [{
+      provide: DateAdapter,
+      useClass: NativeDateAdapter
+    }]
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NativeDateModule, [{
+    type: NgModule,
+    args: [{
+      providers: [{
+        provide: DateAdapter,
+        useClass: NativeDateAdapter
+      }]
+    }]
+  }], null, null);
+})();
+var MatNativeDateModule = class _MatNativeDateModule {
+  static ɵfac = function MatNativeDateModule_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _MatNativeDateModule)();
+  };
+  static ɵmod = ɵɵdefineNgModule({
+    type: _MatNativeDateModule
+  });
+  static ɵinj = ɵɵdefineInjector({
+    providers: [provideNativeDateAdapter()]
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(MatNativeDateModule, [{
+    type: NgModule,
+    args: [{
+      providers: [provideNativeDateAdapter()]
+    }]
+  }], null, null);
+})();
+function provideNativeDateAdapter(formats = MAT_NATIVE_DATE_FORMATS) {
+  return [{
+    provide: DateAdapter,
+    useClass: NativeDateAdapter
+  }, {
+    provide: MAT_DATE_FORMATS,
+    useValue: formats
+  }];
+}
+export {
+  DateAdapter,
+  ErrorStateMatcher,
+  MATERIAL_ANIMATIONS,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  MAT_NATIVE_DATE_FORMATS,
+  MAT_OPTGROUP,
+  MAT_OPTION_PARENT_COMPONENT,
+  MAT_RIPPLE_GLOBAL_OPTIONS,
+  MatLine,
+  MatLineModule,
+  MatNativeDateModule,
+  MatOptgroup,
+  MatOption,
+  MatOptionModule,
+  MatOptionSelectionChange,
+  MatPseudoCheckbox,
+  MatPseudoCheckboxModule,
+  MatRipple,
+  MatRippleLoader,
+  MatRippleModule,
+  NativeDateAdapter,
+  NativeDateModule,
+  RippleRef,
+  RippleRenderer,
+  RippleState,
+  ShowOnDirtyErrorStateMatcher,
+  VERSION,
+  _ErrorStateTracker,
+  _MatInternalFormField,
+  _StructuralStylesLoader,
+  _animationsDisabled,
+  _countGroupLabelsBeforeOption,
+  _getAnimationsState,
+  _getOptionScrollPosition,
+  defaultRippleAnimationConfig,
+  provideNativeDateAdapter,
+  setLines
+};
+//# sourceMappingURL=@angular_material_core.js.map

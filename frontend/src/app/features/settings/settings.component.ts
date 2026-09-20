@@ -1,27 +1,43 @@
-import { Component, signal, computed, inject, OnInit, effect, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ApiService } from '@core/services/api.service';
-import { NotificationService } from '@core/services/notification.service';
-import { LoadingService } from '@core/services/loading.service';
-import { AuthService } from '@core/services/auth.service';
-import { ImageUploadService, UploadedImage } from '@core/services/image-upload.service';
-import { ButtonComponent } from '@shared/components/button/button.component';
-import { InputComponent } from '@shared/components/input/input.component';
-import { SelectComponent } from '@shared/components/select/select.component';
-import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
+import {
+  Component,
+  signal,
+  computed,
+  inject,
+  OnInit,
+  effect,
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from "@angular/forms";
+import { MatCardModule } from "@angular/material/card";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { ApiService } from "@core/services/api.service";
+import { NotificationService } from "@core/services/notification.service";
+import { LoadingService } from "@core/services/loading.service";
+import { AuthService } from "@core/services/auth.service";
+import {
+  ImageUploadService,
+  UploadedImage,
+} from "@core/services/image-upload.service";
+import { ButtonComponent } from "@shared/components/button/button.component";
+import { InputComponent } from "@shared/components/input/input.component";
+import { SelectComponent } from "@shared/components/select/select.component";
+import { ImageUploadComponent } from "@shared/components/image-upload/image-upload.component";
 
 interface BusinessHour {
   id?: string;
@@ -49,17 +65,17 @@ interface ProfileData {
 }
 
 const DAYS_OF_WEEK = [
-  { value: 0, label: 'Domingo' },
-  { value: 1, label: 'Segunda-feira' },
-  { value: 2, label: 'Terça-feira' },
-  { value: 3, label: 'Quarta-feira' },
-  { value: 4, label: 'Quinta-feira' },
-  { value: 5, label: 'Sexta-feira' },
-  { value: 6, label: 'Sábado' }
+  { value: 0, label: "Domingo" },
+  { value: 1, label: "Segunda-feira" },
+  { value: 2, label: "Terça-feira" },
+  { value: 3, label: "Quarta-feira" },
+  { value: 4, label: "Quinta-feira" },
+  { value: 5, label: "Sexta-feira" },
+  { value: 6, label: "Sábado" },
 ];
 
 @Component({
-  selector: 'app-settings',
+  selector: "app-settings",
   standalone: true,
   imports: [
     CommonModule,
@@ -79,15 +95,19 @@ const DAYS_OF_WEEK = [
     ButtonComponent,
     InputComponent,
     SelectComponent,
-    ImageUploadComponent
+    ImageUploadComponent,
   ],
   template: `
     <div class="p-6 space-y-6">
       <!-- Header -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      >
         <div>
           <h1 class="text-2xl font-bold text-gray-900">Configurações</h1>
-          <p class="text-gray-600 mt-1">Gerencie as configurações do restaurante</p>
+          <p class="text-gray-600 mt-1">
+            Gerencie as configurações do restaurante
+          </p>
         </div>
       </div>
 
@@ -102,7 +122,8 @@ const DAYS_OF_WEEK = [
                   label="Nome do Restaurante *"
                   type="text"
                   placeholder="Nome do restaurante"
-                  [error]="restaurantNameError()">
+                  [error]="restaurantNameError()"
+                >
                 </app-input>
 
                 <app-input
@@ -110,7 +131,8 @@ const DAYS_OF_WEEK = [
                   label="Slogan"
                   type="text"
                   placeholder="Ex: O melhor da culinária"
-                  [error]="taglineError()">
+                  [error]="taglineError()"
+                >
                 </app-input>
               </div>
 
@@ -120,9 +142,14 @@ const DAYS_OF_WEEK = [
                   formControlName="description"
                   class="input min-h-[100px] resize-y"
                   placeholder="Descreva seu restaurante, história, especialidades..."
-                  [attr.aria-describedby]="descriptionError() ? 'desc-error' : null"></textarea>
+                  [attr.aria-describedby]="
+                    descriptionError() ? 'desc-error' : null
+                  "
+                ></textarea>
                 @if (descriptionError()) {
-                  <p id="desc-error" class="text-sm text-red-600 mt-1">{{ descriptionError() }}</p>
+                  <p id="desc-error" class="text-sm text-red-600 mt-1">
+                    {{ descriptionError() }}
+                  </p>
                 }
               </div>
 
@@ -135,7 +162,8 @@ const DAYS_OF_WEEK = [
                     [existingImages]="getLogoExistingImages()"
                     (imagesChange)="onLogoChange($event)"
                     (uploadComplete)="onLogoUploadComplete($event)"
-                    (uploadError)="onImageError($event)">
+                    (uploadError)="onImageError($event)"
+                  >
                   </app-image-upload>
                 </div>
 
@@ -147,7 +175,8 @@ const DAYS_OF_WEEK = [
                     [existingImages]="getCoverExistingImages()"
                     (imagesChange)="onCoverChange($event)"
                     (uploadComplete)="onCoverUploadComplete($event)"
-                    (uploadError)="onImageError($event)">
+                    (uploadError)="onImageError($event)"
+                  >
                   </app-image-upload>
                 </div>
               </div>
@@ -155,14 +184,20 @@ const DAYS_OF_WEEK = [
               <div class="flex gap-3 pt-4 border-t border-gray-100">
                 <app-button
                   variant="primary"
-                  [label]="savingRestaurantInfo() ? 'Salvando...' : 'Salvar Informações'"
+                  [label]="
+                    savingRestaurantInfo()
+                      ? 'Salvando...'
+                      : 'Salvar Informações'
+                  "
                   [loading]="savingRestaurantInfo()"
-                  (clicked)="saveRestaurantInfo()">
+                  (clicked)="saveRestaurantInfo()"
+                >
                 </app-button>
                 <app-button
                   variant="secondary"
                   label="Cancelar"
-                  (clicked)="loadRestaurantInfo()">
+                  (clicked)="loadRestaurantInfo()"
+                >
                 </app-button>
               </div>
             </form>
@@ -178,20 +213,29 @@ const DAYS_OF_WEEK = [
                 variant="outline"
                 icon="add"
                 label="Adicionar Horário"
-                (clicked)="addBusinessHour()">
+                (clicked)="addBusinessHour()"
+              >
               </app-button>
             </div>
 
             <form [formGroup]="businessHoursForm" class="space-y-4">
               <div class="space-y-3" formArrayName="hours">
-                @for (hour of businessHoursControls.controls; track $index; let i = $index) {
-                  <div class="flex flex-col sm:flex-row gap-3 p-4 bg-gray-50 rounded-lg" [formGroup]="hour">
+                @for (
+                  hour of businessHoursControls.controls;
+                  track $index;
+                  let i = $index
+                ) {
+                  <div
+                    class="flex flex-col sm:flex-row gap-3 p-4 bg-gray-50 rounded-lg"
+                    [formGroup]="hour"
+                  >
                     <app-select
                       formControlName="dayOfWeek"
                       [options]="dayOptions"
                       placeholder="Dia da semana"
                       class="w-full sm:w-40"
-                      [error]="dayError(i)">
+                      [error]="dayError(i)"
+                    >
                     </app-select>
 
                     <div class="flex-1 flex items-center gap-3">
@@ -199,11 +243,28 @@ const DAYS_OF_WEEK = [
                         <span class="text-sm text-gray-600">Fechado</span>
                       </mat-slide-toggle>
 
-                      <div class="flex-1 flex items-center gap-2" [class.opacity-50]="hour.get('closed')?.value">
-                        <label class="text-sm text-gray-600 whitespace-nowrap">Abre:</label>
-                        <input type="time" formControlName="openTime" class="input w-32" [disabled]="hour.get('closed')?.value" />
-                        <label class="text-sm text-gray-600 whitespace-nowrap">Fecha:</label>
-                        <input type="time" formControlName="closeTime" class="input w-32" [disabled]="hour.get('closed')?.value" />
+                      <div
+                        class="flex-1 flex items-center gap-2"
+                        [class.opacity-50]="hour.get('closed')?.value"
+                      >
+                        <label class="text-sm text-gray-600 whitespace-nowrap"
+                          >Abre:</label
+                        >
+                        <input
+                          type="time"
+                          formControlName="openTime"
+                          class="input w-32"
+                          [disabled]="hour.get('closed')?.value"
+                        />
+                        <label class="text-sm text-gray-600 whitespace-nowrap"
+                          >Fecha:</label
+                        >
+                        <input
+                          type="time"
+                          formControlName="closeTime"
+                          class="input w-32"
+                          [disabled]="hour.get('closed')?.value"
+                        />
                       </div>
                     </div>
 
@@ -213,7 +274,8 @@ const DAYS_OF_WEEK = [
                       color="red"
                       icon="delete"
                       label="Remover"
-                      (clicked)="removeBusinessHour(i)">
+                      (clicked)="removeBusinessHour(i)"
+                    >
                     </app-button>
                   </div>
                 }
@@ -222,14 +284,18 @@ const DAYS_OF_WEEK = [
               <div class="flex gap-3 pt-4 border-t border-gray-100">
                 <app-button
                   variant="primary"
-                  [label]="savingBusinessHours() ? 'Salvando...' : 'Salvar Horários'"
+                  [label]="
+                    savingBusinessHours() ? 'Salvando...' : 'Salvar Horários'
+                  "
                   [loading]="savingBusinessHours()"
-                  (clicked)="saveBusinessHours()">
+                  (clicked)="saveBusinessHours()"
+                >
                 </app-button>
                 <app-button
                   variant="secondary"
                   label="Cancelar"
-                  (clicked)="loadBusinessHours()">
+                  (clicked)="loadBusinessHours()"
+                >
                 </app-button>
               </div>
             </form>
@@ -246,7 +312,8 @@ const DAYS_OF_WEEK = [
                   label="Telefone *"
                   type="tel"
                   placeholder="(11) 99999-9999"
-                  [error]="phoneError()">
+                  [error]="phoneError()"
+                >
                 </app-input>
 
                 <app-input
@@ -254,7 +321,8 @@ const DAYS_OF_WEEK = [
                   label="E-mail *"
                   type="email"
                   placeholder="contato@restaurante.com"
-                  [error]="contactEmailError()">
+                  [error]="contactEmailError()"
+                >
                 </app-input>
               </div>
 
@@ -263,7 +331,8 @@ const DAYS_OF_WEEK = [
                 label="Endereço"
                 type="text"
                 placeholder="Rua, número, bairro, cidade, estado"
-                [error]="addressError()">
+                [error]="addressError()"
+              >
               </app-input>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -273,7 +342,8 @@ const DAYS_OF_WEEK = [
                   type="url"
                   placeholder="https://www.restaurante.com"
                   prefixIcon="language"
-                  [error]="websiteError()">
+                  [error]="websiteError()"
+                >
                 </app-input>
 
                 <div class="flex gap-4">
@@ -283,7 +353,8 @@ const DAYS_OF_WEEK = [
                     type="text"
                     placeholder="@restaurante"
                     prefixIcon="camera_alt"
-                    class="flex-1">
+                    class="flex-1"
+                  >
                   </app-input>
                   <app-input
                     formControlName="facebook"
@@ -291,7 +362,8 @@ const DAYS_OF_WEEK = [
                     type="text"
                     placeholder="facebook.com/restaurante"
                     prefixIcon="facebook"
-                    class="flex-1">
+                    class="flex-1"
+                  >
                   </app-input>
                 </div>
               </div>
@@ -299,14 +371,18 @@ const DAYS_OF_WEEK = [
               <div class="flex gap-3 pt-4 border-t border-gray-100">
                 <app-button
                   variant="primary"
-                  [label]="savingContactInfo() ? 'Salvando...' : 'Salvar Contato'"
+                  [label]="
+                    savingContactInfo() ? 'Salvando...' : 'Salvar Contato'
+                  "
                   [loading]="savingContactInfo()"
-                  (clicked)="saveContactInfo()">
+                  (clicked)="saveContactInfo()"
+                >
                 </app-button>
                 <app-button
                   variant="secondary"
                   label="Cancelar"
-                  (clicked)="loadContactInfo()">
+                  (clicked)="loadContactInfo()"
+                >
                 </app-button>
               </div>
             </form>
@@ -320,10 +396,18 @@ const DAYS_OF_WEEK = [
               <div class="flex items-center gap-6">
                 <div class="relative">
                   @if (profileAvatar()) {
-                    <img [src]="profileAvatar()" alt="Avatar" class="h-24 w-24 rounded-full object-cover">
+                    <img
+                      [src]="profileAvatar()"
+                      alt="Avatar"
+                      class="h-24 w-24 rounded-full object-cover"
+                    />
                   } @else {
-                    <div class="h-24 w-24 bg-indigo-100 rounded-full flex items-center justify-center">
-                      <mat-icon class="text-indigo-600 text-3xl">person</mat-icon>
+                    <div
+                      class="h-24 w-24 bg-indigo-100 rounded-full flex items-center justify-center"
+                    >
+                      <mat-icon class="text-indigo-600 text-3xl"
+                        >person</mat-icon
+                      >
                     </div>
                   }
                   <app-image-upload
@@ -332,7 +416,8 @@ const DAYS_OF_WEEK = [
                     [existingImages]="getAvatarExistingImages()"
                     (imagesChange)="onAvatarChange($event)"
                     (uploadComplete)="onAvatarUploadComplete($event)"
-                    (uploadError)="onImageError($event)">
+                    (uploadError)="onImageError($event)"
+                  >
                   </app-image-upload>
                 </div>
                 <div class="flex-1">
@@ -349,7 +434,8 @@ const DAYS_OF_WEEK = [
                   label="Nome *"
                   type="text"
                   placeholder="Seu nome"
-                  [error]="profileNameError()">
+                  [error]="profileNameError()"
+                >
                 </app-input>
 
                 <app-input
@@ -357,7 +443,8 @@ const DAYS_OF_WEEK = [
                   label="E-mail *"
                   type="email"
                   placeholder="seu@email.com"
-                  [error]="profileEmailError()">
+                  [error]="profileEmailError()"
+                >
                 </app-input>
               </div>
 
@@ -370,7 +457,8 @@ const DAYS_OF_WEEK = [
                   label="Senha Atual"
                   type="password"
                   placeholder="••••••••"
-                  [error]="currentPasswordError()">
+                  [error]="currentPasswordError()"
+                >
                 </app-input>
 
                 <app-input
@@ -378,7 +466,8 @@ const DAYS_OF_WEEK = [
                   label="Nova Senha"
                   type="password"
                   placeholder="••••••••"
-                  [error]="newPasswordError()">
+                  [error]="newPasswordError()"
+                >
                 </app-input>
 
                 <app-input
@@ -386,7 +475,8 @@ const DAYS_OF_WEEK = [
                   label="Confirmar Nova Senha"
                   type="password"
                   placeholder="••••••••"
-                  [error]="confirmPasswordError()">
+                  [error]="confirmPasswordError()"
+                >
                 </app-input>
               </div>
 
@@ -395,12 +485,14 @@ const DAYS_OF_WEEK = [
                   variant="primary"
                   [label]="savingProfile() ? 'Salvando...' : 'Salvar Perfil'"
                   [loading]="savingProfile()"
-                  (clicked)="saveProfile()">
+                  (clicked)="saveProfile()"
+                >
                 </app-button>
                 <app-button
                   variant="secondary"
                   label="Cancelar"
-                  (clicked)="loadProfile()">
+                  (clicked)="loadProfile()"
+                >
                 </app-button>
               </div>
             </form>
@@ -409,20 +501,22 @@ const DAYS_OF_WEEK = [
       </mat-tab-group>
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
+  styles: [
+    `
+      :host {
+        display: block;
+      }
 
-    :host ::ng-deep .mat-mdc-tab-group {
-      @apply w-full;
-    }
+      :host ::ng-deep .mat-mdc-tab-group {
+        @apply w-full;
+      }
 
-    :host ::ng-deep .mat-mdc-form-field {
-      @apply w-full;
-    }
-  `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+      :host ::ng-deep .mat-mdc-form-field {
+        @apply w-full;
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent implements OnInit {
   private apiService = inject(ApiService);
@@ -444,34 +538,44 @@ export class SettingsComponent implements OnInit {
 
   // Forms
   restaurantForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.maxLength(100)]],
-    tagline: ['', [Validators.maxLength(200)]],
-    description: ['', [Validators.maxLength(1000)]]
+    name: ["", [Validators.required, Validators.maxLength(100)]],
+    tagline: ["", [Validators.maxLength(200)]],
+    description: ["", [Validators.maxLength(1000)]],
   });
 
   businessHoursForm: FormGroup = this.fb.group({
-    hours: this.fb.array([])
+    hours: this.fb.array([]),
   });
 
   contactForm: FormGroup = this.fb.group({
-    phone: ['', [Validators.required, Validators.maxLength(20)]],
-    email: ['', [Validators.required, Validators.email]],
-    address: ['', [Validators.maxLength(200)]],
-    website: ['', [Validators.maxLength(100)]],
-    instagram: ['', [Validators.maxLength(50)]],
-    facebook: ['', [Validators.maxLength(100)]]
+    phone: ["", [Validators.required, Validators.maxLength(20)]],
+    email: ["", [Validators.required, Validators.email]],
+    address: ["", [Validators.maxLength(200)]],
+    website: ["", [Validators.maxLength(100)]],
+    instagram: ["", [Validators.maxLength(50)]],
+    facebook: ["", [Validators.maxLength(100)]],
   });
 
-  profileForm: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    email: ['', [Validators.required, Validators.email]],
-    currentPassword: [''],
-    newPassword: ['', [Validators.minLength(6), Validators.maxLength(50)]],
-    confirmPassword: ['']
-  }, { validators: this.passwordMatchValidator });
+  profileForm: FormGroup = this.fb.group(
+    {
+      name: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(100),
+        ],
+      ],
+      email: ["", [Validators.required, Validators.email]],
+      currentPassword: [""],
+      newPassword: ["", [Validators.minLength(6), Validators.maxLength(50)]],
+      confirmPassword: [""],
+    },
+    { validators: this.passwordMatchValidator },
+  );
 
   get businessHoursControls() {
-    return this.businessHoursForm.get('hours') as any;
+    return this.businessHoursForm.get("hours") as any;
   }
 
   ngOnInit(): void {
@@ -488,7 +592,7 @@ export class SettingsComponent implements OnInit {
 
   initializeBusinessHours(): void {
     // Add default rows for each day
-    DAYS_OF_WEEK.forEach(day => {
+    DAYS_OF_WEEK.forEach((day) => {
       this.addBusinessHour(day.value);
     });
   }
@@ -497,14 +601,14 @@ export class SettingsComponent implements OnInit {
     this.apiService.getRestaurantInfo().subscribe({
       next: (info: any) => {
         this.restaurantForm.patchValue({
-          name: info.name ?? '',
-          tagline: info.tagline ?? '',
-          description: info.description ?? ''
+          name: info.name ?? "",
+          tagline: info.tagline ?? "",
+          description: info.description ?? "",
         });
         this.restaurantLogo.set(info.logoUrl ?? null);
         this.restaurantCover.set(info.coverUrl ?? null);
       },
-      error: () => {}
+      error: () => {},
     });
   }
 
@@ -516,13 +620,13 @@ export class SettingsComponent implements OnInit {
           this.businessHoursControls.removeAt(0);
         }
         // Add loaded hours
-        hours.forEach(h => {
+        hours.forEach((h) => {
           const group = this.fb.group({
             id: [h.id],
             dayOfWeek: [h.dayOfWeek, Validators.required],
-            openTime: [h.openTime ?? '09:00'],
-            closeTime: [h.closeTime ?? '22:00'],
-            closed: [h.closed ?? false]
+            openTime: [h.openTime ?? "09:00"],
+            closeTime: [h.closeTime ?? "22:00"],
+            closed: [h.closed ?? false],
           });
           this.businessHoursControls.push(group);
         });
@@ -530,7 +634,7 @@ export class SettingsComponent implements OnInit {
       error: () => {
         // Reinitialize defaults
         this.initializeBusinessHours();
-      }
+      },
     });
   }
 
@@ -538,15 +642,15 @@ export class SettingsComponent implements OnInit {
     this.apiService.getContactInfo().subscribe({
       next: (contact: any) => {
         this.contactForm.patchValue({
-          phone: contact.phone ?? '',
-          email: contact.email ?? '',
-          address: contact.address ?? '',
-          website: contact.website ?? '',
-          instagram: contact.instagram ?? '',
-          facebook: contact.facebook ?? ''
+          phone: contact.phone ?? "",
+          email: contact.email ?? "",
+          address: contact.address ?? "",
+          website: contact.website ?? "",
+          instagram: contact.instagram ?? "",
+          facebook: contact.facebook ?? "",
         });
       },
-      error: () => {}
+      error: () => {},
     });
   }
 
@@ -555,14 +659,14 @@ export class SettingsComponent implements OnInit {
     if (user) {
       this.profileForm.patchValue({
         name: user.name,
-        email: user.email
+        email: user.email,
       });
     }
     this.apiService.getProfile().subscribe({
       next: (profile: any) => {
         this.profileAvatar.set(profile.avatarUrl ?? null);
       },
-      error: () => {}
+      error: () => {},
     });
   }
 
@@ -573,10 +677,10 @@ export class SettingsComponent implements OnInit {
 
     this.apiService.updateRestaurantInfo(this.restaurantForm.value).subscribe({
       next: () => {
-        this.notification.success('Informações do restaurante salvas!');
+        this.notification.success("Informações do restaurante salvas!");
         this.savingRestaurantInfo.set(false);
       },
-      error: () => this.savingRestaurantInfo.set(false)
+      error: () => this.savingRestaurantInfo.set(false),
     });
   }
 
@@ -584,9 +688,9 @@ export class SettingsComponent implements OnInit {
   addBusinessHour(dayOfWeek?: number): void {
     const group = this.fb.group({
       dayOfWeek: [dayOfWeek ?? 0, Validators.required],
-      openTime: ['09:00'],
-      closeTime: ['22:00'],
-      closed: [false]
+      openTime: ["09:00"],
+      closeTime: ["22:00"],
+      closed: [false],
     });
     this.businessHoursControls.push(group);
   }
@@ -596,11 +700,11 @@ export class SettingsComponent implements OnInit {
   }
 
   dayError(index: number): string {
-    const control = this.businessHoursControls.at(index)?.get('dayOfWeek');
-    if (control?.touched && control?.errors?.['required']) {
-      return 'Dia é obrigatório';
+    const control = this.businessHoursControls.at(index)?.get("dayOfWeek");
+    if (control?.touched && control?.errors?.["required"]) {
+      return "Dia é obrigatório";
     }
-    return '';
+    return "";
   }
 
   saveBusinessHours(): void {
@@ -611,15 +715,15 @@ export class SettingsComponent implements OnInit {
       dayOfWeek: h.dayOfWeek,
       openTime: h.closed ? null : h.openTime,
       closeTime: h.closed ? null : h.closeTime,
-      closed: h.closed
+      closed: h.closed,
     }));
 
     this.apiService.updateBusinessHours(hours).subscribe({
       next: () => {
-        this.notification.success('Horários salvos com sucesso!');
+        this.notification.success("Horários salvos com sucesso!");
         this.savingBusinessHours.set(false);
       },
-      error: () => this.savingBusinessHours.set(false)
+      error: () => this.savingBusinessHours.set(false),
     });
   }
 
@@ -630,10 +734,10 @@ export class SettingsComponent implements OnInit {
 
     this.apiService.updateContactInfo(this.contactForm.value).subscribe({
       next: () => {
-        this.notification.success('Informações de contato salvas!');
+        this.notification.success("Informações de contato salvas!");
         this.savingContactInfo.set(false);
       },
-      error: () => this.savingContactInfo.set(false)
+      error: () => this.savingContactInfo.set(false),
     });
   }
 
@@ -645,7 +749,7 @@ export class SettingsComponent implements OnInit {
     const formValue = this.profileForm.value;
     const profileData: any = {
       name: formValue.name,
-      email: formValue.email
+      email: formValue.email,
     };
 
     if (formValue.currentPassword && formValue.newPassword) {
@@ -655,11 +759,15 @@ export class SettingsComponent implements OnInit {
 
     this.apiService.updateProfile(profileData).subscribe({
       next: () => {
-        this.notification.success('Perfil atualizado com sucesso!');
-        this.profileForm.patchValue({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        this.notification.success("Perfil atualizado com sucesso!");
+        this.profileForm.patchValue({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
         this.savingProfile.set(false);
       },
-      error: () => this.savingProfile.set(false)
+      error: () => this.savingProfile.set(false),
     });
   }
 
@@ -684,132 +792,170 @@ export class SettingsComponent implements OnInit {
   }
 
   // Validation Helpers
-  passwordMatchValidator(form: FormGroup): { passwordMismatch: boolean } | null {
-    const newPassword = form.get('newPassword')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
+  passwordMatchValidator(
+    form: FormGroup,
+  ): { passwordMismatch: boolean } | null {
+    const newPassword = form.get("newPassword")?.value;
+    const confirmPassword = form.get("confirmPassword")?.value;
     if (!newPassword && !confirmPassword) return null;
     return newPassword === confirmPassword ? null : { passwordMismatch: true };
   }
 
   restaurantNameError = computed(() => {
-    const control = this.restaurantForm.get('name');
+    const control = this.restaurantForm.get("name");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Nome é obrigatório';
-      if (control.errors['maxlength']) return 'Nome deve ter no máximo 100 caracteres';
+      if (control.errors["required"]) return "Nome é obrigatório";
+      if (control.errors["maxlength"])
+        return "Nome deve ter no máximo 100 caracteres";
     }
-    return '';
+    return "";
   });
 
   taglineError = computed(() => {
-    const control = this.restaurantForm.get('tagline');
-    if (control?.touched && control?.errors?.['maxlength']) {
-      return 'Slogan deve ter no máximo 200 caracteres';
+    const control = this.restaurantForm.get("tagline");
+    if (control?.touched && control?.errors?.["maxlength"]) {
+      return "Slogan deve ter no máximo 200 caracteres";
     }
-    return '';
+    return "";
   });
 
   descriptionError = computed(() => {
-    const control = this.restaurantForm.get('description');
-    if (control?.touched && control?.errors?.['maxlength']) {
-      return 'Descrição deve ter no máximo 1000 caracteres';
+    const control = this.restaurantForm.get("description");
+    if (control?.touched && control?.errors?.["maxlength"]) {
+      return "Descrição deve ter no máximo 1000 caracteres";
     }
-    return '';
+    return "";
   });
 
   phoneError = computed(() => {
-    const control = this.contactForm.get('phone');
+    const control = this.contactForm.get("phone");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Telefone é obrigatório';
-      if (control.errors['maxlength']) return 'Telefone deve ter no máximo 20 caracteres';
+      if (control.errors["required"]) return "Telefone é obrigatório";
+      if (control.errors["maxlength"])
+        return "Telefone deve ter no máximo 20 caracteres";
     }
-    return '';
+    return "";
   });
 
   contactEmailError = computed(() => {
-    const control = this.contactForm.get('email');
+    const control = this.contactForm.get("email");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'E-mail é obrigatório';
-      if (control.errors['email']) return 'E-mail inválido';
+      if (control.errors["required"]) return "E-mail é obrigatório";
+      if (control.errors["email"]) return "E-mail inválido";
     }
-    return '';
+    return "";
   });
 
   addressError = computed(() => {
-    const control = this.contactForm.get('address');
-    if (control?.touched && control?.errors?.['maxlength']) {
-      return 'Endereço deve ter no máximo 200 caracteres';
+    const control = this.contactForm.get("address");
+    if (control?.touched && control?.errors?.["maxlength"]) {
+      return "Endereço deve ter no máximo 200 caracteres";
     }
-    return '';
+    return "";
   });
 
   websiteError = computed(() => {
-    const control = this.contactForm.get('website');
-    if (control?.touched && control?.errors?.['maxlength']) {
-      return 'URL deve ter no máximo 100 caracteres';
+    const control = this.contactForm.get("website");
+    if (control?.touched && control?.errors?.["maxlength"]) {
+      return "URL deve ter no máximo 100 caracteres";
     }
-    return '';
+    return "";
   });
 
   profileNameError = computed(() => {
-    const control = this.profileForm.get('name');
+    const control = this.profileForm.get("name");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Nome é obrigatório';
-      if (control.errors['minlength']) return 'Nome deve ter no mínimo 2 caracteres';
-      if (control.errors['maxlength']) return 'Nome deve ter no máximo 100 caracteres';
+      if (control.errors["required"]) return "Nome é obrigatório";
+      if (control.errors["minlength"])
+        return "Nome deve ter no mínimo 2 caracteres";
+      if (control.errors["maxlength"])
+        return "Nome deve ter no máximo 100 caracteres";
     }
-    return '';
+    return "";
   });
 
   profileEmailError = computed(() => {
-    const control = this.profileForm.get('email');
+    const control = this.profileForm.get("email");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'E-mail é obrigatório';
-      if (control.errors['email']) return 'E-mail inválido';
+      if (control.errors["required"]) return "E-mail é obrigatório";
+      if (control.errors["email"]) return "E-mail inválido";
     }
-    return '';
+    return "";
   });
 
   currentPasswordError = computed(() => {
-    const control = this.profileForm.get('currentPassword');
-    const newPassword = this.profileForm.get('newPassword')?.value;
-    if (newPassword && control?.touched && control?.errors?.['required']) {
-      return 'Senha atual é obrigatória para alterar a senha';
+    const control = this.profileForm.get("currentPassword");
+    const newPassword = this.profileForm.get("newPassword")?.value;
+    if (newPassword && control?.touched && control?.errors?.["required"]) {
+      return "Senha atual é obrigatória para alterar a senha";
     }
-    return '';
+    return "";
   });
 
   newPasswordError = computed(() => {
-    const control = this.profileForm.get('newPassword');
+    const control = this.profileForm.get("newPassword");
     if (control?.touched && control?.errors) {
-      if (control.errors['minlength']) return 'Nova senha deve ter no mínimo 6 caracteres';
-      if (control.errors['maxlength']) return 'Nova senha deve ter no máximo 50 caracteres';
+      if (control.errors["minlength"])
+        return "Nova senha deve ter no mínimo 6 caracteres";
+      if (control.errors["maxlength"])
+        return "Nova senha deve ter no máximo 50 caracteres";
     }
-    return '';
+    return "";
   });
 
   confirmPasswordError = computed(() => {
     const formErrors = this.profileForm.errors;
-    const control = this.profileForm.get('confirmPassword');
-    if (control?.touched && formErrors?.['passwordMismatch']) {
-      return 'As senhas não coincidem';
+    const control = this.profileForm.get("confirmPassword");
+    if (control?.touched && formErrors?.["passwordMismatch"]) {
+      return "As senhas não coincidem";
     }
-    return '';
+    return "";
   });
 
-  dayOptions = DAYS_OF_WEEK.map(d => ({ value: d.value, label: d.label }));
+  dayOptions = DAYS_OF_WEEK.map((d) => ({ value: d.value, label: d.label }));
 
   getLogoExistingImages(): UploadedImage[] {
     const logo = this.restaurantLogo();
-    return logo ? [{ id: 'logo', url: logo, filename: 'logo', displayOrder: 0, isMain: true }] : [];
+    return logo
+      ? [
+          {
+            id: "logo",
+            url: logo,
+            filename: "logo",
+            displayOrder: 0,
+            isMain: true,
+          },
+        ]
+      : [];
   }
 
   getCoverExistingImages(): UploadedImage[] {
     const cover = this.restaurantCover();
-    return cover ? [{ id: 'cover', url: cover, filename: 'cover', displayOrder: 0, isMain: true }] : [];
+    return cover
+      ? [
+          {
+            id: "cover",
+            url: cover,
+            filename: "cover",
+            displayOrder: 0,
+            isMain: true,
+          },
+        ]
+      : [];
   }
 
   getAvatarExistingImages(): UploadedImage[] {
     const avatar = this.profileAvatar();
-    return avatar ? [{ id: 'avatar', url: avatar, filename: 'avatar', displayOrder: 0, isMain: true }] : [];
+    return avatar
+      ? [
+          {
+            id: "avatar",
+            url: avatar,
+            filename: "avatar",
+            displayOrder: 0,
+            isMain: true,
+          },
+        ]
+      : [];
   }
 }

@@ -1,13 +1,21 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject } from "@angular/core";
 import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpErrorResponse
-} from '@angular/common/http';
-import { Observable, throwError, BehaviorSubject, switchMap, filter, take, catchError } from 'rxjs';
-import { AuthService } from './services/auth.service';
+  HttpErrorResponse,
+} from "@angular/common/http";
+import {
+  Observable,
+  throwError,
+  BehaviorSubject,
+  switchMap,
+  filter,
+  take,
+  catchError,
+} from "rxjs";
+import { AuthService } from "./services/auth.service";
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -15,7 +23,10 @@ export class JwtInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  intercept(
+    request: HttpRequest<unknown>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<unknown>> {
     // Skip auth for public endpoints
     if (this.isPublicRequest(request.url)) {
       return next.handle(request);
@@ -35,34 +46,41 @@ export class JwtInterceptor implements HttpInterceptor {
           this.authService.logout();
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 
   private isPublicRequest(url: string): boolean {
     const publicEndpoints = [
-      '/auth/login',
-      '/auth/register',
-      '/auth/refresh',
-      '/menu',
-      '/categories'
+      "/api/auth/login",
+      "/api/auth/register",
+      "/api/auth/refresh",
+      "/api/menu",
+      "/api/menu/categories",
     ];
-    return publicEndpoints.some(endpoint => url.includes(endpoint));
+    return publicEndpoints.some((endpoint) => url.includes(endpoint));
   }
 
   private isRefreshTokenRequest(url: string): boolean {
-    return url.includes('/auth/refresh');
+    return url.includes("/auth/refresh");
   }
 
-  private addToken(request: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
+  private addToken(
+    request: HttpRequest<unknown>,
+    token: string,
+  ): HttpRequest<unknown> {
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
     });
   }
 
-  private handle401Error(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  private handle401Error(
+    request: HttpRequest<unknown>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<unknown>> {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
@@ -77,14 +95,14 @@ export class JwtInterceptor implements HttpInterceptor {
           this.isRefreshing = false;
           this.authService.logout();
           return throwError(() => err);
-        })
+        }),
       );
     }
 
     return this.refreshTokenSubject.pipe(
-      filter(token => token !== null),
+      filter((token) => token !== null),
       take(1),
-      switchMap(token => next.handle(this.addToken(request, token!)))
+      switchMap((token) => next.handle(this.addToken(request, token!))),
     );
   }
 }

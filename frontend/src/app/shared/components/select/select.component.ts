@@ -1,10 +1,23 @@
-import { Component, input, output, forwardRef, computed, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
+import {
+  Component,
+  input,
+  output,
+  forwardRef,
+  computed,
+  signal,
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormsModule,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from "@angular/forms";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { MatOptionModule } from "@angular/material/core";
+import { MatIconModule } from "@angular/material/icon";
 
 export interface SelectOption<T = any> {
   value: T;
@@ -14,18 +27,30 @@ export interface SelectOption<T = any> {
 }
 
 @Component({
-  selector: 'app-select',
+  selector: "app-select",
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, MatIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatIconModule,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => SelectComponent),
-      multi: true
-    }
+      multi: true,
+    },
   ],
   template: `
-    <mat-form-field [class]="computedClasses()" appearance="outline" subscriptSizing="dynamic">
+    <mat-form-field
+      [class]="computedClasses()"
+      appearance="outline"
+      subscriptSizing="dynamic"
+    >
       @if (label()) {
         <mat-label>{{ label() }}</mat-label>
       }
@@ -41,9 +66,15 @@ export interface SelectOption<T = any> {
         (selectionChange)="onSelectionChange($event)"
         (focus)="onFocus()"
         (blur)="onBlur()"
-        panelClass="custom-select-panel">
+        panelClass="custom-select-panel"
+      >
         @if (!multiple() && placeholder()) {
-          <mat-option value="" disabled [hidden]="value() !== null && value() !== ''">{{ placeholder() }}</mat-option>
+          <mat-option
+            value=""
+            disabled
+            [hidden]="value() !== null && value() !== ''"
+            >{{ placeholder() }}</mat-option
+          >
         }
 
         @if (groupedOptions().length > 0) {
@@ -76,41 +107,45 @@ export interface SelectOption<T = any> {
       }
     </mat-form-field>
   `,
-  styles: [`
-    :host {
-      display: block;
-      width: 100%;
-    }
+  styles: [
+    `
+      :host {
+        display: block;
+        width: 100%;
+      }
 
-    .full-width {
-      width: 100%;
-    }
+      .full-width {
+        width: 100%;
+      }
 
-    ::ng-deep .mat-mdc-form-field {
-      width: 100%;
-    }
+      ::ng-deep .mat-mdc-form-field {
+        width: 100%;
+      }
 
-    ::ng-deep .mat-mdc-select-panel {
-      max-height: 300px;
-    }
+      ::ng-deep .mat-mdc-select-panel {
+        max-height: 300px;
+      }
 
-    ::ng-deep .custom-select-panel .mat-mdc-option {
-      @apply px-3 py-2;
-    }
-  `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+      ::ng-deep .custom-select-panel .mat-mdc-option {
+        @apply px-3 py-2;
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponent<T = any> implements ControlValueAccessor {
   id = input<string>(Math.random().toString(36).substring(2, 9));
-  label = input<string>('');
-  placeholder = input<string>('');
+  label = input<string>("");
+  placeholder = input<string>("");
   options = input<SelectOption<T>[]>([]);
-  groupedOptions = input<{ label: string; options: SelectOption<T>[]; disabled?: boolean }[]>([]);
+  groupedOptions = input<
+    { label: string; options: SelectOption<T>[]; disabled?: boolean }[]
+  >([]);
   disabled = input<boolean>(false);
   required = input<boolean>(false);
-  error = input<string>('');
-  hint = input<string>('');
-  prefixIcon = input<string>('');
+  error = input<string>("");
+  hint = input<string>("");
+  prefixIcon = input<string>("");
   multiple = input<boolean>(false);
   compareWith = input<(a: T, b: T) => boolean>((a, b) => a === b);
 
@@ -124,7 +159,7 @@ export class SelectComponent<T = any> implements ControlValueAccessor {
   value = signal<T | T[] | null>(null);
 
   computedClasses = computed(() => {
-    return this.fullWidth() ? 'full-width' : '';
+    return this.fullWidth() ? "full-width" : "";
   });
 
   fullWidth = computed(() => true);

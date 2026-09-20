@@ -1,2 +1,2 @@
-export { Category } from './category.model';
-export { User } from './user.model';
+export { Category } from "./category.model";
+export { User } from "./user.model";

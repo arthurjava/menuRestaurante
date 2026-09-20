@@ -93,4 +93,8 @@ public class DishService {
     public void deleteDish(UUID id) {
         dishRepository.deleteById(id);
     }
+
+    public List<Dish> searchByName(String name) {
+        return dishRepository.findByNameContainingIgnoreCaseAndActiveTrue(name);
+    }
 }

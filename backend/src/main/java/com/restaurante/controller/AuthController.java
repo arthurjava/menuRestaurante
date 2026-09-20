@@ -42,7 +42,17 @@ public class AuthController {
                 .build();
         
         String token = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthResponse(token));
+        
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setName(user.getName());
+        userDTO.setRole(user.getRole().name());
+        userDTO.setActive(user.isActive());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setUpdatedAt(user.getUpdatedAt());
+        
+        return ResponseEntity.ok(new AuthResponse(token, userDTO));
     }
 
     @PostMapping("/register")
@@ -76,9 +86,14 @@ public class AuthController {
     }
 
     static class AuthResponse {
-        private String token;
+        private String accessToken;
+        private UserDTO user;
         
-        public AuthResponse(String token) { this.token = token; }
-        public String getToken() { return token; }
+        public AuthResponse(String accessToken, UserDTO user) { 
+            this.accessToken = accessToken;
+            this.user = user;
+        }
+        public String getAccessToken() { return accessToken; }
+        public UserDTO getUser() { return user; }
     }
 }

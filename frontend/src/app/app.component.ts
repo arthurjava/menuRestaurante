@@ -1,13 +1,14 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { LoadingService } from './core/services/loading.service';
-import { NotificationComponent } from './shared/components/notification/notification.component';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterOutlet } from "@angular/router";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { LoadingService } from "./core/services/loading.service";
+import { NotificationComponent } from "./shared/components/notification/notification.component";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   standalone: true,
-  imports: [RouterOutlet, MatProgressBarModule, NotificationComponent],
+  imports: [CommonModule, RouterOutlet, MatProgressBarModule, NotificationComponent],
   template: `
     <app-notification />
     <mat-progress-bar
@@ -18,13 +19,15 @@ import { NotificationComponent } from './shared/components/notification/notifica
     />
     <router-outlet />
   `,
-  styles: [`
-    :host {
-      display: block;
-      min-height: 100vh;
-    }
-  `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styles: [
+    `
+      :host {
+        display: block;
+        min-height: 100vh;
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   constructor(public loadingService: LoadingService) {}

@@ -13,4 +13,5 @@ public interface DishRepository extends JpaRepository<Dish, UUID> {
     List<Dish> findByCategoryIdAndActive(UUID categoryId, boolean active);
     List<Dish> findByActiveFalse();
     List<Dish> findByActiveTrueOrderByNameAsc();
+    List<Dish> findByNameContainingIgnoreCaseAndActiveTrue(String name);
 }

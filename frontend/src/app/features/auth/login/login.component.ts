@@ -1,20 +1,31 @@
-import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AuthService, LoginRequest } from '@core/services/auth.service';
-import { NotificationService } from '@core/services/notification.service';
-import { ButtonComponent } from '@shared/components/button/button.component';
-import { InputComponent } from '@shared/components/input/input.component';
+import {
+  Component,
+  signal,
+  computed,
+  inject,
+  ChangeDetectionStrategy,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from "@angular/forms";
+import { Router, RouterLink } from "@angular/router";
+import { MatCardModule } from "@angular/material/card";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { AuthService, LoginRequest } from "@core/services/auth.service";
+import { NotificationService } from "@core/services/notification.service";
+import { ButtonComponent } from "@shared/components/button/button.component";
+import { InputComponent } from "@shared/components/input/input.component";
 
 @Component({
-  selector: 'app-login',
+  selector: "app-login",
   standalone: true,
   imports: [
     CommonModule,
@@ -27,14 +38,18 @@ import { InputComponent } from '@shared/components/input/input.component';
     MatIconModule,
     MatProgressSpinnerModule,
     ButtonComponent,
-    InputComponent
+    InputComponent,
   ],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+    <div
+      class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12"
+    >
       <mat-card class="w-full max-w-md p-8">
         <div class="text-center mb-8">
           <h1 class="text-2xl font-bold text-gray-900">Entrar no Sistema</h1>
-          <p class="text-gray-600 mt-2">Acesse sua conta para gerenciar o cardápio</p>
+          <p class="text-gray-600 mt-2">
+            Acesse sua conta para gerenciar o cardápio
+          </p>
         </div>
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
@@ -45,7 +60,8 @@ import { InputComponent } from '@shared/components/input/input.component';
             placeholder="seu@email.com"
             prefixIcon="email"
             [error]="emailError()"
-            autocomplete="email">
+            autocomplete="email"
+          >
           </app-input>
 
           <app-input
@@ -55,15 +71,23 @@ import { InputComponent } from '@shared/components/input/input.component';
             placeholder="••••••••"
             prefixIcon="lock"
             [error]="passwordError()"
-            autocomplete="current-password">
+            autocomplete="current-password"
+          >
           </app-input>
 
           <div class="flex items-center justify-between">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" formControlName="rememberMe" class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+              <input
+                type="checkbox"
+                formControlName="rememberMe"
+                class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+              />
               <span class="text-sm text-gray-600">Lembrar-me</span>
             </label>
-            <a routerLink="/auth/forgot-password" class="text-sm text-indigo-600 hover:text-indigo-500">
+            <a
+              routerLink="/auth/forgot-password"
+              class="text-sm text-indigo-600 hover:text-indigo-500"
+            >
               Esqueceu a senha?
             </a>
           </div>
@@ -75,14 +99,18 @@ import { InputComponent } from '@shared/components/input/input.component';
             [fullWidth]="true"
             [label]="loading() ? 'Entrando...' : 'Entrar'"
             [loading]="loading()"
-            [disabled]="loginForm.invalid || loading()">
+            [disabled]="loginForm.invalid || loading()"
+          >
           </app-button>
         </form>
 
         <div class="mt-6 text-center">
           <p class="text-gray-600">
             Não tem uma conta?
-            <a routerLink="/auth/register" class="text-indigo-600 hover:text-indigo-500 font-medium ml-1">
+            <a
+              routerLink="/auth/register"
+              class="text-indigo-600 hover:text-indigo-500 font-medium ml-1"
+            >
               Cadastre-se
             </a>
           </p>
@@ -90,20 +118,22 @@ import { InputComponent } from '@shared/components/input/input.component';
       </mat-card>
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
+  styles: [
+    `
+      :host {
+        display: block;
+      }
 
-    mat-card {
-      @apply shadow-sm border border-gray-100;
-    }
+      mat-card {
+        @apply shadow-sm border border-gray-100;
+      }
 
-    ::ng-deep .mat-mdc-form-field {
-      @apply w-full;
-    }
-  `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+      ::ng-deep .mat-mdc-form-field {
+        @apply w-full;
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
@@ -114,27 +144,28 @@ export class LoginComponent {
   loading = signal(false);
 
   loginForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    rememberMe: [false]
+    email: ["", [Validators.required, Validators.email]],
+    password: ["", [Validators.required, Validators.minLength(6)]],
+    rememberMe: [false],
   });
 
   emailError = computed(() => {
-    const control = this.loginForm.get('email');
+    const control = this.loginForm.get("email");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'E-mail é obrigatório';
-      if (control.errors['email']) return 'E-mail inválido';
+      if (control.errors["required"]) return "E-mail é obrigatório";
+      if (control.errors["email"]) return "E-mail inválido";
     }
-    return '';
+    return "";
   });
 
   passwordError = computed(() => {
-    const control = this.loginForm.get('password');
+    const control = this.loginForm.get("password");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Senha é obrigatória';
-      if (control.errors['minlength']) return 'Senha deve ter no mínimo 6 caracteres';
+      if (control.errors["required"]) return "Senha é obrigatória";
+      if (control.errors["minlength"])
+        return "Senha deve ter no mínimo 6 caracteres";
     }
-    return '';
+    return "";
   });
 
   onSubmit(): void {
@@ -143,20 +174,20 @@ export class LoginComponent {
     this.loading.set(true);
     const credentials: LoginRequest = {
       email: this.loginForm.value.email,
-      password: this.loginForm.value.password
+      password: this.loginForm.value.password,
     };
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
         if (response) {
-          this.notification.success('Login realizado com sucesso!');
-          this.router.navigate(['/dashboard']);
+          this.notification.success("Login realizado com sucesso!");
+          this.router.navigate(["/dashboard"]);
         }
         this.loading.set(false);
       },
       error: () => {
         this.loading.set(false);
-      }
+      },
     });
   }
 }

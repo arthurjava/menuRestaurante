@@ -1,8 +1,11 @@
-import { Routes } from '@angular/router';
+import { Routes } from "@angular/router";
 
 export const categoriesRoutes: Routes = [
   {
-    path: '',
-    loadComponent: () => import('./categories-list.component').then(m => m.CategoriesListComponent)
-  }
+    path: "",
+    loadComponent: () =>
+      import("./categories-list.component").then(
+        (m) => m.CategoriesListComponent,
+      ),
+  },
 ];
