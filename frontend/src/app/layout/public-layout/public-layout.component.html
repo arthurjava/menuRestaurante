@@ -1,0 +1,166 @@
+<div class="public-layout min-h-screen bg-gray-50 flex flex-col">
+  <!-- Header -->
+  <header class="public-header sticky top-0 z-40">
+    <mat-toolbar class="public-header-toolbar">
+      <!-- Logo/Brand -->
+      <a routerLink="/menu" class="header-brand flex items-center gap-2" aria-label="Ir para o cardápio">
+        <div class="brand-icon w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center flex-shrink-0">
+          <mat-icon class="text-white text-xl">restaurant</mat-icon>
+        </div>
+        <span class="brand-text hidden sm:block text-lg font-bold text-gray-900">Restaurante</span>
+      </a>
+
+      <!-- Navigation for authenticated users -->
+      @if (isAuthenticated()) {
+        <nav class="header-nav hidden md:flex items-center gap-1 ml-8">
+          <a
+            routerLink="/menu"
+            routerLinkActive="active"
+            class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors">
+            Cardápio
+          </a>
+        </nav>
+      }
+
+      <div class="header-actions flex-1 flex justify-end items-center gap-2">
+        @if (isAuthenticated()) {
+          <!-- Notifications could go here -->
+          
+          <!-- User menu -->
+          <div class="header-user-menu relative">
+            <button
+              type="button"
+              class="header-user-btn flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+              [matMenuTriggerFor]="userMenu"
+              aria-label="Menu do usuário">
+              <div class="user-avatar w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-sm font-medium">
+                {{ userInitials() }}
+              </div>
+              <span class="user-name hidden sm:block text-sm font-medium text-gray-700 truncate max-w-[120px]">
+                {{ user()?.name || 'Usuário' }}
+              </span>
+              <mat-icon class="text-gray-400 text-sm">expand_more</mat-icon>
+            </button>
+
+            <mat-menu #userMenu="matMenu" class="user-menu" xPosition="before" yPosition="below">
+              <div class="user-menu-header p-3 border-b border-gray-100">
+                <div class="flex items-center gap-3">
+                  <div class="user-avatar w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-base font-medium">
+                    {{ userInitials() }}
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">{{ user()?.name || 'Usuário' }}</p>
+                    <p class="text-xs text-gray-500 truncate">{{ user()?.email }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <button
+                type="button"
+                mat-menu-item
+                class="user-menu-item"
+                routerLink="/settings"
+                routerLinkActive>
+                <mat-icon matMenuItemIcon class="text-gray-400">settings</mat-icon>
+                <span>Configurações</span>
+              </button>
+
+              <button
+                type="button"
+                mat-menu-item
+                class="user-menu-item"
+                routerLink="/profile"
+                routerLinkActive>
+                <mat-icon matMenuItemIcon class="text-gray-400">person</mat-icon>
+                <span>Meu perfil</span>
+              </button>
+
+              <mat-divider></mat-divider>
+
+              <button
+                type="button"
+                mat-menu-item
+                class="user-menu-item text-red-600"
+                (click)="logout()">
+                <mat-icon matMenuItemIcon>logout</mat-icon>
+                <span>Sair</span>
+              </button>
+            </mat-menu>
+          </div>
+        } @else {
+          <!-- Auth buttons -->
+          <div class="header-auth flex items-center gap-2">
+            <a
+              routerLink="/auth/login"
+              class="btn btn-secondary btn-sm hidden sm:flex"
+              matTooltip="Entrar">
+              <mat-icon class="mr-1.5">login</mat-icon>
+              Entrar
+            </a>
+            <a
+              routerLink="/auth/register"
+              class="btn btn-primary btn-sm"
+              matTooltip="Cadastrar">
+              <mat-icon class="mr-1.5">person_add</mat-icon>
+              <span class="hidden sm:inline">Cadastrar</span>
+            </a>
+          </div>
+        }
+      </div>
+    </mat-toolbar>
+  </header>
+
+  <!-- Main content -->
+  <main class="public-content flex-1">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="public-footer">
+    <div class="footer-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="footer-brand">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center">
+              <mat-icon class="text-white text-xl">restaurant</mat-icon>
+            </div>
+            <span class="text-xl font-bold text-gray-900">Restaurante</span>
+          </div>
+          <p class="text-gray-600 text-sm">Sistema de gestão para restaurantes</p>
+        </div>
+
+        <div class="footer-links">
+          <h4 class="font-semibold text-gray-900 mb-3">Links Rápidos</h4>
+          <nav class="space-y-2">
+            <a routerLink="/menu" class="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Cardápio</a>
+            <a routerLink="/auth/login" class="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Entrar</a>
+            <a routerLink="/auth/register" class="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Cadastrar</a>
+          </nav>
+        </div>
+
+        <div class="footer-contact">
+          <h4 class="font-semibold text-gray-900 mb-3">Contato</h4>
+          <address class="not-italic text-sm text-gray-600 space-y-2">
+            <p>Rua Exemplo, 123</p>
+            <p>Cidade - Estado</p>
+            <p>CEP 00000-000</p>
+            <p class="mt-2">
+              <a href="tel:+5511999999999" class="hover:text-gray-900 transition-colors">(11) 99999-9999</a>
+            </p>
+            <p>
+              <a href="mailto:contato@restaurante.com" class="hover:text-gray-900 transition-colors">contato@restaurante.com</a>
+            </p>
+          </address>
+        </div>
+      </div>
+
+      <div class="footer-bottom mt-8 pt-6 border-t border-gray-200">
+        <p class="text-center text-sm text-gray-500">
+          © {{ currentYear }} Restaurante. Todos os direitos reservados.
+        </p>
+      </div>
+    </div>
+  </footer>
+</div>

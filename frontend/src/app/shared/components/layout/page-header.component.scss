@@ -1,0 +1,43 @@
+.page-header {
+  @apply bg-white border-b border-gray-100 sticky top-0 z-30;
+}
+
+.page-header-content {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4;
+}
+
+.page-title-group {
+  @apply flex flex-col gap-1;
+}
+
+.page-icon {
+  @apply w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0;
+}
+
+.page-title {
+  @apply text-xl sm:text-2xl font-semibold text-gray-900;
+}
+
+.page-subtitle {
+  @apply text-sm text-gray-500;
+}
+
+.page-actions {
+  @apply flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto;
+}
+
+.breadcrumb-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 border-b border-gray-100;
+}
+
+.breadcrumb {
+  @apply flex items-center gap-2 text-sm;
+}
+
+.breadcrumb a {
+  @apply text-gray-500 hover:text-gray-700 transition-colors;
+}
+
+.breadcrumb span[aria-current="page"] {
+  @apply text-gray-900 font-medium;
+}

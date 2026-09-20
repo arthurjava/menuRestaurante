@@ -1,0 +1,114 @@
+.data-table-container {
+  @apply relative bg-white rounded-xl border border-gray-100 overflow-hidden;
+}
+
+.table-loading-overlay {
+  @apply absolute inset-0 bg-white/80 flex items-center justify-center z-10;
+}
+
+.table-wrapper {
+  @apply overflow-x-auto;
+}
+
+.data-table {
+  @apply w-full min-w-max;
+}
+
+// Header cells
+.data-table th.mat-header-cell {
+  @apply px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 border-b border-gray-100;
+  @apply sticky top-0 z-10;
+}
+
+.data-table th.mat-header-cell:first-child {
+  @apply rounded-tl-none;
+}
+
+.data-table th.mat-header-cell:last-child {
+  @apply rounded-tr-none;
+}
+
+// Body cells
+.data-table td.mat-cell {
+  @apply px-4 py-3 text-sm text-gray-900 border-b border-gray-50;
+}
+
+.data-table tr.mat-row {
+  @apply transition-colors duration-150;
+}
+
+.data-table tr.mat-row:last-child td {
+  @apply border-b-0;
+}
+
+// Striped rows
+.data-table.striped tr.mat-row:nth-child(even) {
+  @apply bg-gray-50;
+}
+
+// Hoverable rows
+.data-table.hoverable tr.mat-row:hover {
+  @apply bg-gray-50;
+}
+
+// Selected row
+.data-table tr.mat-row.selected {
+  @apply bg-primary-50;
+}
+
+// Row clickable
+.data-table.row-clickable tr.mat-row {
+  @apply cursor-pointer;
+}
+
+.data-table.row-clickable tr.mat-row:hover {
+  @apply bg-gray-50;
+}
+
+// Sticky columns
+.sticky-start { @apply sticky left-0 bg-white z-20; }
+.sticky-end { @apply sticky right-0 bg-white z-20; }
+
+// Actions column
+.table-actions {
+  @apply flex items-center justify-end gap-1;
+}
+
+.table-actions button {
+  @apply p-1 rounded-lg transition-colors;
+}
+
+.table-actions button:hover {
+  @apply bg-gray-100;
+}
+
+.table-actions button:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+// Selection column
+.mat-column-select {
+  @apply w-12;
+}
+
+.mat-column-select .mat-mdc-checkbox {
+  @apply flex justify-center;
+}
+
+// Paginator
+.table-paginator {
+  @apply border-t border-gray-100 bg-white px-4 py-2;
+}
+
+// Empty state container
+:host ::ng-deep .empty-state {
+  @apply py-12 px-4;
+}
+
+// Responsive
+@media (max-width: 640px) {
+  .data-table th.mat-header-cell,
+  .data-table td.mat-cell {
+    @apply px-3 py-2 text-xs;
+  }
+}

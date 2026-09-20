@@ -1,0 +1,64 @@
+.form-section {
+  @apply border border-gray-200 rounded-xl bg-white;
+}
+
+.form-section.has-error {
+  @apply border-red-300;
+}
+
+.form-section-legend {
+  @apply px-4 py-3 border-b border-gray-100 bg-gray-50 rounded-t-xl;
+}
+
+.form-section-legend .flex {
+  @apply items-center gap-2;
+}
+
+.form-section-hint {
+  @apply text-sm text-gray-500 mt-1 mb-0;
+}
+
+.form-section-content {
+  @apply p-4;
+}
+
+.form-section-error {
+  @apply flex items-center gap-1.5 mt-2 text-sm text-red-600 px-4;
+}
+
+.error-summary {
+  @apply p-3 bg-red-50 border border-red-200 rounded-lg;
+}
+
+.error-summary ul {
+  @apply space-y-1;
+}
+
+.error-summary li {
+  @apply text-sm text-red-700;
+}
+
+// Expansion panel variant
+.form-section-panel {
+  @apply border border-gray-200 rounded-xl bg-white shadow-sm;
+}
+
+.form-section-panel.mat-expansion-panel {
+  @apply mb-0;
+}
+
+.form-section-header {
+  @apply px-4 py-3;
+}
+
+.form-section-header .mat-expansion-panel-header-title {
+  @apply flex items-center gap-2;
+}
+
+.form-section-panel .form-section-content {
+  @apply p-4;
+}
+
+.form-section-panel .error-summary {
+  @apply mx-4 mb-4 p-3 bg-red-50 border border-red-200 rounded-lg;
+}

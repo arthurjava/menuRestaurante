@@ -1,0 +1,78 @@
+@if (collapsible) {
+  <mat-expansion-panel [expanded]="expanded" class="form-section-panel">
+    <mat-expansion-panel-header class="form-section-header">
+      <mat-panel-title class="flex items-center gap-2">
+        @if (icon) {
+          <mat-icon class="text-gray-400">{{ icon }}</mat-icon>
+        }
+        <span class="font-medium text-gray-900">{{ label }}</span>
+        @if (required) {
+          <span class="text-red-500 text-sm" aria-hidden="true">*</span>
+        }
+      </mat-panel-title>
+      @if (hasHint()) {
+        <mat-panel-description>
+          <span class="text-sm text-gray-500">{{ hint }}</span>
+        </mat-panel-description>
+      }
+    </mat-expansion-panel-header>
+
+    <div class="form-section-content p-4">
+      <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
+    </div>
+
+    @if (hasErrorSummary()) {
+      <div class="error-summary p-4 bg-red-50 border-t border-red-100">
+        <div class="flex items-start gap-2">
+          <mat-icon class="text-red-500 mt-0.5">error_outline</mat-icon>
+          <ul class="space-y-1">
+            @for (error of errorSummary; track error) {
+              <li class="text-sm text-red-700">{{ error }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
+  </mat-expansion-panel>
+} @else {
+  <fieldset class="form-section" [class.has-error]="hasError()">
+    <legend class="form-section-legend">
+      <div class="flex items-center gap-2">
+        @if (icon) {
+          <mat-icon class="text-gray-400">{{ icon }}</mat-icon>
+        }
+        <span class="font-medium text-gray-900">{{ label }}</span>
+        @if (required) {
+          <span class="text-red-500" aria-hidden="true">*</span>
+        }
+      </div>
+      @if (hasHint()) {
+        <p class="form-section-hint text-sm text-gray-500 mt-1">{{ hint }}</p>
+      }
+    </legend>
+
+    <div class="form-section-content">
+      <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
+    </div>
+
+    @if (hasError()) {
+      <div class="form-section-error flex items-center gap-1.5 mt-2 text-sm text-red-600">
+        <mat-icon class="text-base">error_outline</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+    }
+
+    @if (hasErrorSummary()) {
+      <div class="error-summary mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+        <div class="flex items-start gap-2">
+          <mat-icon class="text-red-500 mt-0.5">error_outline</mat-icon>
+          <ul class="space-y-1">
+            @for (error of errorSummary; track error) {
+              <li class="text-sm text-red-700">{{ error }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
+  </fieldset>
+}

@@ -1,0 +1,29 @@
+<app-base-modal
+  [isOpen]="isOpen"
+  (isOpenChange)="isOpenChange.emit($event)"
+  [config]="configSignal()">
+  <div class="text-center py-2">
+    <p class="text-gray-600 text-base leading-relaxed">{{ config.message }}</p>
+  </div>
+
+  <div modalActions class="w-full sm:w-auto flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
+    <button
+      type="button"
+      class="btn btn-secondary w-full sm:w-auto"
+      (click)="onCancel()"
+      [disabled]="config.loading">
+      {{ config.cancelLabel }}
+    </button>
+    <button
+      type="button"
+      class="w-full sm:w-auto"
+      [class]="variantConfig().confirmColor"
+      (click)="onConfirm()"
+      [disabled]="config.loading">
+      @if (config.loading) {
+        <mat-spinner diameter="20" class="mr-2"></mat-spinner>
+      }
+      {{ config.confirmLabel }}
+    </button>
+  </div>
+</app-base-modal>

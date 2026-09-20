@@ -1,0 +1,66 @@
+.loading-container {
+  @apply flex flex-col items-center justify-center;
+}
+
+.loading-overlay {
+  @apply fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center;
+}
+
+.loading-content {
+  @apply bg-white rounded-xl shadow-xl;
+}
+
+.loading-dot {
+  @apply w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 lg:w-3.5 lg:h-3.5;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.animate-bounce {
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.skeleton-line {
+  @apply bg-gray-200 rounded;
+}
+
+.skeleton-avatar {
+  @apply bg-gray-200 rounded-full;
+}
+
+.skeleton-card {
+  @apply bg-gray-100 rounded-xl;
+}
+
+.skeleton-table-row {
+  @apply bg-gray-100;
+}
+
+.skeleton-cell {
+  @apply bg-gray-200 rounded;
+}
+
+.skeleton-actions {
+  @apply bg-gray-200 rounded;
+}
+
+.skeleton-button {
+  @apply bg-gray-200 rounded-lg;
+}
+
+.skeleton-image {
+  @apply bg-gray-200 rounded-lg;
+}
+
+// Pulse animation for skeleton
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

@@ -1,0 +1,9 @@
+:host {
+  @apply block;
+}
+
+.form-modal-form {
+  @apply space-y-4;
+}
+
+// Button styles are global via @layer components in styles.scss

@@ -1,14 +1,35 @@
-import { Component, input, output, signal, effect, computed, ChangeDetectionStrategy, HostBinding, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTabsModule } from '@angular/material/tabs';
-import { ButtonComponent } from '../button/button.component';
-import { InputComponent } from '../input/input.component';
-import { SelectComponent } from '../select/select.component';
-import { ImageUploadComponent, ImageFile } from '../image-upload/image-upload.component';
-import { ImageUploadService, UploadedImage } from '../../../core/services/image-upload.service';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  effect,
+  computed,
+  ChangeDetectionStrategy,
+  HostBinding,
+  inject,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from "@angular/forms";
+import { MatIconModule } from "@angular/material/icon";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatTabsModule } from "@angular/material/tabs";
+import { ButtonComponent } from "../button/button.component";
+import { InputComponent } from "../input/input.component";
+import { SelectComponent } from "../select/select.component";
+import {
+  ImageUploadComponent,
+  ImageFile,
+} from "../image-upload/image-upload.component";
+import {
+  ImageUploadService,
+  UploadedImage,
+} from "../../../core/services/image-upload.service";
 
 export interface DishFormData {
   name: string;
@@ -25,7 +46,7 @@ export interface CategoryOption {
 }
 
 @Component({
-  selector: 'app-dish-modal',
+  selector: "app-dish-modal",
   standalone: true,
   imports: [
     CommonModule,
@@ -36,7 +57,7 @@ export interface CategoryOption {
     ButtonComponent,
     InputComponent,
     SelectComponent,
-    ImageUploadComponent
+    ImageUploadComponent,
   ],
   template: `
     <div class="fixed inset-0 z-50 overflow-y-auto" @fadeIn>
@@ -44,19 +65,23 @@ export interface CategoryOption {
         <!-- Backdrop -->
         <div
           class="fixed inset-0 bg-black/50 transition-opacity"
-          (click)="onBackdropClick()">
-        </div>
+          (click)="onBackdropClick()"
+        ></div>
 
         <!-- Modal Container -->
         <div
           class="relative w-full max-w-4xl bg-white rounded-xl shadow-xl transform transition-all max-h-[90vh]"
-          @slideUp>
-          
-          <div class="flex items-center justify-between p-4 border-b border-gray-100">
+          @slideUp
+        >
+          <div
+            class="flex items-center justify-between p-4 border-b border-gray-100"
+          >
             <div>
               <div class="flex items-center gap-2">
                 <mat-icon class="text-indigo-600">restaurant_menu</mat-icon>
-                <h2 class="text-lg font-semibold text-gray-900">{{ title() }}</h2>
+                <h2 class="text-lg font-semibold text-gray-900">
+                  {{ title() }}
+                </h2>
               </div>
               <p class="text-sm text-gray-500 mt-0.5">{{ description() }}</p>
             </div>
@@ -64,7 +89,8 @@ export interface CategoryOption {
               type="button"
               class="p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
               (click)="cancel()"
-              aria-label="Fechar modal">
+              aria-label="Fechar modal"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -73,14 +99,17 @@ export interface CategoryOption {
             <mat-tab-group animationDuration="200ms" class="w-full">
               <!-- Basic Info Tab -->
               <mat-tab label="Informações Básicas">
-                <div class="p-4 space-y-4 overflow-y-auto max-h-[calc(90vh-200px)]">
+                <div
+                  class="p-4 space-y-4 overflow-y-auto max-h-[calc(90vh-200px)]"
+                >
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <app-input
                       formControlName="name"
                       label="Nome do Prato *"
                       type="text"
                       placeholder="Ex: Salmão Grelhado"
-                      [error]="nameError()">
+                      [error]="nameError()"
+                    >
                     </app-input>
 
                     <app-select
@@ -88,21 +117,25 @@ export interface CategoryOption {
                       label="Categoria *"
                       [options]="categoryOptions()"
                       placeholder="Selecione a categoria"
-                      [error]="categoryError()">
+                      [error]="categoryError()"
+                    >
                     </app-select>
                   </div>
 
                   <div>
-                      <label class="label">Descrição</label>
-                      <textarea
-                        formControlName="description"
-                        class="input min-h-[100px] resize-y"
-                        placeholder="Descreva o prato, ingredientes, modo de preparo...">
-                      </textarea>
-                      @if (descriptionError()) {
-                        <p class="text-sm text-red-600 mt-1">{{ descriptionError() }}</p>
-                      }
-                    </div>
+                    <label class="label">Descrição</label>
+                    <textarea
+                      formControlName="description"
+                      class="input min-h-[100px] resize-y"
+                      placeholder="Descreva o prato, ingredientes, modo de preparo..."
+                    >
+                    </textarea>
+                    @if (descriptionError()) {
+                      <p class="text-sm text-red-600 mt-1">
+                        {{ descriptionError() }}
+                      </p>
+                    }
+                  </div>
 
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -113,9 +146,12 @@ export interface CategoryOption {
                         class="input"
                         step="0.01"
                         min="0"
-                        placeholder="0,00" />
+                        placeholder="0,00"
+                      />
                       @if (priceError()) {
-                        <p class="text-sm text-red-600 mt-1">{{ priceError() }}</p>
+                        <p class="text-sm text-red-600 mt-1">
+                          {{ priceError() }}
+                        </p>
                       }
                     </div>
 
@@ -126,12 +162,18 @@ export interface CategoryOption {
                         formControlName="displayOrder"
                         class="input"
                         min="0"
-                        step="1" />
+                        step="1"
+                      />
                     </div>
 
                     <div class="flex items-end">
-                      <label class="flex items-center gap-2 cursor-pointer w-full">
-                        <mat-slide-toggle formControlName="active" class="w-auto"></mat-slide-toggle>
+                      <label
+                        class="flex items-center gap-2 cursor-pointer w-full"
+                      >
+                        <mat-slide-toggle
+                          formControlName="active"
+                          class="w-auto"
+                        ></mat-slide-toggle>
                         <span class="text-sm text-gray-600">Prato ativo</span>
                       </label>
                     </div>
@@ -149,17 +191,21 @@ export interface CategoryOption {
                     [existingImages]="existingImages()"
                     (imagesChange)="onImagesChange($event)"
                     (uploadComplete)="onImagesUploadComplete($event)"
-                    (uploadError)="onImageError($event)">
+                    (uploadError)="onImageError($event)"
+                  >
                   </app-image-upload>
                 </div>
               </mat-tab>
             </mat-tab-group>
 
-            <div class="flex items-center justify-end gap-3 p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl">
+            <div
+              class="flex items-center justify-end gap-3 p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl"
+            >
               <app-button
                 variant="secondary"
                 label="Cancelar"
-                (clicked)="cancel()">
+                (clicked)="cancel()"
+              >
               </app-button>
               <app-button
                 variant="primary"
@@ -167,7 +213,8 @@ export interface CategoryOption {
                 [loading]="confirmLoading()"
                 [disabled]="form.invalid || confirmLoading()"
                 type="submit"
-                (clicked)="onSubmit()">
+                (clicked)="onSubmit()"
+              >
               </app-button>
             </div>
           </form>
@@ -175,44 +222,60 @@ export interface CategoryOption {
       </div>
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
-
-    :host(.hidden) {
-      display: none;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .fade-in { animation: fadeIn 0.2s ease-out; }
-    .slide-up { animation: slideUp 0.2s ease-out; }
-
-    :host ::ng-deep .mat-mdc-tab-group {
-      @apply w-full;
-    }
-
-    :host ::ng-deep .mat-mdc-tab-body-wrapper {
-      @apply h-auto;
-    }
-
-    @media (max-width: 768px) {
-      :host ::ng-deep .mat-mdc-tab-label {
-        @apply px-2 py-2 text-sm;
+  styles: [
+    `
+      :host {
+        display: block;
       }
-    }
-  `],
+
+      :host(.hidden) {
+        display: none;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .fade-in {
+        animation: fadeIn 0.2s ease-out;
+      }
+      .slide-up {
+        animation: slideUp 0.2s ease-out;
+      }
+
+      :host ::ng-deep .mat-mdc-tab-group {
+        @apply w-full;
+      }
+
+      :host ::ng-deep .mat-mdc-tab-body-wrapper {
+        @apply h-auto;
+      }
+
+      @media (max-width: 768px) {
+        :host ::ng-deep .mat-mdc-tab-label {
+          @apply px-2 py-2 text-sm;
+        }
+      }
+    `,
+  ],
   animations: [],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DishModalComponent {
   // State
@@ -220,15 +283,15 @@ export class DishModalComponent {
   isOpenChange = output<boolean>();
 
   // Content
-  title = input<string>('Novo Prato');
-  description = input<string>('Preencha os dados para criar um novo prato');
-  confirmLabel = input<string>('Criar prato');
+  title = input<string>("Novo Prato");
+  description = input<string>("Preencha os dados para criar um novo prato");
+  confirmLabel = input<string>("Criar prato");
   confirmLoading = input<boolean>(false);
 
   // Data
   categoryOptions = input<CategoryOption[]>([]);
   existingImages = input<UploadedImage[]>([]);
-  dishId = input<string>('');
+  dishId = input<string>("");
 
   // Events
   confirmed = output<DishFormData>();
@@ -242,15 +305,15 @@ export class DishModalComponent {
   private _wasOpen = signal(false);
 
   form: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.maxLength(100)]],
-    description: ['', [Validators.maxLength(1000)]],
+    name: ["", [Validators.required, Validators.maxLength(100)]],
+    description: ["", [Validators.maxLength(1000)]],
     price: [0, [Validators.required, Validators.min(0)]],
-    categoryId: ['', [Validators.required]],
+    categoryId: ["", [Validators.required]],
     active: [true],
-    displayOrder: [0, [Validators.min(0)]]
+    displayOrder: [0, [Validators.min(0)]],
   });
 
-  @HostBinding('class.hidden')
+  @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
@@ -297,36 +360,37 @@ export class DishModalComponent {
   }
 
   nameError = computed(() => {
-    const control = this.form.get('name');
+    const control = this.form.get("name");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Nome é obrigatório';
-      if (control.errors['maxlength']) return 'Nome deve ter no máximo 100 caracteres';
+      if (control.errors["required"]) return "Nome é obrigatório";
+      if (control.errors["maxlength"])
+        return "Nome deve ter no máximo 100 caracteres";
     }
-    return '';
+    return "";
   });
 
   descriptionError = computed(() => {
-    const control = this.form.get('description');
-    if (control?.touched && control?.errors?.['maxlength']) {
-      return 'Descrição deve ter no máximo 1000 caracteres';
+    const control = this.form.get("description");
+    if (control?.touched && control?.errors?.["maxlength"]) {
+      return "Descrição deve ter no máximo 1000 caracteres";
     }
-    return '';
+    return "";
   });
 
   priceError = computed(() => {
-    const control = this.form.get('price');
+    const control = this.form.get("price");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Preço é obrigatório';
-      if (control.errors['min']) return 'Preço deve ser maior ou igual a zero';
+      if (control.errors["required"]) return "Preço é obrigatório";
+      if (control.errors["min"]) return "Preço deve ser maior ou igual a zero";
     }
-    return '';
+    return "";
   });
 
   categoryError = computed(() => {
-    const control = this.form.get('categoryId');
-    if (control?.touched && control?.errors?.['required']) {
-      return 'Categoria é obrigatória';
+    const control = this.form.get("categoryId");
+    if (control?.touched && control?.errors?.["required"]) {
+      return "Categoria é obrigatória";
     }
-    return '';
+    return "";
   });
 }

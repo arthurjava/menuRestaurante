@@ -1,0 +1,53 @@
+<div class="toast-container" @toastList>
+  @for (toast of toasts; track trackById($index, toast)) {
+    <div
+      class="toast"
+      [class]="getTypeConfig(toast.type).bgColor"
+      @toastItem
+      role="alert"
+      [attr.aria-live]="toast.type === 'error' ? 'assertive' : 'polite'">
+      
+      <div class="toast-content flex items-start gap-3">
+        <div class="toast-icon flex-shrink-0 mt-0.5" [class]="getTypeConfig(toast.type).color">
+          <mat-icon class="text-xl">{{ getTypeConfig(toast.type).icon }}</mat-icon>
+        </div>
+
+        <div class="toast-message flex-1 min-w-0">
+          <h4 class="toast-title font-medium text-gray-900">{{ toast.title }}</h4>
+          @if (toast.message) {
+            <p class="toast-description text-sm text-gray-600 mt-0.5">{{ toast.message }}</p>
+          }
+          @if (toast.actionLabel && toast.action) {
+            <button
+              type="button"
+              class="toast-action mt-2 text-sm font-medium"
+              [class]="getTypeConfig(toast.type).color.replace('text-', 'hover:text-') + ' underline'"
+              (click)="onAction(toast)">
+              {{ toast.actionLabel }}
+            </button>
+          }
+        </div>
+
+        @if (!toast.persistent) {
+          <button
+            type="button"
+            class="toast-close flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+            (click)="onDismiss(toast.id)"
+            aria-label="Fechar notificação">
+            <mat-icon class="text-lg">close</mat-icon>
+          </button>
+        }
+      </div>
+
+      @if (!toast.persistent && toast.duration) {
+        <div class="toast-progress h-1 mt-3 rounded-full overflow-hidden bg-gray-200">
+          <div
+            class="toast-progress-bar h-full rounded-full transition-all duration-100 ease-linear"
+            [class]="getTypeConfig(toast.type).color.replace('text-', 'bg-')"
+            [style.width.%]="getProgress(toast)">
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

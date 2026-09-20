@@ -1,20 +1,55 @@
-import { Component, input, output, computed, effect, signal, ChangeDetectionStrategy, HostBinding, TemplateRef, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { ButtonComponent } from '../button/button.component';
-import { CatFormComponent, CategoryFormData } from './cat-form.component';
-import { DelConfirmComponent } from './del-confirm.component';
-import { ReorderWrapperComponent, ReorderItem, ReorderModalConfig } from './reorder-wrapper.component';
-import { DishFormComponent, DishFormData, CategoryOption } from './dish-form.component';
-import { UserFormComponent, UserFormData, RoleOption } from './user-form.component';
+import {
+  Component,
+  input,
+  output,
+  computed,
+  effect,
+  signal,
+  ChangeDetectionStrategy,
+  HostBinding,
+  TemplateRef,
+  inject,
+} from "@angular/core";
+import {
+  trigger,
+  transition,
+  style,
+  animate,
+} from "@angular/animations";
+import { CommonModule } from "@angular/common";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { ButtonComponent } from "../button/button.component";
+import { CatFormComponent, CategoryFormData } from "./cat-form.component";
+import { DelConfirmComponent } from "./del-confirm.component";
+import {
+  ReorderWrapperComponent,
+  ReorderItem,
+  ReorderModalConfig,
+} from "./reorder-wrapper.component";
+import {
+  DishFormComponent,
+  DishFormData,
+  CategoryOption,
+} from "./dish-form.component";
+import {
+  UserFormComponent,
+  UserFormData,
+  RoleOption,
+} from "./user-form.component";
 
-export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
-export type ModalVariant = 'default' | 'category-form' | 'confirm' | 'reorder' | 'dish-form' | 'user-form';
+export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
+export type ModalVariant =
+  | "default"
+  | "category-form"
+  | "confirm"
+  | "reorder"
+  | "dish-form"
+  | "user-form";
 
 @Component({
-  selector: 'app-modal',
+  selector: "app-modal",
   standalone: true,
   imports: [
     CommonModule,
@@ -26,7 +61,7 @@ export type ModalVariant = 'default' | 'category-form' | 'confirm' | 'reorder' |
     DelConfirmComponent,
     ReorderWrapperComponent,
     DishFormComponent,
-    UserFormComponent
+    UserFormComponent,
   ],
   template: `
     <div class="fixed inset-0 z-50 overflow-y-auto" @fadeIn>
@@ -34,20 +69,24 @@ export type ModalVariant = 'default' | 'category-form' | 'confirm' | 'reorder' |
         <!-- Backdrop -->
         <div
           class="fixed inset-0 bg-black/50 transition-opacity"
-          (click)="onBackdropClick()">
-        </div>
+          (click)="onBackdropClick()"
+        ></div>
 
         <!-- Modal Container -->
         <div
           class="relative w-full bg-white rounded-xl shadow-xl transform transition-all"
           [class]="modalSizeClass()"
-          @slideUp>
-          
-          <div class="flex items-center justify-between p-4 border-b border-gray-100">
+          @slideUp
+        >
+          <div
+            class="flex items-center justify-between p-4 border-b border-gray-100"
+          >
             <div>
               <div class="flex items-center gap-2">
                 <mat-icon [class]="iconColor()">{{ icon() }}</mat-icon>
-                <h2 class="text-lg font-semibold text-gray-900">{{ title() }}</h2>
+                <h2 class="text-lg font-semibold text-gray-900">
+                  {{ title() }}
+                </h2>
               </div>
               @if (description()) {
                 <p class="text-sm text-gray-500 mt-0.5">{{ description() }}</p>
@@ -58,28 +97,32 @@ export type ModalVariant = 'default' | 'category-form' | 'confirm' | 'reorder' |
                 type="button"
                 class="p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
                 (click)="close()"
-                aria-label="Fechar modal">
+                aria-label="Fechar modal"
+              >
                 <mat-icon>close</mat-icon>
               </button>
             }
           </div>
 
           <div class="p-4 max-h-[calc(100vh-200px)] overflow-y-auto">
-            @if (variant() === 'default') {
+            @if (variant() === "default") {
               @if (contentTemplate()) {
-                <ng-template [ngTemplateOutlet]="contentTemplate()"></ng-template>
+                <ng-template
+                  [ngTemplateOutlet]="contentTemplate()"
+                ></ng-template>
               }
             }
-            @if (variant() === 'category-form') {
+            @if (variant() === "category-form") {
               <app-cat-form
                 [confirmLabel]="confirmLabel()"
                 [confirmLoading]="confirmLoading()"
                 [initialData]="categoryInitialData()"
                 (confirmed)="categoryConfirmed.emit($event)"
-                (cancelled)="cancel()">
+                (cancelled)="cancel()"
+              >
               </app-cat-form>
             }
-            @if (variant() === 'confirm') {
+            @if (variant() === "confirm") {
               <app-del-confirm
                 [description]="description()"
                 [confirmLabel]="confirmLabel()"
@@ -87,29 +130,32 @@ export type ModalVariant = 'default' | 'category-form' | 'confirm' | 'reorder' |
                 [confirmLoading]="confirmLoading()"
                 [cancelLabel]="cancelLabel()"
                 (confirmed)="confirmed.emit()"
-                (cancelled)="cancel()">
+                (cancelled)="cancel()"
+              >
               </app-del-confirm>
             }
-            @if (variant() === 'reorder') {
+            @if (variant() === "reorder") {
               <app-reorder-list
                 [items]="reorderItemsInput()"
                 [config]="reorderConfig()"
                 [confirmLoading]="confirmLoading()"
                 (confirmed)="reorderConfirmed.emit($event)"
-                (cancelled)="cancel()">
+                (cancelled)="cancel()"
+              >
               </app-reorder-list>
             }
-            @if (variant() === 'dish-form') {
+            @if (variant() === "dish-form") {
               <app-dish-form
                 [confirmLabel]="confirmLabel()"
                 [confirmLoading]="confirmLoading()"
                 [categoryOptions]="dishCategoryOptions()"
                 [initialData]="dishInitialData()"
                 (confirmed)="dishConfirmed.emit($event)"
-                (cancelled)="cancel()">
+                (cancelled)="cancel()"
+              >
               </app-dish-form>
             }
-            @if (variant() === 'user-form') {
+            @if (variant() === "user-form") {
               <app-user-form
                 [confirmLabel]="confirmLabel()"
                 [confirmLoading]="confirmLoading()"
@@ -117,18 +163,22 @@ export type ModalVariant = 'default' | 'category-form' | 'confirm' | 'reorder' |
                 [initialData]="userInitialData()"
                 [editing]="userEditing()"
                 (confirmed)="userConfirmed.emit($event)"
-                (cancelled)="cancel()">
+                (cancelled)="cancel()"
+              >
               </app-user-form>
             }
           </div>
 
           @if (showFooter()) {
-            <div class="flex items-center justify-end gap-3 p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl">
+            <div
+              class="flex items-center justify-end gap-3 p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl"
+            >
               @if (cancelLabel()) {
                 <app-button
                   variant="secondary"
                   [label]="cancelLabel()"
-                  (clicked)="cancel()">
+                  (clicked)="cancel()"
+                >
                 </app-button>
               }
               <app-button
@@ -136,7 +186,8 @@ export type ModalVariant = 'default' | 'category-form' | 'confirm' | 'reorder' |
                 [label]="confirmLabel()"
                 [loading]="confirmLoading()"
                 [disabled]="isConfirmDisabled()"
-                (clicked)="onConfirmClick()">
+                (clicked)="onConfirmClick()"
+              >
               </app-button>
             </div>
           }
@@ -144,30 +195,65 @@ export type ModalVariant = 'default' | 'category-form' | 'confirm' | 'reorder' |
       </div>
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
+  styles: [
+    `
+      :host {
+        display: block;
+      }
 
-    :host(.hidden) {
-      display: none;
-    }
+      :host(.hidden) {
+        display: none;
+      }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
 
-    .fade-in { animation: fadeIn 0.2s ease-out; }
-    .slide-up { animation: slideUp 0.2s ease-out; }
-  `],
-  animations: [],
-  changeDetection: ChangeDetectionStrategy.OnPush
+      .fade-in {
+        animation: fadeIn 0.2s ease-out;
+      }
+      .slide-up {
+        animation: slideUp 0.2s ease-out;
+      }
+    `,
+  ],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('0.2s ease-out', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('0.2s ease-out', style({ opacity: 0 }))
+      ])
+    ]),
+    trigger('slideUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px) scale(0.95)' }),
+        animate('0.2s ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))
+      ]),
+      transition(':leave', [
+        animate('0.2s ease-out', style({ opacity: 0, transform: 'translateY(20px) scale(0.95)' }))
+      ])
+    ])
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalComponent {
   // State
@@ -175,14 +261,14 @@ export class ModalComponent {
   isOpenChange = output<boolean>();
 
   // Content
-  title = input<string>('');
-  description = input<string>('');
-  icon = input<string>('');
-  iconColor = input<string>('text-indigo-600');
+  title = input<string>("");
+  description = input<string>("");
+  icon = input<string>("");
+  iconColor = input<string>("text-indigo-600");
   contentTemplate = input<TemplateRef<unknown> | null>(null);
 
   // Variant
-  variant = input<ModalVariant>('default');
+  variant = input<ModalVariant>("default");
 
   // Header/Footer
   showHeader = input<boolean>(true);
@@ -190,29 +276,29 @@ export class ModalComponent {
   closable = input<boolean>(true);
 
   // Footer actions
-  cancelLabel = input<string>('Cancelar');
-  confirmLabel = input<string>('Confirmar');
-  confirmVariant = input<'primary' | 'danger' | 'secondary'>('primary');
+  cancelLabel = input<string>("Cancelar");
+  confirmLabel = input<string>("Confirmar");
+  confirmVariant = input<"primary" | "danger" | "secondary">("primary");
   confirmLoading = input<boolean>(false);
   confirmDisabled = input<boolean>(false);
 
   // Size
-  size = input<ModalSize>('md');
+  size = input<ModalSize>("md");
 
   // Category form data
   categoryInitialData = input<CategoryFormData | null>(null);
 
   // Confirm variant data
-  confirmIcon = input<string>('warning');
-  confirmIconColor = input<string>('text-yellow-600');
+  confirmIcon = input<string>("warning");
+  confirmIconColor = input<string>("text-yellow-600");
 
   // Reorder variant data
   reorderItemsInput = input<ReorderItem[]>([]);
   reorderConfig = input<ReorderModalConfig>({
-    title: 'Reordenar Itens',
-    description: 'Arraste e solte para definir a ordem',
-    confirmLabel: 'Salvar ordem',
-    emptyMessage: 'Nenhum item para reordenar'
+    title: "Reordenar Itens",
+    description: "Arraste e solte para definir a ordem",
+    confirmLabel: "Salvar ordem",
+    emptyMessage: "Nenhum item para reordenar",
   });
 
   // Dish form data
@@ -221,9 +307,9 @@ export class ModalComponent {
 
   // User form data
   userRoleOptions = input<RoleOption[]>([
-    { value: 'ADMIN', label: 'Administrador' },
-    { value: 'MANAGER', label: 'Gerente' },
-    { value: 'STAFF', label: 'Funcionário' }
+    { value: "ADMIN", label: "Administrador" },
+    { value: "MANAGER", label: "Gerente" },
+    { value: "STAFF", label: "Funcionário" },
   ]);
   userInitialData = input<UserFormData | null>(null);
   userEditing = input<boolean>(false);
@@ -239,18 +325,18 @@ export class ModalComponent {
 
   private _wasOpen = signal(false);
 
-  @HostBinding('class.hidden')
+  @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
 
   modalSizeClass = computed(() => {
     const sizes = {
-      sm: 'modal-sm',
-      md: 'modal-md',
-      lg: 'modal-lg',
-      xl: 'modal-xl',
-      full: 'modal-full'
+      sm: "modal-sm",
+      md: "modal-md",
+      lg: "modal-lg",
+      xl: "modal-xl",
+      full: "modal-full",
     };
     return sizes[this.size()];
   });
@@ -283,10 +369,10 @@ export class ModalComponent {
 
   onConfirmClick(): void {
     switch (this.variant()) {
-      case 'category-form':
-      case 'dish-form':
-      case 'user-form':
-      case 'reorder':
+      case "category-form":
+      case "dish-form":
+      case "user-form":
+      case "reorder":
         // Handled by child components
         break;
       default:

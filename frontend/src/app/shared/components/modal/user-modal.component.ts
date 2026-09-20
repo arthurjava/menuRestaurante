@@ -1,10 +1,25 @@
-import { Component, input, output, signal, effect, computed, ChangeDetectionStrategy, HostBinding, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { ButtonComponent } from '../button/button.component';
-import { InputComponent } from '../input/input.component';
-import { SelectComponent } from '../select/select.component';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  effect,
+  computed,
+  ChangeDetectionStrategy,
+  HostBinding,
+  inject,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from "@angular/forms";
+import { MatIconModule } from "@angular/material/icon";
+import { ButtonComponent } from "../button/button.component";
+import { InputComponent } from "../input/input.component";
+import { SelectComponent } from "../select/select.component";
 
 export interface UserFormData {
   name: string;
@@ -21,28 +36,39 @@ export interface RoleOption {
 }
 
 @Component({
-  selector: 'app-user-modal',
+  selector: "app-user-modal",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule, ButtonComponent, InputComponent, SelectComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    ButtonComponent,
+    InputComponent,
+    SelectComponent,
+  ],
   template: `
     <div class="fixed inset-0 z-50 overflow-y-auto" @fadeIn>
       <div class="flex min-h-full items-center justify-center p-4">
         <!-- Backdrop -->
         <div
           class="fixed inset-0 bg-black/50 transition-opacity"
-          (click)="onBackdropClick()">
-        </div>
+          (click)="onBackdropClick()"
+        ></div>
 
         <!-- Modal Container -->
         <div
           class="relative w-full max-w-md bg-white rounded-xl shadow-xl transform transition-all"
-          @slideUp>
-          
-          <div class="flex items-center justify-between p-4 border-b border-gray-100">
+          @slideUp
+        >
+          <div
+            class="flex items-center justify-between p-4 border-b border-gray-100"
+          >
             <div>
               <div class="flex items-center gap-2">
                 <mat-icon class="text-indigo-600">person</mat-icon>
-                <h2 class="text-lg font-semibold text-gray-900">{{ title() }}</h2>
+                <h2 class="text-lg font-semibold text-gray-900">
+                  {{ title() }}
+                </h2>
               </div>
               <p class="text-sm text-gray-500 mt-0.5">{{ description() }}</p>
             </div>
@@ -50,18 +76,24 @@ export interface RoleOption {
               type="button"
               class="p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
               (click)="cancel()"
-              aria-label="Fechar modal">
+              aria-label="Fechar modal"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </div>
 
-          <form [formGroup]="form" class="p-4 space-y-4" (ngSubmit)="onSubmit()">
+          <form
+            [formGroup]="form"
+            class="p-4 space-y-4"
+            (ngSubmit)="onSubmit()"
+          >
             <app-input
               formControlName="name"
               label="Nome completo"
               type="text"
               placeholder="João Silva"
-              [error]="nameError()">
+              [error]="nameError()"
+            >
             </app-input>
 
             <app-input
@@ -69,7 +101,8 @@ export interface RoleOption {
               label="E-mail"
               type="email"
               placeholder="joao@email.com"
-              [error]="emailError()">
+              [error]="emailError()"
+            >
             </app-input>
 
             @if (!editing()) {
@@ -78,7 +111,8 @@ export interface RoleOption {
                 label="Senha"
                 type="password"
                 placeholder="••••••••"
-                [error]="passwordError()">
+                [error]="passwordError()"
+              >
               </app-input>
 
               <app-input
@@ -86,7 +120,8 @@ export interface RoleOption {
                 label="Confirmar senha"
                 type="password"
                 placeholder="••••••••"
-                [error]="confirmPasswordError()">
+                [error]="confirmPasswordError()"
+              >
               </app-input>
             } @else {
               <div class="text-sm text-gray-500">
@@ -97,7 +132,8 @@ export interface RoleOption {
                 label="Nova senha (opcional)"
                 type="password"
                 placeholder="••••••••"
-                [error]="passwordError()">
+                [error]="passwordError()"
+              >
               </app-input>
 
               <app-input
@@ -105,7 +141,8 @@ export interface RoleOption {
                 label="Confirmar nova senha"
                 type="password"
                 placeholder="••••••••"
-                [error]="confirmPasswordError()">
+                [error]="confirmPasswordError()"
+              >
               </app-input>
             }
 
@@ -114,22 +151,30 @@ export interface RoleOption {
               label="Perfil"
               [options]="roleOptions()"
               placeholder="Selecione o perfil"
-              [error]="roleError()">
+              [error]="roleError()"
+            >
             </app-select>
 
             <div class="flex items-center gap-4">
               <label class="flex items-center gap-2 cursor-pointer flex-1">
-                <input type="checkbox" formControlName="active" class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                <input
+                  type="checkbox"
+                  formControlName="active"
+                  class="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                />
                 <span class="text-sm text-gray-600">Usuário ativo</span>
               </label>
             </div>
           </form>
 
-          <div class="flex items-center justify-end gap-3 p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl">
+          <div
+            class="flex items-center justify-end gap-3 p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl"
+          >
             <app-button
               variant="secondary"
               label="Cancelar"
-              (clicked)="cancel()">
+              (clicked)="cancel()"
+            >
             </app-button>
             <app-button
               variant="primary"
@@ -137,37 +182,54 @@ export interface RoleOption {
               [loading]="confirmLoading()"
               [disabled]="form.invalid || confirmLoading()"
               type="submit"
-              (clicked)="onSubmit()">
+              (clicked)="onSubmit()"
+            >
             </app-button>
           </div>
         </div>
       </div>
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
+  styles: [
+    `
+      :host {
+        display: block;
+      }
 
-    :host(.hidden) {
-      display: none;
-    }
+      :host(.hidden) {
+        display: none;
+      }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
 
-    .fade-in { animation: fadeIn 0.2s ease-out; }
-    .slide-up { animation: slideUp 0.2s ease-out; }
-  `],
+      .fade-in {
+        animation: fadeIn 0.2s ease-out;
+      }
+      .slide-up {
+        animation: slideUp 0.2s ease-out;
+      }
+    `,
+  ],
   animations: [],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserModalComponent {
   // State
@@ -175,16 +237,16 @@ export class UserModalComponent {
   isOpenChange = output<boolean>();
 
   // Content
-  title = input<string>('Novo Usuário');
-  description = input<string>('Preencha os dados para criar um novo usuário');
-  confirmLabel = input<string>('Criar usuário');
+  title = input<string>("Novo Usuário");
+  description = input<string>("Preencha os dados para criar um novo usuário");
+  confirmLabel = input<string>("Criar usuário");
   confirmLoading = input<boolean>(false);
 
   // Data
   roleOptions = input<RoleOption[]>([
-    { value: 'ADMIN', label: 'Administrador' },
-    { value: 'MANAGER', label: 'Gerente' },
-    { value: 'STAFF', label: 'Funcionário' }
+    { value: "ADMIN", label: "Administrador" },
+    { value: "MANAGER", label: "Gerente" },
+    { value: "STAFF", label: "Funcionário" },
   ]);
   editing = input<boolean>(false);
 
@@ -196,16 +258,26 @@ export class UserModalComponent {
   private fb = inject(FormBuilder);
   private _wasOpen = signal(false);
 
-  form: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.minLength(6), Validators.maxLength(50)]],
-    confirmPassword: [''],
-    role: ['STAFF', [Validators.required]],
-    active: [true]
-  }, { validators: this.passwordMatchValidator });
+  form: FormGroup = this.fb.group(
+    {
+      name: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(100),
+        ],
+      ],
+      email: ["", [Validators.required, Validators.email]],
+      password: ["", [Validators.minLength(6), Validators.maxLength(50)]],
+      confirmPassword: [""],
+      role: ["STAFF", [Validators.required]],
+      active: [true],
+    },
+    { validators: this.passwordMatchValidator },
+  );
 
-  @HostBinding('class.hidden')
+  @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
@@ -239,55 +311,61 @@ export class UserModalComponent {
     this.confirmed.emit(this.form.value as UserFormData);
   }
 
-  passwordMatchValidator(form: FormGroup): { passwordMismatch: boolean } | null {
-    const password = form.get('password')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
+  passwordMatchValidator(
+    form: FormGroup,
+  ): { passwordMismatch: boolean } | null {
+    const password = form.get("password")?.value;
+    const confirmPassword = form.get("confirmPassword")?.value;
     if (!password && !confirmPassword) return null;
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
   nameError = computed(() => {
-    const control = this.form.get('name');
+    const control = this.form.get("name");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'Nome é obrigatório';
-      if (control.errors['minlength']) return 'Nome deve ter no mínimo 2 caracteres';
-      if (control.errors['maxlength']) return 'Nome deve ter no máximo 100 caracteres';
+      if (control.errors["required"]) return "Nome é obrigatório";
+      if (control.errors["minlength"])
+        return "Nome deve ter no mínimo 2 caracteres";
+      if (control.errors["maxlength"])
+        return "Nome deve ter no máximo 100 caracteres";
     }
-    return '';
+    return "";
   });
 
   emailError = computed(() => {
-    const control = this.form.get('email');
+    const control = this.form.get("email");
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) return 'E-mail é obrigatório';
-      if (control.errors['email']) return 'E-mail inválido';
+      if (control.errors["required"]) return "E-mail é obrigatório";
+      if (control.errors["email"]) return "E-mail inválido";
     }
-    return '';
+    return "";
   });
 
   passwordError = computed(() => {
-    const control = this.form.get('password');
+    const control = this.form.get("password");
     if (control?.touched && control?.errors) {
-      if (control.errors['minlength']) return 'Senha deve ter no mínimo 6 caracteres';
-      if (control.errors['maxlength']) return 'Senha deve ter no máximo 50 caracteres';
+      if (control.errors["minlength"])
+        return "Senha deve ter no mínimo 6 caracteres";
+      if (control.errors["maxlength"])
+        return "Senha deve ter no máximo 50 caracteres";
     }
-    return '';
+    return "";
   });
 
   confirmPasswordError = computed(() => {
     const formErrors = this.form.errors;
-    const control = this.form.get('confirmPassword');
-    if (control?.touched && formErrors?.['passwordMismatch']) {
-      return 'As senhas não coincidem';
+    const control = this.form.get("confirmPassword");
+    if (control?.touched && formErrors?.["passwordMismatch"]) {
+      return "As senhas não coincidem";
     }
-    return '';
+    return "";
   });
 
   roleError = computed(() => {
-    const control = this.form.get('role');
-    if (control?.touched && control?.errors?.['required']) {
-      return 'Perfil é obrigatório';
+    const control = this.form.get("role");
+    if (control?.touched && control?.errors?.["required"]) {
+      return "Perfil é obrigatório";
     }
-    return '';
+    return "";
   });
 }

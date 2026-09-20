@@ -1,0 +1,80 @@
+.base-modal {
+  @apply fixed inset-0 z-[500] flex items-center justify-center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 200ms ease-out, visibility 200ms ease-out;
+}
+
+.base-modal.open {
+  @apply opacity-100 visible;
+}
+
+.base-modal.animating .modal-content {
+  @apply animate-slide-up;
+}
+
+.modal-backdrop {
+  @apply animate-fade-in;
+}
+
+.modal-content {
+  @apply animate-slide-up;
+}
+
+.modal-header {
+  @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3;
+}
+
+.modal-header-content {
+  @apply flex items-center gap-3 flex-1;
+}
+
+.modal-icon {
+  @apply flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center;
+}
+
+.modal-close {
+  @apply flex-shrink-0 p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors;
+}
+
+.modal-body {
+  @apply p-4 sm:p-6;
+}
+
+.modal-footer {
+  @apply flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 p-4 sm:p-6 border-t border-gray-100 bg-gray-50;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 200ms ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 250ms ease-out forwards;
+}
+
+.animate-modal-in {
+  animation: slide-up 250ms ease-out forwards;
+}
+
+// Focus visible for accessibility
+.modal-close:focus-visible,
+button[modalActions]:focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}

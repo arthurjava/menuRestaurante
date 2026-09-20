@@ -1,0 +1,11 @@
+.page-actions {
+  @apply flex flex-wrap items-center;
+}
+
+.page-actions .btn {
+  @apply flex items-center gap-1.5;
+}
+
+.page-actions .btn[matTooltip] {
+  @apply relative;
+}

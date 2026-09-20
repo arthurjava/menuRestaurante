@@ -1,0 +1,23 @@
+.empty-state {
+  @apply text-center;
+}
+
+.empty-icon {
+  @apply flex justify-center;
+}
+
+.empty-illustration {
+  @apply flex justify-center;
+}
+
+.empty-title {
+  @apply font-medium text-gray-900;
+}
+
+.empty-description {
+  @apply text-gray-500;
+}
+
+.empty-state .btn {
+  @apply w-full sm:w-auto;
+}

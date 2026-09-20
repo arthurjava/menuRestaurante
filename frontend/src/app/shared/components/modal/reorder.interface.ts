@@ -12,5 +12,8 @@ export interface ReorderModalConfig {
   confirmLabel: string;
   emptyMessage: string;
   getItemSubtitle?: (item: ReorderItem) => string;
-  getItemStatus?: (item: ReorderItem) => { label: string; variant: 'success' | 'gray' | 'warning' | 'danger' };
+  getItemStatus?: (item: ReorderItem) => {
+    label: string;
+    variant: "success" | "gray" | "warning" | "danger";
+  };
 }

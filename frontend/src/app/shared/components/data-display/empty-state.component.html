@@ -1,0 +1,35 @@
+<div class="empty-state" [class]="sizeClasses()[size]">
+  @if (illustration) {
+    <div class="empty-illustration mb-4">
+      <mat-icon [class]="iconSizeClasses()[size] + ' ' + effectiveIcon()"></mat-icon>
+    </div>
+  } @else {
+    <div class="empty-icon mb-4">
+      <mat-icon [class]="iconSizeClasses()[size] + ' text-gray-300'">{{ effectiveIcon() }}</mat-icon>
+    </div>
+  }
+
+  <h3 class="empty-title font-medium text-gray-900" [class]="titleSizeClasses()[size]">
+    {{ effectiveTitle() }}
+  </h3>
+
+  @if (effectiveDescription()) {
+    <p class="empty-description text-gray-500 mt-2" [class]="size === 'sm' ? 'text-sm' : 'text-base'">
+      {{ effectiveDescription() }}
+    </p>
+  }
+
+  @if (effectiveActionLabel()) {
+    <button
+      type="button"
+      class="btn btn-primary mt-6"
+      (click)="onAction()"
+      [class.btn-sm]="size === 'sm'"
+      [class.btn-lg]="size === 'lg'">
+      @if (actionIcon) {
+        <mat-icon class="mr-2">{{ actionIcon }}</mat-icon>
+      }
+      {{ effectiveActionLabel() }}
+    </button>
+  }
+</div>

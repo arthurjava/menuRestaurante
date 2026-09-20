@@ -1,0 +1,60 @@
+<div
+  class="stat-card rounded-xl border p-6 transition-all duration-200"
+  [class]="variantClasses()[variant]"
+  [class.clickable]="clickable"
+  [class.cursor-pointer]="clickable">
+  
+  <div class="stat-card-header flex items-start justify-between gap-4">
+    <div class="stat-card-icon flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center" [class]="iconColorClasses()[variant]">
+      @if (icon) {
+        <mat-icon class="text-2xl">{{ icon }}</mat-icon>
+      }
+    </div>
+    
+    @if (trend !== 'neutral') {
+      <div class="stat-trend flex items-center gap-1" [class]="trendColorClass()">
+        <mat-icon class="text-sm">{{ trendIcon() }}</mat-icon>
+        <span class="text-sm font-medium">{{ trendValue }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="stat-card-content mt-4">
+    <div class="stat-value text-3xl font-bold text-gray-900" [class]="loading ? 'animate-pulse' : ''">
+      @if (loading) {
+        <div class="skeleton-value h-8 w-24 bg-gray-200 rounded"></div>
+      } @else {
+        {{ value }}
+      }
+    </div>
+    
+    @if (title) {
+      <p class="stat-title text-sm text-gray-500 mt-1">{{ title }}</p>
+    }
+    
+    @if (trendLabel) {
+      <p class="stat-trend-label text-xs text-gray-400 mt-1">{{ trendLabel }}</p>
+    }
+    
+    @if (description) {
+      <p class="stat-description text-sm text-gray-500 mt-2">{{ description }}</p>
+    }
+  </div>
+
+  @if (actions.length > 0) {
+    <div class="stat-card-actions flex items-center gap-2 mt-4 pt-4 border-t" [class]="getBorderColor(variant)">
+      @for (action of actions; track action.label) {
+        <button
+          type="button"
+          class="btn-sm"
+          [class]="getActionButtonClass(action.variant || 'outline')"
+          (click)="action.action()">
+          @if (action.icon) {
+            <mat-icon class="mr-1.5 text-sm">{{ action.icon }}</mat-icon>
+          }
+          <span>{{ action.label }}</span>
+        </button>
+      }
+    </div>
+  }
+</div>

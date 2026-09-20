@@ -1,0 +1,132 @@
+<div class="image-upload-field" [class.compact]="compact()">
+  <label class="field-label">
+    <span class="font-medium text-gray-700">{{ label }}</span>
+    @if (required) {
+      <span class="text-red-500 ml-1" aria-hidden="true">*</span>
+    }
+  </label>
+
+  @if (hint) {
+    <p class="field-hint text-sm text-gray-500 mt-1">{{ hint }}</p>
+  }
+
+  <div
+    class="upload-zone"
+    [class.has-images]="images.length > 0"
+    [class.compact]="compact()"
+    (dragover)="onDragOver($event)"
+    (drop)="onDrop($event)"
+    (click)="!disabled && triggerFileInput()"
+    cdkDropList
+    [cdkDropListData]="images"
+    (cdkDropListDropped)="onReorder($event)">
+    
+    <input
+      #fileInput
+      type="file"
+      class="sr-only"
+      [accept]="mergedConfig().acceptedTypes!.join(',')"
+      [multiple]="!compact()"
+      (change)="onFileSelected($event)"
+      [disabled]="disabled || !canAddMore()">
+
+    @if (images.length === 0) {
+      <div class="upload-placeholder text-center py-8 sm:py-12">
+        <mat-icon class="text-5xl text-gray-300 mb-3">cloud_upload</mat-icon>
+        <p class="text-gray-600 mb-1">{{ compact() ? 'Clique para enviar' : 'Arraste e solte ou clique para enviar' }}</p>
+        <p class="text-sm text-gray-400">
+          {{ mergedConfig().acceptedTypes!.map(t => t.replace('image/', '.')).join(', ') }} • Máx {{ mergedConfig().maxSizeMB }}MB
+        </p>
+      </div>
+    }
+
+    @if (images.length > 0) {
+      <div class="image-previews" [class.compact]="compact()">
+        @for (image of images; track image.id) {
+          <div
+            class="image-preview relative"
+            cdkDrag
+            [cdkDragData]="image"
+            [cdkDragDisabled]="!mergedConfig().allowReorder || compact()"
+            [class.main]="image.isMain"
+            [class.uploading]="image.uploading">
+            
+            <div class="preview-image-wrapper aspect-square overflow-hidden rounded-lg bg-gray-100">
+              <img
+                [src]="image.preview"
+                [alt]="'Preview ' + image.id"
+                class="w-full h-full object-cover transition-transform duration-200 hover:scale-105">
+            </div>
+
+            @if (image.uploading) {
+              <div class="upload-progress absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
+                <mat-progress-bar mode="determinate" [value]="image.progress" color="primary" class="w-full mx-2"></mat-progress-bar>
+              </div>
+            }
+
+            @if (mergedConfig().allowMainSelection && images.length > 1) {
+              <button
+                type="button"
+                class="main-badge absolute top-2 left-2 p-1.5 rounded-full transition-colors"
+                [class]="image.isMain ? 'bg-green-500 text-white' : 'bg-white/90 text-gray-600 hover:bg-green-50 hover:text-green-600'"
+                (click)="$event.stopPropagation(); setMainImage(image.id)"
+                [disabled]="image.isMain || image.uploading"
+                matTooltip="Definir como principal"
+                matTooltipPosition="above">
+                <mat-icon class="text-sm">{{ image.isMain ? 'star' : 'star_outline' }}</mat-icon>
+              </button>
+            }
+
+            @if (mergedConfig().showDelete) {
+              <button
+                type="button"
+                class="delete-btn absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 hover:opacity-100 transition-opacity"
+                (click)="$event.stopPropagation(); removeImage(image.id)"
+                [disabled]="image.uploading"
+                matTooltip="Remover"
+                matTooltipPosition="above">
+                <mat-icon class="text-sm">close</mat-icon>
+              </button>
+            }
+
+            @if (mergedConfig().allowReorder && !compact()) {
+              <button
+                type="button"
+                class="drag-handle absolute bottom-2 left-2 p-1.5 bg-white/90 text-gray-400 rounded-lg hover:text-gray-600 opacity-0 hover:opacity-100 transition-opacity"
+                cdkDragHandle
+                matTooltip="Arrastar para reordenar"
+                matTooltipPosition="above">
+                <mat-icon class="text-sm">drag_indicator</mat-icon>
+              </button>
+            }
+          </div>
+        }
+
+        @if (canAddMore()) {
+          <div class="image-preview add-more" (click)="$event.stopPropagation(); triggerFileInput()">
+            <div class="preview-image-wrapper aspect-square overflow-hidden rounded-lg bg-gray-50 border-2 border-dashed border-gray-300 flex items-center justify-center">
+              <mat-icon class="text-3xl text-gray-400">add</mat-icon>
+            </div>
+            <span class="add-more-text text-sm text-gray-500 mt-1">Adicionar</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (errorMessage) {
+    <p class="field-error text-sm text-red-600 mt-1 flex items-center gap-1">
+      <mat-icon class="text-base">error_outline</mat-icon>
+      {{ errorMessage }}
+    </p>
+  }
+
+  @if (images.length > 0 && !compact()) {
+    <p class="field-info text-xs text-gray-400 mt-2">
+      {{ images.length }}/{{ mergedConfig().maxFiles }} imagens
+      @if (mainImageId()) {
+        • <span class="font-medium">Principal: {{ images.find(i => i.id === mainImageId())?.id?.slice(0, 8) }}</span>
+      }
+    </p>
+  }
+</div>

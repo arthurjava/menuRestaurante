@@ -1,0 +1,127 @@
+.admin-header-toolbar {
+  @apply bg-white border-b border-gray-100 px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-4;
+}
+
+.header-menu-btn {
+  @apply p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors;
+}
+
+.header-title {
+  @apply flex-1 min-w-0;
+}
+
+.header-notifications {
+  @apply relative;
+}
+
+.header-icon-btn {
+  @apply p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors relative;
+}
+
+.notification-badge {
+  @apply absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-xs font-medium flex items-center justify-center;
+}
+
+.notifications-menu {
+  @apply min-w-[360px] max-w-[400px] bg-white rounded-xl shadow-lg border border-gray-100;
+}
+
+.notifications-header {
+  @apply p-4 border-b border-gray-100 flex items-center justify-between;
+}
+
+.notifications-list {
+  @apply max-h-96 overflow-y-auto;
+}
+
+.notification-item {
+  @apply w-full p-4 hover:bg-gray-50 transition-colors text-left flex items-start gap-3;
+}
+
+.notification-item.unread {
+  @apply bg-primary-50/50;
+}
+
+.notification-icon {
+  @apply flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center;
+}
+
+.notification-content {
+  @apply flex-1 min-w-0;
+}
+
+.notification-title {
+  @apply text-sm font-medium text-gray-900 truncate;
+}
+
+.notification-message {
+  @apply text-xs text-gray-500 truncate mt-0.5;
+}
+
+.notification-time {
+  @apply text-xs text-gray-400 mt-1;
+}
+
+.notification-dot {
+  @apply w-2 h-2 rounded-full bg-primary-500 flex-shrink-0 mt-1;
+}
+
+.notifications-footer {
+  @apply p-3 border-t border-gray-100 text-center;
+}
+
+.header-user-menu {
+  @apply relative ml-2;
+}
+
+.header-user-btn {
+  @apply flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors;
+}
+
+.user-avatar {
+  @apply rounded-full flex items-center justify-center font-medium;
+}
+
+.user-name {
+  @apply hidden sm:block text-sm font-medium text-gray-700 truncate max-w-[120px];
+}
+
+.user-menu {
+  @apply min-w-[220px] bg-white rounded-xl shadow-lg border border-gray-100;
+}
+
+.user-menu-header {
+  @apply p-3 border-b border-gray-100;
+}
+
+.user-menu-header .user-avatar {
+  @apply w-10 h-10 text-base;
+}
+
+.user-role {
+  @apply mt-2 px-2 py-1 bg-primary-50 text-primary-700 text-xs font-medium rounded-full inline-block;
+}
+
+.user-menu-item {
+  @apply flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors;
+}
+
+.user-menu-item.text-red-600 {
+  color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.user-menu-item mat-icon {
+  @apply text-gray-400;
+}
+
+.user-menu-item.text-red-600 mat-icon {
+  color: #dc2626;
+}
+
+// Focus visible
+.header-menu-btn:focus-visible,
+.header-icon-btn:focus-visible,
+.header-user-btn:focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}

@@ -1,0 +1,7 @@
+<app-confirm-modal
+  [isOpen]="isOpen"
+  (isOpenChange)="isOpenChange.emit($event)"
+  [config]="config()"
+  (confirmed)="onConfirmed()"
+  (cancelled)="onCancelled()">
+</app-confirm-modal>

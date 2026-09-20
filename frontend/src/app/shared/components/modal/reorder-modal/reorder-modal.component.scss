@@ -1,0 +1,27 @@
+:host {
+  @apply block;
+}
+
+.reorder-item {
+  @apply flex items-center gap-4 p-3 bg-gray-50 rounded-lg border border-gray-100 transition-colors hover:border-gray-200;
+}
+
+.drag-handle {
+  @apply p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-lg transition-colors cursor-grab;
+}
+
+.drag-handle:active {
+  @apply cursor-grabbing;
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.cdk-drag-placeholder {
+  @apply bg-primary-50 border-2 border-dashed border-primary-300;
+}
+
+.cdk-drag-animating {
+  @apply transition-transform duration-200 ease-out;
+}

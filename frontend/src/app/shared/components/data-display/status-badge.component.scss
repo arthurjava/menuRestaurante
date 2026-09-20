@@ -1,0 +1,61 @@
+.status-badge {
+  @apply inline-flex items-center font-medium;
+}
+
+.status-dot {
+  @apply rounded-full flex-shrink-0;
+}
+
+.status-icon {
+  @apply flex-shrink-0;
+}
+
+.status-label {
+  @apply whitespace-nowrap;
+}
+
+.badge-success {
+  background-color: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.badge-warning {
+  background-color: #fef3c7;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.badge-danger {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.badge-info {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+
+.badge-gray {
+  @apply bg-gray-100 text-gray-700 border border-gray-200;
+}
+
+.badge-default {
+  @apply bg-gray-100 text-gray-700 border border-gray-200;
+}
+
+.status-badge-sm { @apply px-2 py-0.5 text-xs; }
+.status-badge-md { @apply px-2.5 py-1 text-sm; }
+.status-badge-lg { @apply px-3 py-1.5 text-base; }
+
+.status-badge[role="button"] {
+  @apply cursor-pointer select-none hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.status-badge.badge-success[role="button"] { @apply focus:ring-green-500; }
+.status-badge.badge-warning[role="button"] { @apply focus:ring-yellow-500; }
+.status-badge.badge-danger[role="button"] { @apply focus:ring-red-500; }
+.status-badge.badge-info[role="button"] { @apply focus:ring-blue-500; }
+.status-badge.badge-gray[role="button"] { @apply focus:ring-gray-500; }

@@ -1,0 +1,58 @@
+.pagination {
+  @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-white border-t border-gray-100;
+}
+
+.pagination-info {
+  @apply text-sm text-gray-500;
+}
+
+.pagination-controls {
+  @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full;
+}
+
+.pagination-pages {
+  @apply flex items-center gap-1 flex-wrap justify-center sm:justify-start;
+}
+
+.pagination-btn {
+  @apply min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors flex items-center justify-center;
+}
+
+.pagination-btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.pagination-size {
+  @apply flex items-center gap-2;
+}
+
+.pagination-size label {
+  @apply text-sm text-gray-500;
+}
+
+.pagination-size ::ng-deep .mat-mdc-form-field {
+  @apply w-auto;
+}
+
+.pagination-size ::ng-deep .mat-mdc-select {
+  @apply min-w-[120px];
+}
+
+// Responsive
+@media (max-width: 640px) {
+  .pagination {
+    @apply p-3 gap-3;
+  }
+
+  .pagination-controls {
+    @apply flex-col gap-3;
+  }
+
+  .pagination-pages {
+    @apply order-2;
+  }
+
+  .pagination-size {
+    @apply order-1 w-full justify-center;
+  }
+}
