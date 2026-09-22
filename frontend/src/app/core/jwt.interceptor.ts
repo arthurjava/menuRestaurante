@@ -57,6 +57,10 @@ export class JwtInterceptor implements HttpInterceptor {
       "/api/auth/refresh",
       "/api/menu",
       "/api/menu/categories",
+      "/api/menu/restaurant-info",
+      "/api/menu/business-hours",
+      "/api/menu/contact-info",
+      "/api/categories",
     ];
     return publicEndpoints.some((endpoint) => url.includes(endpoint));
   }

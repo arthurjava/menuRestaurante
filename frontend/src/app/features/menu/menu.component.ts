@@ -33,7 +33,7 @@ import { ButtonComponent } from "@shared/components/button/button.component";
 import { BadgeComponent } from "@shared/components/badge/badge.component";
 import { ModalComponent } from "@shared/components/modal/modal.component";
 
-interface PublicDish {
+export interface PublicDish {
   id: string;
   name: string;
   description?: string;
@@ -44,11 +44,36 @@ interface PublicDish {
   active: boolean;
 }
 
-interface PublicCategory {
+export interface PublicCategory {
   id: string;
   name: string;
   imageUrl?: string;
   displayOrder: number;
+}
+
+export interface RestaurantInfo {
+  id?: string;
+  name: string;
+  tagline?: string;
+  description?: string;
+  logoUrl?: string;
+  coverUrl?: string;
+}
+
+export interface BusinessHour {
+  dayOfWeek: number;
+  openTime: string;
+  closeTime: string;
+  closed?: boolean;
+}
+
+export interface ContactInfo {
+  phone?: string;
+  email?: string;
+  address?: string;
+  website?: string;
+  instagram?: string;
+  facebook?: string;
 }
 
 @Component({
@@ -162,9 +187,7 @@ interface PublicCategory {
       <!-- Main Content -->
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @if (loading()) {
-          <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          >
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
               <div class="animate-pulse">
                 <div class="aspect-[4/3] bg-gray-200 rounded-xl mb-3"></div>
@@ -478,9 +501,9 @@ export class MenuComponent implements OnInit {
   loading = signal(true);
   dishes = signal<PublicDish[]>([]);
   categories = signal<PublicCategory[]>([]);
-  restaurantInfo = signal<any>({});
-  businessHours = signal<any[]>([]);
-  contactInfo = signal<any>({});
+  restaurantInfo = signal<RestaurantInfo>({} as RestaurantInfo);
+  businessHours = signal<BusinessHour[]>([]);
+  contactInfo = signal<ContactInfo>({} as ContactInfo);
 
   // Filters
   searchTerm = "";
@@ -543,6 +566,11 @@ export class MenuComponent implements OnInit {
           })),
         );
       },
+      error: (err) => {
+        console.error("Erro ao carregar categorias:", err);
+        this.notification.error("Erro ao carregar categorias");
+        this.loading.set(false);
+      },
     });
 
     // Load dishes
@@ -561,25 +589,41 @@ export class MenuComponent implements OnInit {
           })),
         );
       },
-      error: () => {},
+      error: (err) => {
+        console.error("Erro ao carregar pratos:", err);
+        this.notification.error("Erro ao carregar cardápio");
+        this.loading.set(false);
+      },
     });
 
     // Load restaurant info
-    this.apiService.getRestaurantInfo().subscribe({
+    this.apiService.getPublicRestaurantInfo().subscribe({
       next: (info: any) => this.restaurantInfo.set(info),
-      error: () => {},
+      error: (err) => {
+        console.error("Erro ao carregar informações do restaurante:", err);
+        this.notification.error("Erro ao carregar informações do restaurante");
+        this.loading.set(false);
+      },
     });
 
     // Load business hours
-    this.apiService.getBusinessHours().subscribe({
-      next: (hours: any[]) => this.businessHours.set(hours),
-      error: () => {},
+    this.apiService.getPublicBusinessHours().subscribe({
+      next: (hours: BusinessHour[]) => this.businessHours.set(hours),
+      error: (err) => {
+        console.error("Erro ao carregar horários:", err);
+        this.notification.error("Erro ao carregar horários de funcionamento");
+        this.loading.set(false);
+      },
     });
 
     // Load contact info
-    this.apiService.getContactInfo().subscribe({
-      next: (contact: any) => this.contactInfo.set(contact),
-      error: () => {},
+    this.apiService.getPublicContactInfo().subscribe({
+      next: (contact: ContactInfo) => this.contactInfo.set(contact),
+      error: (err) => {
+        console.error("Erro ao carregar contato:", err);
+        this.notification.error("Erro ao carregar informações de contato");
+        this.loading.set(false);
+      },
     });
 
     // Simulate loading delay
