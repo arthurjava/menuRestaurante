@@ -40,6 +40,15 @@ interface ActivityItem {
   userName: string;
 }
 
+interface StatCard {
+  label: string;
+  value: number;
+  icon: string;
+  iconBg: string;
+  iconColor: string;
+  change?: number;
+}
+
 @Component({
   selector: "app-dashboard",
   standalone: true,
@@ -58,8 +67,8 @@ interface ActivityItem {
       <!-- Header -->
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p class="text-gray-600 mt-1">Visão geral do sistema</p>
+          <h1 class="text-h2 font-bold text-text-primary">Dashboard</h1>
+          <p class="text-text-secondary mt-1">Visão geral do sistema</p>
         </div>
         <div class="flex gap-3">
           <app-button
@@ -90,22 +99,18 @@ interface ActivityItem {
                   <mat-icon [class]="stat.iconColor">{{ stat.icon }}</mat-icon>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-500">
+                  <p class="text-label font-medium text-text-tertiary">
                     {{ stat.label }}
                   </p>
-                  <p class="text-2xl font-bold text-gray-900">
+                  <p class="text-h3 font-bold text-text-primary">
                     {{ stat.value }}
                   </p>
                   @if (stat.change !== undefined) {
                     <p
-                      class="text-xs"
-                      [class]="
-                        stat.change >= 0 ? 'text-green-600' : 'text-red-600'
-                      "
+                      class="text-caption"
+                      [class]="stat.change >= 0 ? 'text-state-success' : 'text-state-danger'"
                     >
-                      <mat-icon class="inline align-middle text-xs">{{
-                        stat.change >= 0 ? "trending_up" : "trending_down"
-                      }}</mat-icon>
+                      <mat-icon class="inline align-middle text-xs">{{ stat.change >= 0 ? "trending_up" : "trending_down" }}</mat-icon>
                       {{ getAbsChange(stat.change) }}%
                     </p>
                   }
@@ -121,9 +126,7 @@ interface ActivityItem {
         <!-- Quick Actions -->
         <mat-card class="lg:col-span-1">
           <mat-card-header>
-            <mat-card-title class="text-lg font-semibold"
-              >Ações Rápidas</mat-card-title
-            >
+            <mat-card-title class="text-h4 font-semibold">Ações Rápidas</mat-card-title>
           </mat-card-header>
           <mat-card-content class="space-y-3">
             <app-button
@@ -174,9 +177,7 @@ interface ActivityItem {
           <mat-card-header
             class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
           >
-            <mat-card-title class="text-lg font-semibold"
-              >Atividade Recente</mat-card-title
-            >
+            <mat-card-title class="text-h4 font-semibold">Atividade Recente</mat-card-title>
             <app-button
               variant="ghost"
               size="sm"
@@ -187,7 +188,7 @@ interface ActivityItem {
           </mat-card-header>
           <mat-card-content>
             @if (activity().length === 0) {
-              <div class="text-center py-8 text-gray-500">
+              <div class="text-center py-8 text-text-tertiary">
                 <mat-icon class="text-3xl mb-2">history</mat-icon>
                 <p>Nenhuma atividade recente</p>
               </div>
@@ -195,7 +196,7 @@ interface ActivityItem {
               <div class="space-y-3">
                 @for (item of activity(); track item.id) {
                   <div
-                    class="flex items-start gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors"
+                    class="flex items-start gap-3 p-3 hover:bg-surface-hover rounded-lg transition-colors"
                   >
                     <div
                       [class]="getActivityIconBg(item.type)"
@@ -209,11 +210,11 @@ interface ActivityItem {
                       </mat-icon>
                     </div>
                     <div class="flex-1 min-w-0">
-                      <p class="text-sm text-gray-900">
+                      <p class="text-body text-text-primary">
                         {{ item.description }}
                       </p>
                       <p
-                        class="text-xs text-gray-500 flex items-center gap-1 mt-0.5"
+                        class="text-caption text-text-tertiary flex items-center gap-1 mt-0.5"
                       >
                         <mat-icon class="text-[10px]">person</mat-icon>
                         {{ item.userName }}
@@ -240,15 +241,15 @@ interface ActivityItem {
   styles: [
     `
       .stat-card {
-        @apply border border-gray-100 hover:shadow-md transition-shadow;
+        @apply border border-border hover:shadow-card-hover transition-shadow;
       }
 
       .animate-pulse {
-        @apply bg-gray-100;
+        @apply bg-surface-tertiary;
       }
 
       :host ::ng-deep .mat-mdc-card {
-        @apply shadow-sm border border-gray-100;
+        @apply shadow-card border border-border;
       }
     `,
   ],
@@ -271,32 +272,32 @@ export class DashboardComponent implements OnInit {
         label: "Categorias",
         value: data.totalCategories,
         icon: "category",
-        iconBg: "bg-blue-100",
-        iconColor: "text-blue-600",
+        iconBg: "bg-brand-primary-subtle",
+        iconColor: "text-brand-primary-hover",
         change: 5,
       },
       {
         label: "Total de Pratos",
         value: data.totalDishes,
         icon: "restaurant",
-        iconBg: "bg-green-100",
-        iconColor: "text-green-600",
+        iconBg: "bg-state-success-subtle",
+        iconColor: "text-state-success-hover",
         change: 12,
       },
       {
         label: "Pratos Ativos",
         value: data.activeDishes,
         icon: "check_circle",
-        iconBg: "bg-indigo-100",
-        iconColor: "text-indigo-600",
+        iconBg: "bg-brand-primary-subtle",
+        iconColor: "text-brand-primary-hover",
         change: 8,
       },
       {
         label: "Usuários",
         value: data.totalUsers,
         icon: "people",
-        iconBg: "bg-purple-100",
-        iconColor: "text-purple-600",
+        iconBg: "bg-state-warning-subtle",
+        iconColor: "text-state-warning-hover",
         change: -2,
       },
     ];
@@ -309,32 +310,32 @@ export class DashboardComponent implements OnInit {
       label: "Categorias",
       value: 0,
       icon: "category",
-      iconBg: "bg-blue-100",
-      iconColor: "text-blue-600",
+      iconBg: "bg-brand-primary-subtle",
+      iconColor: "text-brand-primary-hover",
       change: 0,
     },
     {
       label: "Total de Pratos",
       value: 0,
       icon: "restaurant",
-      iconBg: "bg-green-100",
-      iconColor: "text-green-600",
+      iconBg: "bg-state-success-subtle",
+      iconColor: "text-state-success-hover",
       change: 0,
     },
     {
       label: "Pratos Ativos",
       value: 0,
       icon: "check_circle",
-      iconBg: "bg-indigo-100",
-      iconColor: "text-indigo-600",
+      iconBg: "bg-brand-primary-subtle",
+      iconColor: "text-brand-primary-hover",
       change: 0,
     },
     {
       label: "Usuários",
       value: 0,
       icon: "people",
-      iconBg: "bg-purple-100",
-      iconColor: "text-purple-600",
+      iconBg: "bg-state-warning-subtle",
+      iconColor: "text-state-warning-hover",
       change: 0,
     },
   ];
@@ -429,34 +430,34 @@ export class DashboardComponent implements OnInit {
   getActivityIconBg(type: string): string {
     switch (type) {
       case "category_created":
-        return "bg-blue-100";
+        return "bg-brand-primary-subtle";
       case "dish_created":
-        return "bg-green-100";
+        return "bg-state-success-subtle";
       case "dish_updated":
-        return "bg-indigo-100";
+        return "bg-brand-primary-subtle";
       case "user_created":
-        return "bg-purple-100";
+        return "bg-state-warning-subtle";
       case "image_uploaded":
-        return "bg-orange-100";
+        return "bg-state-warning-subtle";
       default:
-        return "bg-gray-100";
+        return "bg-surface-tertiary";
     }
   }
 
   getActivityIconColor(type: string): string {
     switch (type) {
       case "category_created":
-        return "text-blue-600";
+        return "text-brand-primary-hover";
       case "dish_created":
-        return "text-green-600";
+        return "text-state-success-hover";
       case "dish_updated":
-        return "text-indigo-600";
+        return "text-brand-primary-hover";
       case "user_created":
-        return "text-purple-600";
+        return "text-state-warning-hover";
       case "image_uploaded":
-        return "text-orange-600";
+        return "text-state-warning-hover";
       default:
-        return "text-gray-600";
+        return "text-text-tertiary";
     }
   }
 
@@ -484,7 +485,7 @@ export class DashboardComponent implements OnInit {
     | "warning"
     | "danger"
     | "info"
-    | "gray"
+    | "neutral"
     | "primary"
     | "secondary" {
     switch (type) {
@@ -499,7 +500,7 @@ export class DashboardComponent implements OnInit {
       case "image_uploaded":
         return "warning";
       default:
-        return "gray";
+        return "neutral";
     }
   }
 

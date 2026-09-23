@@ -1,11 +1,11 @@
 <nav class="admin-sidebar-nav h-full flex flex-col" [class.collapsed]="isCollapsed()">
   <!-- Logo/Brand -->
-  <div class="sidebar-brand flex items-center gap-3 p-4 border-b border-gray-100">
-    <div class="brand-icon w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center flex-shrink-0">
+  <div class="sidebar-brand flex items-center gap-3 p-4 border-b border-border">
+    <div class="brand-icon w-10 h-10 rounded-xl bg-brand-primary flex items-center justify-center flex-shrink-0">
       <mat-icon class="text-white text-xl">restaurant</mat-icon>
     </div>
     @if (!isCollapsed()) {
-      <span class="brand-text text-lg font-bold text-gray-900 truncate">Restaurante</span>
+      <span class="brand-text text-h4 font-bold text-text-primary truncate">Restaurante</span>
     }
   </div>
 
@@ -16,7 +16,7 @@
         <div class="nav-section">
           @if (!isCollapsed()) {
             <div class="nav-section-header px-3 py-2">
-              <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ section.label }}</span>
+              <span class="text-caption font-semibold text-text-tertiary uppercase tracking-wider">{{ section.label }}</span>
             </div>
           }
 
@@ -28,13 +28,13 @@
                   [expanded]="item.expanded"
                   [disabled]="isCollapsed()"
                   hideToggle>
-                  
+
                   <mat-expansion-panel-header class="nav-expansion-header">
                     <mat-panel-title class="nav-item flex items-center gap-3">
-                      <mat-icon class="nav-icon text-gray-400" [matBadge]="item.badge" matBadgeSize="small" matBadgeColor="primary">{{ item.icon }}</mat-icon>
+                      <mat-icon class="nav-icon text-text-tertiary" [matBadge]="item.badge" matBadgeSize="small" matBadgeColor="primary">{{ item.icon }}</mat-icon>
                       @if (!isCollapsed()) {
-                        <span class="nav-label text-sm font-medium text-gray-700 truncate">{{ item.label }}</span>
-                        <mat-icon class="nav-chevron text-gray-400 ml-auto">chevron_right</mat-icon>
+                        <span class="nav-label text-body font-medium text-text-secondary truncate">{{ item.label }}</span>
+                        <mat-icon class="nav-chevron text-text-tertiary ml-auto">chevron_right</mat-icon>
                       }
                     </mat-panel-title>
                   </mat-expansion-panel-header>
@@ -52,7 +52,7 @@
                           matRipple
                           [matTooltip]="isCollapsed() ? child.label : ''"
                           matTooltipPosition="right">
-                          <span matListItemTitle class="text-sm text-gray-600">{{ child.label }}</span>
+                          <span matListItemTitle class="text-body-sm text-text-secondary">{{ child.label }}</span>
                         </a>
                       }
                     </mat-nav-list>
@@ -70,9 +70,9 @@
                   [matTooltip]="isCollapsed() ? item.label : ''"
                   matTooltipPosition="right"
                   [attr.aria-current]="isActive(item) ? 'page' : null">
-                  <mat-icon matListItemIcon class="nav-icon text-gray-400" [matBadge]="item.badge" matBadgeSize="small" matBadgeColor="primary">{{ item.icon }}</mat-icon>
+                  <mat-icon matListItemIcon class="nav-icon text-text-tertiary" [matBadge]="item.badge" matBadgeSize="small" matBadgeColor="primary">{{ item.icon }}</mat-icon>
                   @if (!isCollapsed()) {
-                    <span matListItemTitle class="nav-label text-sm font-medium text-gray-700 truncate">{{ item.label }}</span>
+                    <span matListItemTitle class="nav-label text-body font-medium text-text-secondary truncate">{{ item.label }}</span>
                   }
                 </a>
               }
@@ -85,8 +85,8 @@
 
   <!-- Footer info -->
   @if (!isCollapsed()) {
-    <div class="sidebar-footer p-4 border-t border-gray-100">
-      <div class="text-center text-xs text-gray-400">
+    <div class="sidebar-footer p-4 border-t border-border">
+      <div class="text-center text-caption text-text-tertiary">
         <p>Sistema de Gestão</p>
         <p>v1.0.0</p>
       </div>

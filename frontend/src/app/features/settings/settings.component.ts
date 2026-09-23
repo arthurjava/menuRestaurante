@@ -15,7 +15,6 @@ import {
   ReactiveFormsModule,
 } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -81,7 +80,6 @@ const DAYS_OF_WEEK = [
     CommonModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
@@ -98,16 +96,14 @@ const DAYS_OF_WEEK = [
     ImageUploadComponent,
   ],
   template: `
-    <div class="p-6 space-y-6">
+<div class="p-6 space-y-6">
       <!-- Header -->
       <div
         class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Configurações</h1>
-          <p class="text-gray-600 mt-1">
-            Gerencie as configurações do restaurante
-          </p>
+          <h1 class="text-h2 font-bold text-text-primary">Configurações</h1>
+          <p class="text-text-secondary mt-1">Gerencie as configurações do restaurante</p>
         </div>
       </div>
 

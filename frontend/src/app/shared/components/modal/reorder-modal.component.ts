@@ -19,7 +19,7 @@ import {
   moveItemInArray,
 } from "@angular/cdk/drag-drop";
 import { ButtonComponent } from "../button/button.component";
-import { BadgeComponent } from "../badge/badge.component";
+import { BadgeComponent, BadgeVariant } from "../badge/badge.component";
 
 export interface ReorderItem {
   id: string;
@@ -38,7 +38,7 @@ export interface ReorderModalConfig {
   getItemSubtitle?: (item: ReorderItem) => string;
   getItemStatus?: (item: ReorderItem) => {
     label: string;
-    variant: "success" | "gray" | "warning" | "danger";
+    variant: BadgeVariant;
   };
 }
 

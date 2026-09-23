@@ -11,7 +11,6 @@ import {
 import { CommonModule } from "@angular/common";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -57,6 +56,7 @@ import {
   ReorderWrapperComponent,
   ReorderItem,
 } from "@shared/components/modal/reorder-wrapper.component";
+import { ButtonComponent } from "@shared/components/button/button.component";
 
 interface Dish {
   id: string;
@@ -79,7 +79,6 @@ interface Dish {
     CommonModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
@@ -99,6 +98,7 @@ interface Dish {
     DishFormComponent,
     DelConfirmComponent,
     ReorderWrapperComponent,
+    ButtonComponent,
   ],
   template: `
     <div class="p-6 space-y-6">
@@ -107,18 +107,16 @@ interface Dish {
         class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Pratos</h1>
-          <p class="text-gray-600 mt-1">Gerencie os pratos do cardápio</p>
+          <h1 class="text-h2 font-bold text-text-primary">Pratos</h1>
+          <p class="text-text-secondary mt-1">Gerencie os pratos do cardápio</p>
         </div>
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="openCreateModal()"
-          class="flex items-center gap-2"
+        <app-button
+          variant="primary"
+          icon="add"
+          label="Novo Prato"
+          (clicked)="openCreateModal()"
         >
-          <mat-icon>add</mat-icon>
-          Novo Prato
-        </button>
+        </app-button>
       </div>
 
       <!-- Search & Filters -->
@@ -296,7 +294,7 @@ interface Dish {
       }
 
       .cdk-drag-preview {
-        @apply shadow-lg-custom bg-white;
+        @apply shadow-dropdown bg-surface-primary;
       }
 
       .cdk-drag-placeholder {
@@ -308,7 +306,7 @@ interface Dish {
       }
 
       :host ::ng-deep .mat-mdc-card {
-        @apply shadow-sm border border-gray-100;
+        @apply shadow-card border border-border;
       }
 
       :host ::ng-deep .mat-mdc-form-field {

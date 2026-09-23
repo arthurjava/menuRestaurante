@@ -10,7 +10,6 @@ import {
 import { CommonModule } from "@angular/common";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -39,6 +38,7 @@ import {
   UserFormData,
 } from "@shared/components/modal/user-form.component";
 import { DelConfirmComponent } from "@shared/components/modal/del-confirm.component";
+import { ButtonComponent } from "@shared/components/button/button.component";
 
 interface UserWithRole extends User {
   roleLabel: string;
@@ -51,7 +51,6 @@ interface UserWithRole extends User {
     CommonModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
@@ -67,6 +66,7 @@ interface UserWithRole extends User {
     TableComponent,
     UserFormComponent,
     DelConfirmComponent,
+    ButtonComponent,
   ],
   template: `
     <div class="p-6 space-y-6">
@@ -75,18 +75,16 @@ interface UserWithRole extends User {
         class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Usuários</h1>
-          <p class="text-gray-600 mt-1">Gerencie os usuários do sistema</p>
+          <h1 class="text-h2 font-bold text-text-primary">Usuários</h1>
+          <p class="text-text-secondary mt-1">Gerencie os usuários do sistema</p>
         </div>
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="openCreateModal()"
-          class="flex items-center gap-2"
+        <app-button
+          variant="primary"
+          icon="person_add"
+          label="Novo Usuário"
+          (clicked)="openCreateModal()"
         >
-          <mat-icon>person_add</mat-icon>
-          Novo Usuário
-        </button>
+        </app-button>
       </div>
 
       <!-- Search & Filters -->
@@ -262,7 +260,7 @@ interface UserWithRole extends User {
       }
 
       :host ::ng-deep .mat-mdc-card {
-        @apply shadow-sm border border-gray-100;
+        @apply shadow-card border border-border;
       }
 
       :host ::ng-deep .mat-mdc-form-field {

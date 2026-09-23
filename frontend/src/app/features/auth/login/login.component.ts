@@ -14,7 +14,6 @@ import {
 } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
-import { MatButtonModule } from "@angular/material/button";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
@@ -32,7 +31,6 @@ import { InputComponent } from "@shared/components/input/input.component";
     ReactiveFormsModule,
     RouterLink,
     MatCardModule,
-    MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
@@ -42,12 +40,12 @@ import { InputComponent } from "@shared/components/input/input.component";
   ],
   template: `
     <div
-      class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12"
+      class="min-h-screen flex items-center justify-center bg-surface-secondary px-4 py-12"
     >
       <mat-card class="w-full max-w-md p-8">
         <div class="text-center mb-8">
-          <h1 class="text-2xl font-bold text-gray-900">Entrar no Sistema</h1>
-          <p class="text-gray-600 mt-2">
+          <h1 class="text-h2 font-bold text-text-primary">Entrar no Sistema</h1>
+          <p class="text-text-secondary mt-2">
             Acesse sua conta para gerenciar o cardápio
           </p>
         </div>
@@ -125,7 +123,7 @@ import { InputComponent } from "@shared/components/input/input.component";
       }
 
       mat-card {
-        @apply shadow-sm border border-gray-100;
+        @apply shadow-card border border-border;
       }
 
       ::ng-deep .mat-mdc-form-field {

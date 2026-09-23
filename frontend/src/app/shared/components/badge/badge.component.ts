@@ -3,208 +3,170 @@ import {
   input,
   computed,
   ChangeDetectionStrategy,
-} from "@angular/core";
-import { CommonModule } from "@angular/common";
+  HostBinding,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 export type BadgeVariant =
-  "success" | "warning" | "danger" | "info" | "gray" | "primary" | "secondary";
-export type BadgeSize = "sm" | "md" | "lg";
-export type BadgeShape = "rounded" | "pill" | "square";
+  'primary' | 'success' | 'warning' | 'danger' | 'info' | 'neutral' | 'secondary' | 'gray';
+export type BadgeSize = 'sm' | 'md' | 'lg';
+export type BadgeShape = 'rounded' | 'pill' | 'square';
 
 @Component({
-  selector: "app-badge",
+  selector: 'app-badge',
   standalone: true,
   imports: [CommonModule],
   template: `
     <span
-      class="inline-flex items-center gap-1"
+      class="inline-flex items-center gap-1 font-medium"
       [class]="computedClasses()"
       [attr.aria-label]="ariaLabel()"
     >
       @if (icon()) {
-        <span [class]="iconClasses()">{{ icon() }}</span>
+        <span class="icon" [class]="iconClasses()">{{ icon() }}</span>
       }
       @if (dot()) {
         <span class="dot" [class]="dotClasses()"></span>
       }
-      <span [class]="textClasses()">{{ label() }}</span>
+      <span class="text-content">{{ label() }}</span>
       @if (count() !== null && count() !== undefined) {
         <span class="count" [class]="countClasses()">{{ count() }}</span>
       }
     </span>
   `,
-  styles: [
-    `
-      :host {
-        display: inline-flex;
-      }
+  styles: [`
+    :host {
+      display: inline-flex;
+    }
 
-      .badge {
-        @apply inline-flex items-center gap-1 font-medium;
-      }
+    .badge {
+      @apply inline-flex items-center gap-1 font-medium;
+    }
 
-      /* Sizes */
-      .size-sm {
-        @apply px-2 py-0.5 text-xs;
-      }
-      .size-md {
-        @apply px-2.5 py-1 text-xs;
-      }
-      .size-lg {
-        @apply px-3 py-1 text-sm;
-      }
+    /* Sizes */
+    .size-sm {
+      @apply px-2 py-0.5 text-xs;
+      height: 20px;
+    }
+    .size-md {
+      @apply px-2.5 py-1 text-xs;
+      height: 24px;
+    }
+    .size-lg {
+      @apply px-3 py-1 text-sm;
+      height: 28px;
+    }
 
-      /* Shapes */
-      .shape-rounded {
-        @apply rounded-md;
-      }
-      .shape-pill {
-        @apply rounded-full;
-      }
-      .shape-square {
-        @apply rounded-none;
-      }
+    /* Shapes */
+    .shape-rounded {
+      @apply rounded-md;
+    }
+    .shape-pill {
+      @apply rounded-full;
+    }
+    .shape-square {
+      @apply rounded-none;
+    }
 
-      /* Variants */
-      .variant-success {
-        @apply bg-green-100 text-green-800;
-      }
-      .variant-warning {
-        @apply bg-yellow-100 text-yellow-800;
-      }
-      .variant-danger {
-        @apply bg-red-100 text-red-800;
-      }
-      .variant-info {
-        @apply bg-blue-100 text-blue-800;
-      }
-      .variant-gray {
-        @apply bg-gray-100 text-gray-800;
-      }
-      .variant-primary {
-        @apply bg-indigo-100 text-indigo-800;
-      }
-      .variant-secondary {
-        @apply bg-gray-100 text-gray-700;
-      }
+    /* Variants - using semantic color tokens */
+    .variant-primary {
+      @apply bg-brand-primary-subtle text-brand-primary-hover;
+    }
+    .variant-secondary {
+      @apply bg-surface-tertiary text-text-secondary;
+    }
+    .variant-success {
+      @apply bg-state-success-subtle text-state-success-hover;
+    }
+    .variant-warning {
+      @apply bg-state-warning-subtle text-state-warning-hover;
+    }
+    .variant-danger {
+      @apply bg-state-danger-subtle text-state-danger-hover;
+    }
+    .variant-info {
+      @apply bg-state-info-subtle text-state-info-hover;
+    }
+    .variant-neutral {
+      @apply bg-surface-tertiary text-text-secondary;
+    }
+    .variant-gray {
+      @apply bg-surface-tertiary text-text-tertiary;
+    }
 
-      /* Icon */
-      .icon {
-        @apply flex items-center justify-center;
-      }
-      .size-sm .icon {
-        @apply text-[10px];
-      }
-      .size-md .icon {
-        @apply text-[11px];
-      }
-      .size-lg .icon {
-        @apply text-[12px];
-      }
+    /* Icon */
+    .icon {
+      @apply flex items-center justify-center;
+    }
+    .size-sm .icon { @apply text-[10px]; }
+    .size-md .icon { @apply text-[11px]; }
+    .size-lg .icon { @apply text-[12px]; }
 
-      /* Dot */
-      .dot {
-        @apply w-1.5 h-1.5 rounded-full;
-      }
-      .size-sm .dot {
-        @apply w-1 h-1;
-      }
-      .size-lg .dot {
-        @apply w-2 h-2;
-      }
+    /* Dot */
+    .dot {
+      @apply w-1.5 h-1.5 rounded-full;
+    }
+    .size-sm .dot { @apply w-1 h-1; }
+    .size-lg .dot { @apply w-2 h-2; }
 
-      .dot-success {
-        @apply bg-green-500;
-      }
-      .dot-warning {
-        @apply bg-yellow-500;
-      }
-      .dot-danger {
-        @apply bg-red-500;
-      }
-      .dot-info {
-        @apply bg-blue-500;
-      }
-      .dot-gray {
-        @apply bg-gray-500;
-      }
-      .dot-primary {
-        @apply bg-indigo-500;
-      }
-      .dot-secondary {
-        @apply bg-gray-500;
-      }
+    .dot-primary { @apply bg-brand-primary; }
+    .dot-success { @apply bg-state-success; }
+    .dot-warning { @apply bg-state-warning; }
+    .dot-danger { @apply bg-state-danger; }
+    .dot-info { @apply bg-state-info; }
+    .dot-neutral { @apply bg-text-tertiary; }
 
-      /* Count */
-      .count {
-        @apply px-1.5 py-0.5 rounded-full text-xs font-bold;
-      }
-      .size-sm .count {
-        @apply px-1 py-0 text-[10px];
-      }
-      .size-lg .count {
-        @apply px-2 py-0.5 text-xs;
-      }
+    /* Count */
+    .count {
+      @apply px-1.5 py-0.5 rounded-full text-xs font-bold;
+    }
+    .size-sm .count { @apply px-1 py-0 text-[10px]; }
+    .size-lg .count { @apply px-2 py-0.5 text-xs; }
 
-      .count-success {
-        @apply bg-green-500 text-white;
-      }
-      .count-warning {
-        @apply bg-yellow-500 text-white;
-      }
-      .count-danger {
-        @apply bg-red-500 text-white;
-      }
-      .count-info {
-        @apply bg-blue-500 text-white;
-      }
-      .count-gray {
-        @apply bg-gray-500 text-white;
-      }
-      .count-primary {
-        @apply bg-indigo-500 text-white;
-      }
-      .count-secondary {
-        @apply bg-gray-500 text-white;
-      }
+    .count-primary { @apply bg-brand-primary text-white; }
+    .count-success { @apply bg-state-success text-white; }
+    .count-warning { @apply bg-state-warning text-white; }
+    .count-danger { @apply bg-state-danger text-white; }
+    .count-info { @apply bg-state-info text-white; }
+    .count-neutral { @apply bg-text-tertiary text-white; }
 
-      /* Text */
-      .text-content {
-        @apply whitespace-nowrap;
-      }
-    `,
-  ],
+    /* Text */
+    .text-content {
+      @apply whitespace-nowrap;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BadgeComponent {
-  label = input<string>("");
-  variant = input<BadgeVariant>("gray");
-  size = input<BadgeSize>("md");
-  shape = input<BadgeShape>("pill");
-  icon = input<string>("");
+  label = input.required<string>();
+  variant = input<BadgeVariant>('neutral');
+  size = input<BadgeSize>('md');
+  shape = input<BadgeShape>('pill');
+  icon = input<string>('');
   dot = input<boolean>(false);
   count = input<number | null>(null);
-  ariaLabel = input<string>("");
+  ariaLabel = input<string>('');
+
+  @HostBinding('class')
+  get hostClass(): string {
+    return 'badge';
+  }
 
   computedClasses = computed(() => {
-    const classes = ["badge"];
+    const classes = ['badge'];
     classes.push(`size-${this.size()}`);
     classes.push(`shape-${this.shape()}`);
     classes.push(`variant-${this.variant()}`);
-    return classes.join(" ");
+    return classes.join(' ');
   });
 
-  iconClasses = computed(() => {
-    return "icon";
-  });
+  iconClasses = computed(() => 'icon');
 
   dotClasses = computed(() => {
     return `dot dot-${this.variant()}`;
   });
 
-  textClasses = computed(() => {
-    return "text-content";
-  });
+  textClasses = computed(() => 'text-content');
 
   countClasses = computed(() => {
     return `count count-${this.variant()}`;

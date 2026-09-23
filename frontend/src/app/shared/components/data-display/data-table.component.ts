@@ -19,8 +19,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { EmptyStateComponent } from '../data-display';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { ButtonComponent } from '../button/button.component';
 
 export interface ColumnDef<T = any> {
   key: string;
@@ -35,7 +37,7 @@ export interface ColumnDef<T = any> {
 export interface TableAction<T = any> {
   label: string;
   icon?: string;
-  variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'info' | 'outline' | 'ghost';
   tooltip?: string;
   disabled?: (row: T) => boolean;
   hidden?: (row: T) => boolean;
@@ -49,6 +51,7 @@ export interface DataTableConfig<T = any> {
   striped?: boolean;
   hoverable?: boolean;
   stickyHeader?: boolean;
+  pagination?: boolean;
   emptyState?: {
     icon: string;
     title: string;
@@ -74,7 +77,9 @@ export interface DataTableConfig<T = any> {
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
+    MatDividerModule,
     EmptyStateComponent,
+    ButtonComponent,
   ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
@@ -184,13 +189,15 @@ export class DataTableComponent<T = any> {
   }
 
   getActionButtonClass(action: TableAction<T>): string {
-    const base = 'p-1 rounded-lg transition-colors';
+    const base = 'p-1.5 rounded-lg transition-colors duration-fast';
     const variants: Record<string, string> = {
-      primary: 'text-primary-600 hover:bg-primary-50',
-      secondary: 'text-gray-600 hover:bg-gray-100',
-      danger: 'text-red-600 hover:bg-red-50',
-      outline: 'text-gray-600 hover:bg-gray-100',
-      ghost: 'text-gray-500 hover:bg-gray-100',
+      primary: 'text-brand-primary hover:bg-brand-primary-subtle',
+      secondary: 'text-text-secondary hover:bg-surface-hover',
+      danger: 'text-state-danger hover:bg-state-danger-subtle',
+      warning: 'text-state-warning hover:bg-state-warning-subtle',
+      info: 'text-state-info hover:bg-state-info-subtle',
+      outline: 'text-text-secondary hover:bg-surface-hover',
+      ghost: 'text-text-tertiary hover:bg-surface-hover',
     };
     return `${base} ${variants[action.variant || 'secondary']}`;
   }

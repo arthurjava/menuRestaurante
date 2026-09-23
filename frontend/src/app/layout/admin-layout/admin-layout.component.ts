@@ -110,26 +110,20 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     const userRoles: UserRole[] = userRole ? [userRole] : [];
     return this.navSections().map(section => ({
       ...section,
-      items: section.items.filter(item => 
+      items: section.items.filter(item =>
         !item.roles || item.roles.some(role => userRoles.includes(role))
       ),
     })).filter(section => section.items.length > 0);
   });
 
-  readonly sidebarClasses = computed(() => {
-    const classes = ['admin-sidebar', 'fixed', 'lg:relative', 'z-50', 'h-full', 'lg:h-screen', 'transition-all', 'duration-300', 'ease-out'];
-    if (this.sidebarCollapsed()) classes.push('sidebar-collapsed');
-    if (this.mobileDrawerOpened()) classes.push('drawer-open');
-    return classes.join(' ');
-  });
-
-  @HostBinding('class') get hostClasses(): string {
+  @HostBinding('class')
+  get hostClasses(): string {
     return `admin-layout ${this.sidebarCollapsed() ? 'sidebar-collapsed' : ''} ${this.mobileDrawerOpened() ? 'drawer-open' : ''}`;
   }
 
   ngOnInit(): void {
     this.currentUrl.set(this.router.url);
-    
+
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
@@ -153,7 +147,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   private checkScreenSize(): void {
     const isMobile = window.innerWidth < 768;
     const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-    
+
     if (isMobile) {
       this.sidebarOpened.set(false);
       this.sidebarCollapsed.set(false);

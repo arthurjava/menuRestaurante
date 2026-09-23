@@ -11,12 +11,10 @@ import {
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
-import { MatChipsModule } from "@angular/material/chips";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatDialogModule, MatDialog } from "@angular/material/dialog";
 import { MatBadgeModule } from "@angular/material/badge";
@@ -84,12 +82,10 @@ export interface ContactInfo {
     CommonModule,
     FormsModule,
     MatCardModule,
-    MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatChipsModule,
     MatProgressSpinnerModule,
     MatDialogModule,
     MatBadgeModule,
@@ -101,9 +97,9 @@ export interface ContactInfo {
     ModalComponent,
   ],
   template: `
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen bg-surface-secondary">
       <!-- Header -->
-      <header class="bg-white border-b border-gray-100 sticky top-0 z-40">
+      <header class="bg-surface-primary border-b border-border sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
             class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-4"
@@ -117,18 +113,18 @@ export interface ContactInfo {
                 />
               } @else {
                 <div
-                  class="h-12 w-12 bg-indigo-100 rounded-lg flex items-center justify-center"
+                  class="h-12 w-12 bg-brand-primary-subtle rounded-lg flex items-center justify-center"
                 >
-                  <mat-icon class="text-indigo-600 text-2xl"
+                  <mat-icon class="text-brand-primary-hover text-2xl"
                     >restaurant</mat-icon
                   >
                 </div>
               }
               <div>
-                <h1 class="text-xl font-bold text-gray-900">
+                <h1 class="text-h3 font-bold text-text-primary">
                   {{ restaurantInfo().name ?? "Nosso Restaurante" }}
                 </h1>
-                <p class="text-sm text-gray-500">
+                <p class="text-body-sm text-text-tertiary">
                   {{ restaurantInfo().tagline ?? "Cardápio Digital" }}
                 </p>
               </div>
@@ -137,7 +133,7 @@ export interface ContactInfo {
             <div class="flex items-center gap-3 w-full sm:w-auto">
               <div class="flex-1 sm:w-64 relative">
                 <mat-icon
-                  class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  class="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary"
                   >search</mat-icon
                 >
                 <input
@@ -161,7 +157,7 @@ export interface ContactInfo {
 
           <!-- Category Filter Chips -->
           @if (showCategoryFilter()) {
-            <div class="flex flex-wrap gap-2 pb-4 border-b border-gray-100">
+            <div class="flex flex-wrap gap-2 pb-4 border-b border-border">
               <button
                 type="button"
                 class="chip"
@@ -191,23 +187,23 @@ export interface ContactInfo {
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
               <div class="animate-pulse">
-                <div class="aspect-[4/3] bg-gray-200 rounded-xl mb-3"></div>
-                <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div class="h-4 bg-gray-200 rounded w-1/2 mb-1"></div>
-                <div class="h-5 bg-gray-200 rounded w-1/4"></div>
+                <div class="aspect-[4/3] bg-surface-tertiary rounded-xl mb-3"></div>
+                <div class="h-4 bg-surface-tertiary rounded w-3/4 mb-2"></div>
+                <div class="h-4 bg-surface-tertiary rounded w-1/2 mb-1"></div>
+                <div class="h-5 bg-surface-tertiary rounded w-1/4"></div>
               </div>
             }
           </div>
         } @else {
           @if (filteredDishes().length === 0) {
             <div class="text-center py-16">
-              <mat-icon class="text-6xl text-gray-300 mb-4"
+              <mat-icon class="text-6xl text-text-tertiary mb-4"
                 >restaurant_menu</mat-icon
               >
-              <h2 class="text-xl font-medium text-gray-900 mb-2">
+              <h2 class="text-h4 font-medium text-text-primary mb-2">
                 Nenhum prato encontrado
               </h2>
-              <p class="text-gray-500">Tente ajustar sua busca ou filtro</p>
+              <p class="text-text-tertiary">Tente ajustar sua busca ou filtro</p>
             </div>
           } @else {
             <!-- Category Sections -->
@@ -223,16 +219,16 @@ export interface ContactInfo {
                       />
                     } @else {
                       <div
-                        class="h-10 w-10 bg-indigo-100 rounded-lg flex items-center justify-center"
+                        class="h-10 w-10 bg-brand-primary-subtle rounded-lg flex items-center justify-center"
                       >
-                        <mat-icon class="text-indigo-600">category</mat-icon>
+                        <mat-icon class="text-brand-primary-hover">category</mat-icon>
                       </div>
                     }
-                    <h2 class="text-2xl font-bold text-gray-900">
+                    <h2 class="text-h3 font-bold text-text-primary">
                       {{ category.name }}
                     </h2>
                   </div>
-                  <span class="text-sm text-gray-500"
+                  <span class="text-body-sm text-text-tertiary"
                     >{{ getDishesForCategory(category.id).length }} pratos</span
                   >
                 </div>
@@ -246,7 +242,7 @@ export interface ContactInfo {
                   ) {
                     <article class="dish-card group">
                       <div
-                        class="relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 mb-3"
+                        class="relative aspect-[4/3] rounded-xl overflow-hidden bg-surface-tertiary mb-3"
                       >
                         @if (dish.images.length > 0) {
                           <img
@@ -259,7 +255,7 @@ export interface ContactInfo {
                           <div
                             class="w-full h-full flex items-center justify-center"
                           >
-                            <mat-icon class="text-4xl text-gray-300"
+                            <mat-icon class="text-4xl text-text-tertiary"
                               >restaurant</mat-icon
                             >
                           </div>
@@ -268,28 +264,28 @@ export interface ContactInfo {
                         @if (dish.images.length > 1) {
                           <button
                             type="button"
-                            class="absolute top-2 right-2 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                            class="absolute top-2 right-2 p-2 bg-surface-primary/90 backdrop-blur-sm rounded-full shadow-chip opacity-0 group-hover:opacity-100 transition-opacity"
                             (click)="openImageGallery(dish)"
                             matTooltip="Ver todas as imagens"
                             aria-label="Ver todas as imagens de {{ dish.name }}"
                           >
-                            <mat-icon class="text-gray-600"
+                            <mat-icon class="text-text-tertiary"
                               >photo_library</mat-icon
                             >
                           </button>
                         }
                       </div>
 
-                      <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1">
+                      <h3 class="font-semibold text-text-primary mb-1 line-clamp-1">
                         {{ dish.name }}
                       </h3>
                       @if (dish.description) {
-                        <p class="text-sm text-gray-500 mb-2 line-clamp-2">
+                        <p class="text-body-sm text-text-tertiary mb-2 line-clamp-2">
                           {{ dish.description }}
                         </p>
                       }
                       <div class="flex items-center justify-between">
-                        <span class="text-lg font-bold text-indigo-600"
+                        <span class="text-lg font-bold text-brand-primary"
                           >R$
                           {{ dish.price.toFixed(2).replace(".", ",") }}</span
                         >
@@ -313,14 +309,14 @@ export interface ContactInfo {
       </main>
 
       <!-- Footer -->
-      <footer class="bg-gray-900 text-white py-12">
+      <footer class="bg-surface-inverse text-text-inverse py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <h3 class="font-semibold text-lg mb-4">
                 {{ restaurantInfo().name ?? "Nosso Restaurante" }}
               </h3>
-              <p class="text-gray-400">
+              <p class="text-text-tertiary">
                 {{
                   restaurantInfo().description ??
                     "O melhor da culinária para você."
@@ -331,7 +327,7 @@ export interface ContactInfo {
               <h3 class="font-semibold text-lg mb-4">
                 Horário de Funcionamento
               </h3>
-              <div class="space-y-2 text-gray-400">
+              <div class="space-y-2 text-text-tertiary">
                 @for (hours of businessHours(); track hours.dayOfWeek) {
                   <div class="flex justify-between">
                     <span>{{ getDayName(hours.dayOfWeek) }}</span>
@@ -342,7 +338,7 @@ export interface ContactInfo {
             </div>
             <div>
               <h3 class="font-semibold text-lg mb-4">Contato</h3>
-              <div class="space-y-2 text-gray-400">
+              <div class="space-y-2 text-text-tertiary">
                 @if (contactInfo().phone) {
                   <div class="flex items-center gap-2">
                     <mat-icon class="text-sm">phone</mat-icon>
@@ -364,8 +360,8 @@ export interface ContactInfo {
               </div>
             </div>
           </div>
-          <mat-divider class="my-8 border-gray-800"></mat-divider>
-          <p class="text-center text-gray-500 text-sm">
+          <mat-divider class="my-8 border-border-strong"></mat-divider>
+          <p class="text-center text-text-tertiary text-sm">
             &copy; {{ currentYear() }}
             {{ restaurantInfo().name ?? "Nosso Restaurante" }}. Todos os
             direitos reservados.
@@ -415,7 +411,7 @@ export interface ContactInfo {
             </div>
           }
           <div class="flex items-center justify-between">
-            <span class="text-2xl font-bold text-indigo-600"
+            <span class="text-h3 font-bold text-brand-primary"
               >R$ {{ getDetailPrice() }}</span
             >
             <app-badge
@@ -426,7 +422,7 @@ export interface ContactInfo {
             </app-badge>
           </div>
           @if (getDetailDescription()) {
-            <p class="text-gray-600">{{ getDetailDescription() }}</p>
+            <p class="text-text-secondary">{{ getDetailDescription() }}</p>
           }
           <div class="flex gap-3 pt-4">
             <app-button
@@ -452,7 +448,7 @@ export interface ContactInfo {
       </app-modal>
     </div>
   `,
-  styles: [
+styles: [
     `
       :host {
         display: block;
@@ -460,15 +456,17 @@ export interface ContactInfo {
 
       .chip {
         @apply px-4 py-1.5 text-sm font-medium rounded-full border transition-all duration-200;
-        @apply border-gray-300 bg-white text-gray-700 hover:border-indigo-400 hover:text-indigo-600;
+        @apply border-border bg-surface-primary text-text-secondary hover:border-brand-primary hover:text-brand-primary-hover;
+        box-shadow: var(--shadow-chip, 0 1px 2px 0 rgb(0 0 0 / 0.03));
       }
 
       .chip.active {
-        @apply border-indigo-600 bg-indigo-600 text-white;
+        @apply border-brand-primary bg-brand-primary text-brand-on-primary;
+        box-shadow: var(--shadow-chip-hover, 0 1px 2px 0 rgb(0 0 0 / 0.05));
       }
 
       .dish-card {
-        @apply bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300;
+        @apply bg-surface-primary rounded-xl border border-border shadow-card hover:shadow-card-hover transition-all duration-300;
       }
 
       .line-clamp-1 {

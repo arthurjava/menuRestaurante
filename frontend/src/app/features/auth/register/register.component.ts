@@ -14,7 +14,6 @@ import {
 } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
-import { MatButtonModule } from "@angular/material/button";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
@@ -34,7 +33,6 @@ import { SelectComponent } from "@shared/components/select/select.component";
     ReactiveFormsModule,
     RouterLink,
     MatCardModule,
-    MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
@@ -46,12 +44,12 @@ import { SelectComponent } from "@shared/components/select/select.component";
   ],
   template: `
     <div
-      class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12"
+      class="min-h-screen flex items-center justify-center bg-surface-secondary px-4 py-12"
     >
       <mat-card class="w-full max-w-md p-8">
         <div class="text-center mb-8">
-          <h1 class="text-2xl font-bold text-gray-900">Criar Conta</h1>
-          <p class="text-gray-600 mt-2">Cadastre-se para acessar o sistema</p>
+          <h1 class="text-h2 font-bold text-text-primary">Criar Conta</h1>
+          <p class="text-text-secondary mt-2">Cadastre-se para acessar o sistema</p>
         </div>
 
         <form
@@ -120,15 +118,15 @@ import { SelectComponent } from "@shared/components/select/select.component";
               type="checkbox"
               id="terms"
               formControlName="terms"
-              class="w-4 h-4 mt-0.5 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+              class="w-4 h-4 mt-0.5 text-brand-primary rounded border-border focus:ring-brand-primary/40"
             />
-            <label for="terms" class="text-sm text-gray-600">
+            <label for="terms" class="text-body-sm text-text-secondary">
               Aceito os
-              <a href="#" class="text-indigo-600 hover:underline"
+              <a href="#" class="text-brand-primary hover:underline"
                 >Termos de Uso</a
               >
               e a
-              <a href="#" class="text-indigo-600 hover:underline"
+              <a href="#" class="text-brand-primary hover:underline"
                 >Política de Privacidade</a
               >
             </label>
@@ -147,11 +145,11 @@ import { SelectComponent } from "@shared/components/select/select.component";
         </form>
 
         <div class="mt-6 text-center">
-          <p class="text-gray-600">
+          <p class="text-text-secondary">
             Já tem uma conta?
             <a
               routerLink="/auth/login"
-              class="text-indigo-600 hover:text-indigo-500 font-medium ml-1"
+              class="text-brand-primary hover:text-brand-primary-hover font-medium ml-1"
             >
               Entrar
             </a>
@@ -167,7 +165,7 @@ import { SelectComponent } from "@shared/components/select/select.component";
       }
 
       mat-card {
-        @apply shadow-sm border border-gray-100;
+        @apply shadow-card border border-border;
       }
 
       ::ng-deep .mat-mdc-form-field {

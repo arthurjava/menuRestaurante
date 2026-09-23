@@ -1,114 +1,129 @@
-.data-table-container {
-  @apply relative bg-white rounded-xl border border-gray-100 overflow-hidden;
-}
-
-.table-loading-overlay {
-  @apply absolute inset-0 bg-white/80 flex items-center justify-center z-10;
-}
-
 .table-wrapper {
-  @apply overflow-x-auto;
+  @apply w-full;
 }
 
-.data-table {
-  @apply w-full min-w-max;
+.table-container {
+  @apply overflow-x-auto rounded-xl border border-border bg-surface-primary;
 }
 
-// Header cells
-.data-table th.mat-header-cell {
-  @apply px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 border-b border-gray-100;
-  @apply sticky top-0 z-10;
+.table {
+  @apply min-w-full divide-y divide-border;
 }
 
-.data-table th.mat-header-cell:first-child {
-  @apply rounded-tl-none;
+.table th {
+  @apply px-4 py-3 text-left text-label font-medium text-text-tertiary uppercase tracking-wider bg-surface-secondary sticky top-0 z-10;
 }
 
-.data-table th.mat-header-cell:last-child {
-  @apply rounded-tr-none;
+.table td {
+  @apply px-4 py-3 whitespace-nowrap text-body text-text-primary;
 }
 
-// Body cells
-.data-table td.mat-cell {
-  @apply px-4 py-3 text-sm text-gray-900 border-b border-gray-50;
+.table tbody tr {
+  @apply transition-colors duration-fast;
 }
 
-.data-table tr.mat-row {
-  @apply transition-colors duration-150;
+.table tbody tr:hover {
+  @apply bg-surface-hover;
 }
 
-.data-table tr.mat-row:last-child td {
-  @apply border-b-0;
+.table tbody tr.selected {
+  @apply bg-brand-primary-subtle;
 }
 
-// Striped rows
-.data-table.striped tr.mat-row:nth-child(even) {
-  @apply bg-gray-50;
+.table tbody tr.selected:hover {
+  @apply bg-brand-primary-subtle-hover;
 }
 
-// Hoverable rows
-.data-table.hoverable tr.mat-row:hover {
-  @apply bg-gray-50;
+/* Loading State */
+.table-loading {
+  @apply p-4;
 }
 
-// Selected row
-.data-table tr.mat-row.selected {
-  @apply bg-primary-50;
+.loading-row {
+  @apply flex items-center;
 }
 
-// Row clickable
-.data-table.row-clickable tr.mat-row {
-  @apply cursor-pointer;
+.loading-cell {
+  @apply px-4 py-3;
 }
 
-.data-table.row-clickable tr.mat-row:hover {
-  @apply bg-gray-50;
+.loading-skeleton {
+  @apply h-4 bg-surface-tertiary rounded animate-pulse;
 }
 
-// Sticky columns
-.sticky-start { @apply sticky left-0 bg-white z-20; }
-.sticky-end { @apply sticky right-0 bg-white z-20; }
-
-// Actions column
-.table-actions {
-  @apply flex items-center justify-end gap-1;
+/* Custom checkbox styling */
+::ng-deep .mat-mdc-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+  @apply bg-brand-primary border-brand-primary;
 }
 
-.table-actions button {
-  @apply p-1 rounded-lg transition-colors;
+::ng-deep .mat-mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background {
+  @apply bg-brand-primary border-brand-primary;
 }
 
-.table-actions button:hover {
-  @apply bg-gray-100;
+/* Pagination */
+::ng-deep .mat-mdc-paginator {
+  @apply border-t border-border bg-surface-primary;
 }
 
-.table-actions button:disabled {
-  @apply opacity-50 cursor-not-allowed;
+::ng-deep .mat-mdc-paginator .mat-mdc-paginator-page-size-label {
+  @apply text-body-sm text-text-secondary;
 }
 
-// Selection column
-.mat-column-select {
-  @apply w-12;
+::ng-deep .mat-mdc-paginator .mat-mdc-paginator-range-label {
+  @apply text-body-sm text-text-secondary;
 }
 
-.mat-column-select .mat-mdc-checkbox {
-  @apply flex justify-center;
+::ng-deep .mat-mdc-paginator .mat-mdc-button-base {
+  @apply text-text-secondary hover:text-text-primary hover:bg-surface-hover;
 }
 
-// Paginator
-.table-paginator {
-  @apply border-t border-gray-100 bg-white px-4 py-2;
+::ng-deep .mat-mdc-paginator .mat-mdc-select {
+  @apply text-body-sm;
 }
 
-// Empty state container
-:host ::ng-deep .empty-state {
-  @apply py-12 px-4;
+/* Sort header */
+::ng-deep .mat-sort-header-button {
+  @apply flex items-center gap-1 hover:text-text-primary transition-colors;
 }
 
-// Responsive
-@media (max-width: 640px) {
-  .data-table th.mat-header-cell,
-  .data-table td.mat-cell {
-    @apply px-3 py-2 text-xs;
+::ng-deep .mat-sort-header-arrow {
+  @apply text-text-tertiary;
+}
+
+::ng-deep .mat-sort-header-stem {
+  @apply flex items-center gap-1;
+}
+
+/* Menu */
+::ng-deep .mat-mdc-menu-panel {
+  @apply bg-surface-primary border border-border rounded-xl shadow-dropdown;
+}
+
+::ng-deep .mat-mdc-menu-item {
+  @apply text-body text-text-primary hover:bg-surface-hover;
+}
+
+::ng-deep .mat-mdc-menu-item .mat-mdc-menu-item-ripple {
+  @apply text-brand-primary;
+}
+
+::ng-deep .mat-mdc-divider {
+  @apply border-border;
+}
+
+/* Empty state in table */
+.empty-row td {
+  @apply py-12;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table-container {
+    @apply rounded-none border-x-0;
+  }
+
+  .table th,
+  .table td {
+    @apply px-3 py-2;
   }
 }

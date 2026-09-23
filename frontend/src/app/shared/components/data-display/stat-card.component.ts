@@ -40,21 +40,21 @@ export class StatCardComponent {
   @Input() href = '';
 
   readonly variantClasses = computed(() => ({
-    default: 'bg-white border-gray-100',
-    primary: 'bg-primary-50 border-primary-100',
-    success: 'bg-success-50 border-success-100',
-    warning: 'bg-warning-50 border-warning-100',
-    danger: 'bg-danger-50 border-danger-100',
-    info: 'bg-info-50 border-info-100',
+    default: 'bg-surface-primary border-border',
+    primary: 'bg-brand-primary-subtle border-brand-primary-border',
+    success: 'bg-state-success-subtle border-state-success-border',
+    warning: 'bg-state-warning-subtle border-state-warning-border',
+    danger: 'bg-state-danger-subtle border-state-danger-border',
+    info: 'bg-state-info-subtle border-state-info-border',
   }));
 
   readonly iconColorClasses = computed(() => ({
-    default: 'bg-gray-100 text-gray-600',
-    primary: 'bg-primary-100 text-primary-600',
-    success: 'bg-success-100 text-success-600',
-    warning: 'bg-warning-100 text-warning-600',
-    danger: 'bg-danger-100 text-danger-600',
-    info: 'bg-info-100 text-info-600',
+    default: 'bg-surface-tertiary text-text-secondary',
+    primary: 'bg-brand-primary-subtle text-brand-primary-hover',
+    success: 'bg-state-success-subtle text-state-success-hover',
+    warning: 'bg-state-warning-subtle text-state-warning-hover',
+    danger: 'bg-state-danger-subtle text-state-danger-hover',
+    info: 'bg-state-info-subtle text-state-info-hover',
   }));
 
   readonly trendIcon = computed(() => {

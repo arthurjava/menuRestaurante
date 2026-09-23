@@ -1,16 +1,15 @@
 import {
   Component,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
+  input,
+  output,
   computed,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { ButtonComponent } from '../button/button.component';
 
-export type EmptyStateVariant = 'default' | 'search' | 'filter' | 'error' | 'offline';
+export type EmptyStateVariant = 'default' | 'search' | 'filter' | 'error' | 'offline' | 'success';
 
 export interface EmptyStatePreset {
   icon: string;
@@ -25,34 +24,81 @@ const PRESETS: Record<EmptyStateVariant, EmptyStatePreset> = {
   filter: { icon: 'filter_alt_off', title: 'Nenhum resultado para os filtros', description: 'Ajuste ou limpe os filtros aplicados.' },
   error: { icon: 'error_outline', title: 'Erro ao carregar', description: 'Não foi possível carregar os dados. Tente novamente.' },
   offline: { icon: 'wifi_off', title: 'Você está offline', description: 'Verifique sua conexão e tente novamente.' },
+  success: { icon: 'check_circle', title: 'Tudo certo!', description: 'Não há itens pendentes no momento.' },
 };
 
 @Component({
   selector: 'app-empty-state',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
-  templateUrl: './empty-state.component.html',
-  styleUrl: './empty-state.component.scss',
+  imports: [CommonModule, MatIconModule, ButtonComponent],
+  template: `
+    <div class="empty-state" [class]="sizeClasses()">
+      <div class="empty-state-icon" [class]="iconColorClass()">
+        <mat-icon>{{ effectiveIcon() }}</mat-icon>
+      </div>
+      <h3 class="empty-state-title">{{ effectiveTitle() }}</h3>
+      @if (effectiveDescription()) {
+        <p class="empty-state-description">{{ effectiveDescription() }}</p>
+      }
+      @if (effectiveActionLabel()) {
+        <app-button
+          variant="primary"
+          [icon]="actionIcon()"
+          [label]="effectiveActionLabel()"
+          (clicked)="onAction()"
+          class="mt-4">
+        </app-button>
+      }
+      @if (customContent()) {
+        <div class="mt-4">
+          <ng-content></ng-content>
+        </div>
+      }
+    </div>
+  `,
+  styles: [`
+    :host {
+      display: block;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmptyStateComponent {
-  @Input() icon = 'inbox';
-  @Input() title = 'Nenhum registro encontrado';
-  @Input() description = '';
-  @Input() actionLabel = '';
-  @Input() actionIcon = '';
-  @Input() variant: EmptyStateVariant = 'default';
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() illustration = false;
+  icon = input<string>('');
+  title = input<string>('');
+  description = input<string>('');
+  actionLabel = input<string>('');
+  actionIcon = input<string>('');
+  variant: EmptyStateVariant = 'default';
+  size = input<'sm' | 'md' | 'lg'>('md');
+  illustration = input<boolean>(false);
 
-  @Output() actionClick = new EventEmitter<void>();
+  actionClick = output<void>();
 
-  readonly preset = computed(() => PRESETS[this.variant]);
+  preset = computed(() => PRESETS[this.variant]);
 
-  readonly effectiveIcon = computed(() => this.icon || this.preset().icon);
-  readonly effectiveTitle = computed(() => this.title || this.preset().title);
-  readonly effectiveDescription = computed(() => this.description || this.preset().description);
-  readonly effectiveActionLabel = computed(() => this.actionLabel || this.preset().actionLabel);
+  effectiveIcon = computed(() => this.icon() || this.preset().icon);
+  effectiveTitle = computed(() => this.title() || this.preset().title);
+  effectiveDescription = computed(() => this.description() || this.preset().description);
+  effectiveActionLabel = computed(() => this.actionLabel() || this.preset().actionLabel || '');
+
+  sizeClasses = computed(() => ({
+    sm: 'py-6 px-4',
+    md: 'py-12 px-4',
+    lg: 'py-16 px-6',
+  }));
+
+  iconColorClass = computed(() => {
+    const colors: Record<EmptyStateVariant, string> = {
+      default: 'bg-surface-tertiary text-text-tertiary',
+      search: 'bg-primary-50 text-primary-600',
+      filter: 'bg-info-50 text-info-600',
+      error: 'bg-danger-50 text-danger-600',
+      offline: 'bg-warning-50 text-warning-600',
+      success: 'bg-success-50 text-success-600',
+    };
+    return colors[this.variant];
+  });
 
   onAction(): void {
     if (this.effectiveActionLabel()) {
@@ -60,21 +106,5 @@ export class EmptyStateComponent {
     }
   }
 
-  protected readonly sizeClasses = computed(() => ({
-    sm: 'py-6 px-4',
-    md: 'py-12 px-4',
-    lg: 'py-16 px-6',
-  }));
-
-  protected readonly iconSizeClasses = computed(() => ({
-    sm: 'text-4xl',
-    md: 'text-6xl',
-    lg: 'text-7xl',
-  }));
-
-  protected readonly titleSizeClasses = computed(() => ({
-    sm: 'text-base',
-    md: 'text-lg',
-    lg: 'text-xl',
-  }));
+  customContent = computed(() => false);
 }

@@ -1,20 +1,21 @@
-<div class="admin-layout min-h-screen bg-gray-50 flex">
+<div class="admin-layout min-h-screen bg-surface-secondary flex">
   <!-- Mobile drawer backdrop -->
   @if (mobileDrawerOpened()) {
     <div
-      class="fixed inset-0 z-40 bg-black/50 lg:hidden"
+      class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm lg:hidden"
       (click)="closeMobileDrawer()"
       aria-hidden="true"></div>
   }
 
   <!-- Sidebar -->
   <aside
-    class="admin-sidebar fixed lg:relative z-50 h-full lg:h-screen transition-all duration-300 ease-out"
-    [class]="sidebarClasses()"
+    class="admin-sidebar fixed lg:relative z-50 h-full lg:h-screen transition-all duration-normal ease-out"
+    [class.sidebar-collapsed]="sidebarCollapsed()"
+    [class.drawer-open]="mobileDrawerOpened()"
     [attr.aria-hidden]="mobileDrawerOpened() ? 'false' : 'true'"
     role="navigation"
     aria-label="Menu principal">
-    
+
     <app-admin-sidebar
       [collapsed]="sidebarCollapsed()"
       [sections]="filteredNavSections()"
@@ -24,9 +25,9 @@
   </aside>
 
   <!-- Main content area -->
-  <div class="admin-main flex-1 flex flex-col min-w-0 lg:ml-0" [class.ml-64]="!sidebarCollapsed() && !mobileDrawerOpened()">
+  <div class="admin-main flex-1 flex flex-col min-w-0" [class.ml-64]="!sidebarCollapsed() && !mobileDrawerOpened()">
     <!-- Header -->
-    <header class="admin-header sticky top-0 z-30">
+    <header class="admin-header sticky top-0 z-40">
       <app-admin-header
         [sidebarCollapsed]="sidebarCollapsed()"
         [mobileDrawerOpened]="mobileDrawerOpened()"

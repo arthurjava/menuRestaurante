@@ -11,7 +11,6 @@ import {
 import { CommonModule } from "@angular/common";
 import { ReactiveFormsModule, FormControl } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -57,7 +56,6 @@ import {
     CommonModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
@@ -83,8 +81,8 @@ import {
         class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Categorias</h1>
-          <p class="text-gray-600 mt-1">Gerencie as categorias do cardápio</p>
+          <h1 class="text-h2 font-bold text-text-primary">Categorias</h1>
+          <p class="text-text-secondary mt-1">Gerencie as categorias do cardápio</p>
         </div>
         <app-button
           variant="primary"
@@ -223,7 +221,7 @@ import {
       }
 
       .cdk-drag-preview {
-        @apply shadow-lg-custom bg-white;
+        @apply shadow-dropdown bg-surface-primary;
       }
 
       .cdk-drag-placeholder {
@@ -235,7 +233,7 @@ import {
       }
 
       :host ::ng-deep .mat-mdc-card {
-        @apply shadow-sm border border-gray-100;
+        @apply shadow-card border border-border;
       }
 
       :host ::ng-deep .mat-mdc-form-field {

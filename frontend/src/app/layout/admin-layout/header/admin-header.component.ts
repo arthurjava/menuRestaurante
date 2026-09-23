@@ -94,11 +94,11 @@ export class AdminHeaderComponent {
 
   getNotificationIconClass(type: NotificationType): string {
     switch (type) {
-      case 'success': return 'bg-success-100 text-success-600';
-      case 'error': return 'bg-danger-100 text-danger-600';
-      case 'warning': return 'bg-warning-100 text-warning-600';
-      case 'info': return 'bg-info-100 text-info-600';
-      default: return 'bg-gray-100 text-gray-600';
+      case 'success': return 'bg-state-success-subtle text-state-success-hover';
+      case 'error': return 'bg-state-danger-subtle text-state-danger-hover';
+      case 'warning': return 'bg-state-warning-subtle text-state-warning-hover';
+      case 'info': return 'bg-state-info-subtle text-state-info-hover';
+      default: return 'bg-surface-tertiary text-text-tertiary';
     }
   }
 }
