@@ -20,6 +20,14 @@ spring:
       max-file-size: 5MB
       max-request-size: 25MB
 
+logging:
+  level:
+    com.restaurante.controller.AuthController: DEBUG
+    com.restaurante.security.JWTAuthFilter: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.zaxxer.hikari: DEBUG
+
 app:
   jwt:
     secret: ${JWT_SECRET:dev-secret-key-min-32-chars-long-enough}

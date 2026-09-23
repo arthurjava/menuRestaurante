@@ -1095,20 +1095,160 @@ INSERT INTO users (email, password, name, role) VALUES
 - ⚠️ Testes de integração Frontend-Backend **pendentes** (aguardam build do frontend)
 
 ---
-
-## 18. Próximos Passos Imediatos
-
+ 
+## 18. Próximos Passos Finais
+ 
 1. **Corrigir build do frontend Angular 21** - Resolver erros TypeScript/template (boolean inputs, modal nesting, missing properties, $index, new Date() em templates)
 2. **Fase 6 - Polimento & Produção** - Docker production configuration, CI/CD setup
 3. **Otimização de performance** - Lazy loading otimizado, change detection
 4. **Testes automatizados** - Unitários backend e frontend
 5. **Documentação Swagger** - Validar endpoints expostos
 6. **Preparação para deploy** - Variáveis de ambiente produção, Nginx config
-
+ 
 ---
-
-## 20. Checklist de Produção — Backend ✅ / Frontend ⚠️
-
+ 
+## 19. Configuração MCPs (Model Context Protocol)
+ 
+### 19.1 MCP Servers Configurados
+ 
+| Server | Propósito | Configuração |
+|--------|-----------|--------------|
+| **context7** | Documentação atualizada de bibliotecas/frameworks | Auto-configurado via `.opencode/mcp.json` |
+| **github** | Operações GitHub (issues, PRs, repos, code search) | Token via `GH_TOKEN` env var |
+| **browseros** / **browseros-neo** | Navegador dedicado para agentes (live logins, cookies) | BrowserOS neo desktop app |
+| **postgresql** | Query direta no banco PostgreSQL | Conexão via docker-compose network |
+ 
+### 19.2 Uso dos MCPs
+ 
+#### Context7
+```bash
+# Resolver library ID
+resolve-library-id(query="Spring Boot 3.5", libraryName="Spring Boot")
+ 
+# Consultar documentação
+query-docs(libraryId="/spring-projects/spring-boot", query="SecurityFilterChain permitAll configuration")
+```
+ 
+#### GitHub
+```bash
+# Listar issues
+list_issues(owner="arthurjava", repo="menuRestaurante", state="open")
+ 
+# Criar PR
+create_pull_request(owner="arthurjava", repo="menuRestaurante", title="feat: ...", head="feature-branch", base="main")
+ 
+# Buscar código
+search_code(query="SecurityConfig", repo="arthurjava/menuRestaurante", language=["Java"])
+```
+ 
+#### BrowserOS neo
+```bash
+# Nova aba
+tabs(action="new", url="http://localhost:4200")
+ 
+# Snapshot + act loop
+snapshot(page=0, mode="interactive")
+act(page=0, kind="click", ref="e12")
+```
+ 
+#### PostgreSQL
+```bash
+# Query direta
+postgresql_query(sql="SELECT * FROM categories WHERE is_active = true")
+```
+ 
+### 19.3 Configuração Local (`.opencode/mcp.json`)
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@context7/mcp-server"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@github/mcp-server"],
+      "env": { "GH_TOKEN": "${GH_TOKEN}" }
+    },
+    "postgresql": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": { "DATABASE_URL": "postgresql://restaurante:restaurante123@localhost:5432/restaurante" }
+    }
+  }
+}
+```
+ 
+---
+ 
+## 20. Agents e Sub-Agents (OpenCode)
+ 
+### 20.1 Agent Principal (General Purpose)
+**Arquivo**: `.opencode/agent/general.md`
+- Agente de propósito geral para tarefas complexas multi-step
+- Acesso a todas as ferramentas (bash, read, write, edit, glob, grep, task, webfetch)
+- Usado para: investigação, planejamento, execução de tarefas amplas
+ 
+### 20.2 Sub-Agents Especializados
+ 
+| Sub-Agent | Arquivo | Especialidade | Quando Usar |
+|-----------|---------|---------------|-------------|
+| **java-senior** | `.opencode/agent/java-senior.md` | Java 25, Spring Boot 3.5, arquitetura backend | Regras de negócio, services, repositories, performance |
+| **spring-boot** | `.opencode/agent/spring-boot.md` | Spring Boot 3.5.x, configuração, starters | Setup projeto, profiles, actuator, health checks |
+| **spring-security** | `.opencode/agent/spring-security.md` | Spring Security 6, JWT, OAuth2, RBAC | Auth, guards, filters, CORS, CSRF, 401/403 debug |
+| **jwt** | `.opencode/agent/jwt.md` | JWT (jjwt 0.12.x), tokens, refresh, claims | Geração/validação token, refresh flow, assinatura RS256/HS256 |
+| **jpa-hibernate** | `.opencode/agent/jpa-hibernate.md` | JPA/Hibernate 6.6, entidades, queries, N+1 | Entities, repositories, @Query, EntityGraph, migrations |
+| **postgresql** | `.opencode/agent/postgresql.md` | PostgreSQL 16, índices, particionamento, tuning | Schema, migrações Flyway, query optimization, backup |
+| **angular** | `.opencode/agent/angular.md` | Angular 21, signals, standalone, Material 21 | Components, services, guards, interceptors, forms |
+| **frontend-reviewer** | `.opencode/agent/frontend-reviewer.md` | Code review Angular, a11y, performance | PR review, best practices, bundle analysis |
+| **backend-reviewer** | `.opencode/agent/backend-reviewer.md` | Code review Java/Spring, segurança, arquitetura | PR review, security audit, SOLID, clean code |
+| **security-reviewer** | `.opencode/agent/security-reviewer.md` | AppSec, OWASP, threat modeling, pentest | Auditoria segurança, secrets scan, dependency check |
+| **architecture-reviewer** | `.opencode/agent/architecture-reviewer.md` | Arquitetura de software, DDD, clean architecture | Decisões arquiteturais, bounded contexts, coupling |
+| **debugger** | `.opencode/agent/debugger.md` | Root cause analysis, stack traces, logs | Bug investigation, reprodução, causa raiz |
+| **testing** | `.opencode/agent/testing.md` | JUnit5, Mockito, Testcontainers, Cypress, Jest | Test strategy, unit/integration/e2e, coverage |
+| **docker** | `.opencode/agent/docker.md` | Docker, Docker Compose, multi-stage, networks | Containerização, volumes, healthchecks, prod/dev |
+| **rest-api** | `.opencode/agent/rest-api.md` | REST design, OpenAPI, versioning, pagination | API contracts, DTOs, error responses, HATEOAS |
+ 
+### 20.3 Como Invocar Sub-Agents
+ 
+```bash
+# Via CLI opencode
+opencode run --agent java-senior "Implementar service de pedidos com transações"
+ 
+# Via tool task (programático)
+task(
+  subagent_type="java-senior",
+  description="Implementar OrderService",
+  prompt="Criar OrderService com @Transactional, validação de estoque, evento de domínio"
+)
+```
+ 
+### 20.4 Regras de Uso dos Agents
+ 
+1. **Sempre use sub-agent especializado** quando a tarefa encaixar na especialidade
+2. **General agent** para: orquestração, investigação inicial, tarefas não cobertas
+3. **Nunca invoque múltiplos sub-agents** para mesma tarefa (conflito de contexto)
+4. **Passe contexto completo** no prompt: arquivos relevantes, erro, objetivo, constraints
+5. **Valide resultado** do sub-agent antes de prosseguir (build, testes, lint)
+ 
+### 20.5 Skills Disponíveis
+ 
+| Skill | Arquivo | Descrição |
+|-------|---------|-----------|
+| **browseros-neo** | `.opencode/skill/browseros-neo/SKILL.md` | Navegador dedicado para tarefas web |
+| **context7-mcp** | `.opencode/skill/context7-mcp/SKILL.md` | Documentação atualizada de libs/frameworks |
+| **customize-opencode** | Built-in | Configuração do próprio opencode (agents, skills, mcp) |
+ 
+### 20.6 Learning Agent
+**Arquivo**: `.agents/learning.md`
+- Registra conhecimento arquitetural, padrões recorrentes, troubleshooting
+- Salvo em `.agents/knowledge/` (sem secrets/tokens)
+- Baseado em evidências, não em suposições
+ 
+---
+ 
+## 21. Checklist de Produção — Backend ✅ / Frontend ⚠️
+ 
 - [x] Docker Compose development (docker-compose.yml) - Backend + PostgreSQL rodando
 - [x] Docker Compose production (docker-compose.prod.yml) - Criado com nginx
 - [x] Nginx configuration (nginx/nginx.conf) - Reverse proxy com proxy_pass para backend
@@ -1118,11 +1258,11 @@ INSERT INTO users (email, password, name, role) VALUES
 - [x] Backend produção ready - Spring Boot 3.5.x com perfis dev/prod
 - [⚠️] **Frontend production build - Angular 21 estrutura criada, pendente correção de erros de build**
 - [x] Monitoramento Spring Boot Actuator - Endpoints health, info, metrics expostos
-
+ 
 ---
-
-## 21. Próximos Passos Finais
-
+ 
+## 22. Próximos Passos Finais
+ 
 1. **Corrigir build do frontend Angular 21** - Resolver erros TypeScript/template
 2. **GitHub Actions CI/CD** - Pipeline de testes e build automatizados (concluído)
 3. **Script de deploy** - Scripts de deploy para produção
@@ -1130,11 +1270,11 @@ INSERT INTO users (email, password, name, role) VALUES
 5. **Otimização de performance** - Lazy loading otimizado, change detection
 6. **Documentação Swagger** - Validar endpoints expostos
 7. **Monitoramento avançado** - Prometheus/Grafana integration
-
+ 
 ---
-
-## 22. Checklist de Produção — Backend ✅ / Frontend ⚠️
-
+ 
+## 23. Checklist de Produção — Backend ✅ / Frontend ⚠️
+ 
 - [x] Docker Compose development (docker-compose.yml) - Backend + PostgreSQL rodando
 - [x] Docker Compose production (docker-compose.prod.yml) - Criado com nginx
 - [x] Nginx configuration (nginx/nginx.conf) - Reverse proxy com proxy_pass para backend
@@ -1145,14 +1285,14 @@ INSERT INTO users (email, password, name, role) VALUES
 - [⚠️] **Frontend production build - Angular 21 estrutura criada, pendente correção de erros de build**
 - [x] Monitoramento Spring Boot Actuator - Endpoints health, info, metrics expostos
 - [⚠️] **Testes automatizados - Backend JUnit5+Mockito ok, Frontend Jest estrutura criada pendente execução**
-
+ 
 ---
-
-## 23. Próximos Passos Finais
-
+ 
+## 24. Próximos Passos Finais
+ 
 1. **HTTPS com certificado SSL** - Configuração via Nginx/Let's Encrypt
 2. **GitHub Actions deploy** - Pipeline completo para produção
 3. **Backup strategy** - Estratégia de backup do PostgreSQL
 4. **Domain configuration** - DNS setup para domínio personalizado
-3. **Monitoramento** - Health checks e métricas via Actuator
-4. **Backup strategy** - Estratégia de backup do PostgreSQL
+5. **Monitoramento** - Health checks e métricas via Actuator
+6. **Documentação de API** - Swagger UI em produção
