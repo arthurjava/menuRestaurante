@@ -58,6 +58,7 @@ O agente deve priorizar:
 # 3. Regra Fundamental: Investigar Antes de Alterar
 
 Nunca modificar código imediatamente com base apenas no sintoma apresentado.
+Sempre verifique se existe algum container rodando no docker e se as portas estão liberadas para uso
 
 Antes de realizar alterações:
 
