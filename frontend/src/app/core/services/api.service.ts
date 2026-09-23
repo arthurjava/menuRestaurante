@@ -252,7 +252,7 @@ export class ApiService {
     return this.patch<any>(`/users/${id}/toggle-active`, {});
   }
 
-  // Settings
+  // Settings (Admin)
   getRestaurantInfo(): Observable<any> {
     return this.get<any>("/settings/restaurant-info");
   }
@@ -299,5 +299,17 @@ export class ApiService {
 
   getPublicCategories(): Observable<any[]> {
     return this.get<any[]>("/menu/categories");
+  }
+
+  getPublicRestaurantInfo(): Observable<any> {
+    return this.get<any>("/menu/restaurant-info");
+  }
+
+  getPublicBusinessHours(): Observable<any> {
+    return this.get<any>("/menu/business-hours");
+  }
+
+  getPublicContactInfo(): Observable<any> {
+    return this.get<any>("/menu/contact-info");
   }
 }

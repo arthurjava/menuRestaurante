@@ -1,0 +1,72 @@
+# Maven
+backend/target/
+*.jar
+*.war
+*.ear
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+backend/backend_*.log
+
+# Angular
+frontend/dist/
+frontend/.angular/
+frontend/node_modules/
+frontend/coverage/
+frontend/*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+frontend/src/environments/environment.local.ts
+
+# Uploads (local files)
+backend/uploads/
+
+# Database scripts (temporary)
+*.sql
+!backend/src/main/resources/db/migration/*.sql
+
+# Temporary files
+gen_*.ps1
+*.ps1
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!angular.json
+!docker-compose*.yml
+!Dockerfile*
+!README.md
+!AGENTS.md
+!PLANO_PROJETO.md
+!STATUS.md
+
+# Debug files
+*.class
+
+# Proxy config
+frontend/proxy.conf.json

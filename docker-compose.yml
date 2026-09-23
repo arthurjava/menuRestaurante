@@ -63,7 +63,7 @@ services:
       - backend
     networks:
       - restaurante-network
-    command: npm start -- --host 0.0.0.0 --poll 2000
+    command: npm start -- --host 0.0.0.0 --poll 2000 --proxy-config proxy.conf.json
 
 volumes:
   postgres_data:

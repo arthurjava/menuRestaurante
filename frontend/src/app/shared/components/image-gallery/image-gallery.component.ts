@@ -33,6 +33,7 @@ export interface GalleryImage {
           <img
             [src]="currentImage().url"
             [alt]="currentImage().alt"
+            crossorigin="anonymous"
             class="main-image"
             loading="lazy"
           />
@@ -75,6 +76,7 @@ export interface GalleryImage {
                 <img
                   [src]="image.thumbnailUrl ?? image.url"
                   [alt]="image.alt"
+                  crossorigin="anonymous"
                   loading="lazy"
                 />
                 @if (image.isMain) {
@@ -127,6 +129,7 @@ export interface GalleryImage {
           <img
             [src]="images()[currentFullscreenIndex()]?.url"
             [alt]="images()[currentFullscreenIndex()]?.alt"
+            crossorigin="anonymous"
             class="fullscreen-image"
           />
         </div>

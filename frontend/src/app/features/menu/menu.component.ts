@@ -25,6 +25,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { ApiService } from "@core/services/api.service";
 import { NotificationService } from "@core/services/notification.service";
 import { LoadingService } from "@core/services/loading.service";
+import { environment } from "@environments/environment";
 import {
   ImageGalleryComponent,
   GalleryImage,
@@ -251,8 +252,8 @@ export interface ContactInfo {
                           <img
                             [src]="dish.images[0].url"
                             [alt]="dish.name"
+                            crossorigin="anonymous"
                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            loading="lazy"
                           />
                         } @else {
                           <div
@@ -408,6 +409,7 @@ export interface ContactInfo {
               <img
                 [src]="getDetailImages()[0].url"
                 [alt]="getDetailDish()?.name ?? 'Prato'"
+                crossorigin="anonymous"
                 class="w-full h-full object-cover"
               />
             </div>
@@ -582,9 +584,13 @@ export class MenuComponent implements OnInit {
             name: item.name,
             description: item.description,
             price: item.price,
-            categoryId: item.categoryId,
+            categoryId: item.category?.id,
             categoryName: item.category?.name,
-            images: item.images ?? [],
+            images: (item.images ?? []).map((img: any) => ({
+              id: img.id,
+              url: `${environment.imageBaseUrl}${img.imageUrl}`,
+              isMain: img.primary,
+            })),
             active: item.active,
           })),
         );

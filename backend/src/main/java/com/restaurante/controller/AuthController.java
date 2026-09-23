@@ -4,16 +4,21 @@ import com.restaurante.dto.UserDTO;
 import com.restaurante.entity.User;
 import com.restaurante.security.JWTUtil;
 import com.restaurante.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private UserService userService;
@@ -26,10 +31,28 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        log.debug("Login attempt for email: {}", loginRequest.getEmail());
+        
         User user = userService.findByEmail(loginRequest.getEmail());
-        if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        log.debug("User found: {}", user != null);
+        
+        if (user == null) {
+            log.warn("User not found for email: {}", loginRequest.getEmail());
             return ResponseEntity.badRequest().body("Credenciais inválidas");
         }
+        
+        log.debug("User password hash: {}", user.getPassword());
+        log.debug("Attempting password match for: {}", loginRequest.getPassword());
+        
+        boolean passwordMatch = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+        log.debug("Password match result: {}", passwordMatch);
+        
+        if (!passwordMatch) {
+            log.warn("Password mismatch for user: {}", loginRequest.getEmail());
+            return ResponseEntity.badRequest().body("Credenciais inválidas");
+        }
+        
+        log.debug("Password matched, generating token for user: {}", user.getEmail());
         
         org.springframework.security.core.userdetails.UserDetails userDetails = 
             org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
@@ -41,7 +64,9 @@ public class AuthController {
                 .disabled(!user.isActive())
                 .build();
         
+        log.debug("Generating JWT token");
         String token = jwtUtil.generateToken(userDetails);
+        log.debug("Token generated successfully");
         
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
@@ -52,12 +77,16 @@ public class AuthController {
         userDTO.setCreatedAt(user.getCreatedAt());
         userDTO.setUpdatedAt(user.getUpdatedAt());
         
+        log.debug("Login successful for user: {}", user.getEmail());
         return ResponseEntity.ok(new AuthResponse(token, userDTO));
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
+        log.debug("Register attempt for email: {}", user.getEmail());
         User createdUser = userService.createUser(user);
+        log.debug("User created with ID: {}", createdUser.getId());
+        
         UserDTO userDTO = new UserDTO();
         userDTO.setId(createdUser.getId());
         userDTO.setEmail(createdUser.getEmail());
@@ -69,10 +98,16 @@ public class AuthController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<UserDTO> me() {
-        // TODO: get from security context
-        return ResponseEntity.ok(new UserDTO());
+    @PostMapping("/test-hash")
+    public ResponseEntity<?> testHash() {
+        String password = "admin123";
+        String hash = passwordEncoder.encode(password);
+        log.info("Generated hash for '{}': {}", password, hash);
+        
+        boolean match = passwordEncoder.matches(password, hash);
+        log.info("Match test: {}", match);
+        
+        return ResponseEntity.ok(Map.of("hash", hash, "match", match));
     }
 
     static class LoginRequest {
