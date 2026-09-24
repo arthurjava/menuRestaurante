@@ -16,7 +16,6 @@ import { Router, RouterLink } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatIconModule } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { AuthService, LoginRequest } from "@core/services/auth.service";
 import { NotificationService } from "@core/services/notification.service";
@@ -33,7 +32,6 @@ import { InputComponent } from "@shared/components/input/input.component";
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
-    MatIconModule,
     MatProgressSpinnerModule,
     ButtonComponent,
     InputComponent,

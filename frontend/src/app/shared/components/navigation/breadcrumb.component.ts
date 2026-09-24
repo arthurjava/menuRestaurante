@@ -3,11 +3,9 @@ import {
   Input,
   ChangeDetectionStrategy,
   computed,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterModule } from "@angular/router";
 export interface BreadcrumbItem {
   label: string;
   url?: string;
@@ -15,17 +13,17 @@ export interface BreadcrumbItem {
 }
 
 @Component({
-  selector: 'app-breadcrumb',
+  selector: "app-breadcrumb",
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule],
-  templateUrl: './breadcrumb.component.html',
-  styleUrl: './breadcrumb.component.scss',
+  imports: [CommonModule, RouterModule],
+  templateUrl: "./breadcrumb.component.html",
+  styleUrl: "./breadcrumb.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BreadcrumbComponent {
   @Input() items: BreadcrumbItem[] = [];
-  @Input() separator = 'chevron_right';
-  @Input() homeIcon = 'home';
+  @Input() separator = "chevron_right";
+  @Input() homeIcon = "home";
   @Input() showHome = false;
 
   readonly hasItems = computed(() => this.items.length > 0);

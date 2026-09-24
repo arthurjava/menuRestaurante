@@ -16,7 +16,6 @@ import {
   Validators,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { MatIconModule } from "@angular/material/icon";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatTabsModule } from "@angular/material/tabs";
 import { ButtonComponent } from "../button/button.component";
@@ -30,7 +29,6 @@ import {
   ImageUploadService,
   UploadedImage,
 } from "../../../core/services/image-upload.service";
-
 export interface DishFormData {
   name: string;
   description: string;
@@ -39,19 +37,16 @@ export interface DishFormData {
   active: boolean;
   displayOrder: number;
 }
-
 export interface CategoryOption {
   value: string;
   label: string;
 }
-
 @Component({
   selector: "app-dish-modal",
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatIconModule,
     MatSlideToggleModule,
     MatTabsModule,
     ButtonComponent,
@@ -78,7 +73,6 @@ export interface CategoryOption {
           >
             <div>
               <div class="flex items-center gap-2">
-                <mat-icon class="text-indigo-600">restaurant_menu</mat-icon>
                 <h2 class="text-lg font-semibold text-gray-900">
                   {{ title() }}
                 </h2>
@@ -91,7 +85,7 @@ export interface CategoryOption {
               (click)="cancel()"
               aria-label="Fechar modal"
             >
-              <mat-icon>close</mat-icon>
+              <span aria-hidden="true">✕</span>
             </button>
           </div>
 
@@ -227,11 +221,9 @@ export interface CategoryOption {
       :host {
         display: block;
       }
-
       :host(.hidden) {
         display: none;
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -240,7 +232,6 @@ export interface CategoryOption {
           opacity: 1;
         }
       }
-
       @keyframes slideUp {
         from {
           opacity: 0;
@@ -251,22 +242,18 @@ export interface CategoryOption {
           transform: translateY(0) scale(1);
         }
       }
-
       .fade-in {
         animation: fadeIn 0.2s ease-out;
       }
       .slide-up {
         animation: slideUp 0.2s ease-out;
       }
-
       :host ::ng-deep .mat-mdc-tab-group {
         @apply w-full;
       }
-
       :host ::ng-deep .mat-mdc-tab-body-wrapper {
         @apply h-auto;
       }
-
       @media (max-width: 768px) {
         :host ::ng-deep .mat-mdc-tab-label {
           @apply px-2 py-2 text-sm;
@@ -281,18 +268,15 @@ export class DishModalComponent {
   // State
   isOpen = input<boolean>(false);
   isOpenChange = output<boolean>();
-
   // Content
   title = input<string>("Novo Prato");
   description = input<string>("Preencha os dados para criar um novo prato");
   confirmLabel = input<string>("Criar prato");
   confirmLoading = input<boolean>(false);
-
   // Data
   categoryOptions = input<CategoryOption[]>([]);
   existingImages = input<UploadedImage[]>([]);
   dishId = input<string>("");
-
   // Events
   confirmed = output<DishFormData>();
   cancelled = output<void>();
@@ -300,10 +284,8 @@ export class DishModalComponent {
   imagesChange = output<ImageFile[]>();
   imagesUploadComplete = output<UploadedImage[]>();
   imageError = output<string>();
-
   private fb = inject(FormBuilder);
   private _wasOpen = signal(false);
-
   form: FormGroup = this.fb.group({
     name: ["", [Validators.required, Validators.maxLength(100)]],
     description: ["", [Validators.maxLength(1000)]],
@@ -312,12 +294,10 @@ export class DishModalComponent {
     active: [true],
     displayOrder: [0, [Validators.min(0)]],
   });
-
   @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
-
   constructor() {
     effect(() => {
       const open = this.isOpen();
@@ -327,38 +307,30 @@ export class DishModalComponent {
       }
     });
   }
-
   onBackdropClick(): void {
     this.cancel();
   }
-
   cancel(): void {
     this.cancelled.emit();
     this.close();
   }
-
   close(): void {
     this.isOpenChange.emit(false);
     this.closed.emit();
   }
-
   onSubmit(): void {
     if (this.form.invalid || this.confirmLoading()) return;
     this.confirmed.emit(this.form.value as DishFormData);
   }
-
   onImagesChange(images: ImageFile[]): void {
     this.imagesChange.emit(images);
   }
-
   onImagesUploadComplete(images: UploadedImage[]): void {
     this.imagesUploadComplete.emit(images);
   }
-
   onImageError(error: string): void {
     this.imageError.emit(error);
   }
-
   nameError = computed(() => {
     const control = this.form.get("name");
     if (control?.touched && control?.errors) {
@@ -368,7 +340,6 @@ export class DishModalComponent {
     }
     return "";
   });
-
   descriptionError = computed(() => {
     const control = this.form.get("description");
     if (control?.touched && control?.errors?.["maxlength"]) {
@@ -376,7 +347,6 @@ export class DishModalComponent {
     }
     return "";
   });
-
   priceError = computed(() => {
     const control = this.form.get("price");
     if (control?.touched && control?.errors) {
@@ -385,7 +355,6 @@ export class DishModalComponent {
     }
     return "";
   });
-
   categoryError = computed(() => {
     const control = this.form.get("categoryId");
     if (control?.touched && control?.errors?.["required"]) {

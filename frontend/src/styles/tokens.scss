@@ -8,7 +8,7 @@
 
 // --- Color Primitives ---
 // Primary (Indigo)
-$color-primary-50:  #eef2ff;
+$color-primary-50: #eef2ff;
 $color-primary-100: #e0e7ff;
 $color-primary-200: #c7d2fe;
 $color-primary-300: #a5b4fc;
@@ -21,7 +21,7 @@ $color-primary-900: #312e81;
 $color-primary-950: #1e1b4b;
 
 // Success (Emerald)
-$color-success-50:  #f0fdf4;
+$color-success-50: #f0fdf4;
 $color-success-100: #dcfce7;
 $color-success-200: #bbf7d0;
 $color-success-300: #86efac;
@@ -33,7 +33,7 @@ $color-success-800: #166534;
 $color-success-900: #14532d;
 
 // Warning (Amber)
-$color-warning-50:  #fefce8;
+$color-warning-50: #fefce8;
 $color-warning-100: #fef3c7;
 $color-warning-200: #fde68a;
 $color-warning-300: #fcd34d;
@@ -45,7 +45,7 @@ $color-warning-800: #92400e;
 $color-warning-900: #78350f;
 
 // Danger (Red)
-$color-danger-50:  #fef2f2;
+$color-danger-50: #fef2f2;
 $color-danger-100: #fee2e2;
 $color-danger-200: #fecaca;
 $color-danger-300: #fca5a5;
@@ -57,7 +57,7 @@ $color-danger-800: #991b1b;
 $color-danger-900: #7f1d1d;
 
 // Info (Blue)
-$color-info-50:  #eff6ff;
+$color-info-50: #eff6ff;
 $color-info-100: #dbeafe;
 $color-info-200: #bfdbfe;
 $color-info-300: #93c5fd;
@@ -69,8 +69,8 @@ $color-info-800: #1e40af;
 $color-info-900: #1e3a8a;
 
 // Neutral (Gray)
-$color-neutral-0:   #ffffff;
-$color-neutral-50:  #f9fafb;
+$color-neutral-0: #ffffff;
+$color-neutral-50: #f9fafb;
 $color-neutral-100: #f3f4f6;
 $color-neutral-200: #e5e7eb;
 $color-neutral-300: #d1d5db;
@@ -153,11 +153,16 @@ $color-state-info-border: $color-info-200;
 $color-state-on-info: $color-neutral-0;
 
 // --- Focus Rings ---
-$shadow-focus-primary: 0 0 0 3px color-mix(in srgb, $color-primary-500 40%, transparent);
-$shadow-focus-success: 0 0 0 3px color-mix(in srgb, $color-success-500 40%, transparent);
-$shadow-focus-warning: 0 0 0 3px color-mix(in srgb, $color-warning-500 40%, transparent);
-$shadow-focus-danger: 0 0 0 3px color-mix(in srgb, $color-danger-500 40%, transparent);
-$shadow-focus-info: 0 0 0 3px color-mix(in srgb, $color-info-500 40%, transparent);
+$shadow-focus-primary: 0 0 0 3px
+  color-mix(in srgb, $color-primary-500 40%, transparent);
+$shadow-focus-success: 0 0 0 3px
+  color-mix(in srgb, $color-success-500 40%, transparent);
+$shadow-focus-warning: 0 0 0 3px
+  color-mix(in srgb, $color-warning-500 40%, transparent);
+$shadow-focus-danger: 0 0 0 3px
+  color-mix(in srgb, $color-danger-500 40%, transparent);
+$shadow-focus-info: 0 0 0 3px
+  color-mix(in srgb, $color-info-500 40%, transparent);
 
 // =============================================================================
 // COMPONENT TOKENS (Tokens específicos de componentes)
@@ -174,9 +179,9 @@ $btn-padding-x-md: 16px;
 $btn-padding-x-lg: 24px;
 $btn-padding-x-icon: 12px;
 
-$btn-font-size-sm: 0.8125rem;   // 13px
-$btn-font-size-md: 0.875rem;    // 14px
-$btn-font-size-lg: 1rem;        // 16px
+$btn-font-size-sm: 0.8125rem; // 13px
+$btn-font-size-md: 0.875rem; // 14px
+$btn-font-size-lg: 1rem; // 16px
 
 $btn-font-weight: 500;
 $btn-border-radius: 8px;
@@ -214,9 +219,9 @@ $badge-padding-x-sm: 8px;
 $badge-padding-x-md: 10px;
 $badge-padding-x-lg: 12px;
 
-$badge-font-size-sm: 0.6875rem;   // 11px
-$badge-font-size-md: 0.75rem;     // 12px
-$badge-font-size-lg: 0.8125rem;   // 13px
+$badge-font-size-sm: 0.6875rem; // 11px
+$badge-font-size-md: 0.75rem; // 12px
+$badge-font-size-lg: 0.8125rem; // 13px
 
 $badge-border-radius: 9999px;
 $badge-font-weight: 600;
@@ -230,16 +235,18 @@ $chip-padding-x-sm: 10px;
 $chip-padding-x-md: 12px;
 $chip-padding-x-lg: 16px;
 
-$chip-font-size-sm: 0.75rem;    // 12px
-$chip-font-size-md: 0.8125rem;  // 13px
-$chip-font-size-lg: 0.875rem;   // 14px
+$chip-font-size-sm: 0.75rem; // 12px
+$chip-font-size-md: 0.8125rem; // 13px
+$chip-font-size-lg: 0.875rem; // 14px
 
 $chip-border-radius: 9999px;
 $chip-font-weight: 500;
 $chip-gap: 6px;
 
 // --- Custom Utilities ---
-$shadow-lg-custom: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 4px 10px -5px rgb(0 0 0 / 0.04);
+$shadow-lg-custom:
+  0 10px 25px -5px rgb(0 0 0 / 0.1),
+  0 4px 10px -5px rgb(0 0 0 / 0.04);
 $scrollbar-thin-custom: thin;
 
 // --- Card ---
@@ -299,36 +306,38 @@ $container-padding: 1.5rem; // 24px
 // =============================================================================
 
 $space-0: 0;
-$space-1: 0.25rem;   // 4px
-$space-2: 0.5rem;    // 8px
-$space-3: 0.75rem;   // 12px
-$space-4: 1rem;      // 16px
-$space-5: 1.25rem;   // 20px
-$space-6: 1.5rem;    // 24px
-$space-7: 1.75rem;   // 28px
-$space-8: 2rem;      // 32px
-$space-10: 2.5rem;   // 40px
-$space-12: 3rem;     // 48px
-$space-16: 4rem;     // 64px
-$space-20: 5rem;     // 80px
-$space-24: 6rem;     // 96px
+$space-1: 0.25rem; // 4px
+$space-2: 0.5rem; // 8px
+$space-3: 0.75rem; // 12px
+$space-4: 1rem; // 16px
+$space-5: 1.25rem; // 20px
+$space-6: 1.5rem; // 24px
+$space-7: 1.75rem; // 28px
+$space-8: 2rem; // 32px
+$space-10: 2.5rem; // 40px
+$space-12: 3rem; // 48px
+$space-16: 4rem; // 64px
+$space-20: 5rem; // 80px
+$space-24: 6rem; // 96px
 
 // =============================================================================
 // TYPOGRAPHY
 // =============================================================================
 
-$font-family-sans: 'Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif';
-$font-family-mono: 'JetBrains Mono', 'Fira Code', 'monospace';
+$font-family-sans:
+  "Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+  "Roboto", "sans-serif";
+$font-family-mono: "JetBrains Mono", "Fira Code", "monospace";
 
-$font-size-xs: 0.75rem;     // 12px
-$font-size-sm: 0.875rem;    // 14px
-$font-size-base: 1rem;      // 16px
-$font-size-lg: 1.125rem;    // 18px
-$font-size-xl: 1.25rem;     // 20px
-$font-size-2xl: 1.5rem;     // 24px
-$font-size-3xl: 1.875rem;   // 30px
-$font-size-4xl: 2.25rem;    // 36px
-$font-size-5xl: 3rem;       // 48px
+$font-size-xs: 0.75rem; // 12px
+$font-size-sm: 0.875rem; // 14px
+$font-size-base: 1rem; // 16px
+$font-size-lg: 1.125rem; // 18px
+$font-size-xl: 1.25rem; // 20px
+$font-size-2xl: 1.5rem; // 24px
+$font-size-3xl: 1.875rem; // 30px
+$font-size-4xl: 2.25rem; // 36px
+$font-size-5xl: 3rem; // 48px
 
 $font-weight-normal: 400;
 $font-weight-medium: 500;
@@ -374,9 +383,15 @@ $radius-full: 9999px;
 $shadow-none: none;
 $shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
 $shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-$shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-$shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-$shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+$shadow-md:
+  0 4px 6px -1px rgb(0 0 0 / 0.1),
+  0 2px 4px -2px rgb(0 0 0 / 0.1);
+$shadow-lg:
+  0 10px 15px -3px rgb(0 0 0 / 0.1),
+  0 4px 6px -4px rgb(0 0 0 / 0.1);
+$shadow-xl:
+  0 20px 25px -5px rgb(0 0 0 / 0.1),
+  0 8px 10px -6px rgb(0 0 0 / 0.1);
 $shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 $shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
 
@@ -434,27 +449,15 @@ $bp-xl: 1280px;
 $bp-2xl: 1536px;
 
 // =============================================================================
-// ICON SIZES
-// =============================================================================
-
-$icon-xs: 0.75rem;   // 12px
-$icon-sm: 1rem;      // 16px
-$icon-md: 1.25rem;   // 20px
-$icon-lg: 1.5rem;    // 24px
-$icon-xl: 2rem;      // 32px
-$icon-2xl: 2.5rem;   // 40px
-$icon-3xl: 3rem;     // 48px
-
-// =============================================================================
 // AVATAR SIZES
 // =============================================================================
 
-$avatar-xs: 1.5rem;  // 24px
-$avatar-sm: 2rem;    // 32px
-$avatar-md: 2.5rem;  // 40px
-$avatar-lg: 3rem;    // 48px
-$avatar-xl: 4rem;    // 64px
-$avatar-2xl: 6rem;   // 96px
+$avatar-xs: 1.5rem; // 24px
+$avatar-sm: 2rem; // 32px
+$avatar-md: 2.5rem; // 40px
+$avatar-lg: 3rem; // 48px
+$avatar-xl: 4rem; // 64px
+$avatar-2xl: 6rem; // 96px
 
 // =============================================================================
 // INPUT SIZES
@@ -469,7 +472,7 @@ $input-height-lg: 52px;
 // =============================================================================
 
 $color-scales: (
-  'primary': (
+  "primary": (
     50: $color-primary-50,
     100: $color-primary-100,
     200: $color-primary-200,
@@ -482,7 +485,7 @@ $color-scales: (
     900: $color-primary-900,
     950: $color-primary-950,
   ),
-  'success': (
+  "success": (
     50: $color-success-50,
     100: $color-success-100,
     200: $color-success-200,
@@ -494,7 +497,7 @@ $color-scales: (
     800: $color-success-800,
     900: $color-success-900,
   ),
-  'warning': (
+  "warning": (
     50: $color-warning-50,
     100: $color-warning-100,
     200: $color-warning-200,
@@ -506,7 +509,7 @@ $color-scales: (
     800: $color-warning-800,
     900: $color-warning-900,
   ),
-  'danger': (
+  "danger": (
     50: $color-danger-50,
     100: $color-danger-100,
     200: $color-danger-200,
@@ -518,7 +521,7 @@ $color-scales: (
     800: $color-danger-800,
     900: $color-danger-900,
   ),
-  'info': (
+  "info": (
     50: $color-info-50,
     100: $color-info-100,
     200: $color-info-200,
@@ -530,7 +533,7 @@ $color-scales: (
     800: $color-info-800,
     900: $color-info-900,
   ),
-  'neutral': (
+  "neutral": (
     0: $color-neutral-0,
     50: $color-neutral-50,
     100: $color-neutral-100,
@@ -547,121 +550,121 @@ $color-scales: (
 ) !default;
 
 $semantic-colors: (
-  'primary': (
-    'base': $color-brand-primary,
-    'hover': $color-brand-primary-hover,
-    'active': $color-brand-primary-active,
-    'subtle': $color-brand-primary-subtle,
-    'subtle-hover': $color-brand-primary-subtle-hover,
-    'border': $color-brand-primary-border,
-    'on': $color-brand-on-primary,
+  "primary": (
+    "base": $color-brand-primary,
+    "hover": $color-brand-primary-hover,
+    "active": $color-brand-primary-active,
+    "subtle": $color-brand-primary-subtle,
+    "subtle-hover": $color-brand-primary-subtle-hover,
+    "border": $color-brand-primary-border,
+    "on": $color-brand-on-primary,
   ),
-  'success': (
-    'base': $color-state-success,
-    'hover': $color-state-success-hover,
-    'subtle': $color-state-success-subtle,
-    'subtle-hover': $color-state-success-subtle-hover,
-    'border': $color-state-success-border,
-    'on': $color-state-on-success,
+  "success": (
+    "base": $color-state-success,
+    "hover": $color-state-success-hover,
+    "subtle": $color-state-success-subtle,
+    "subtle-hover": $color-state-success-subtle-hover,
+    "border": $color-state-success-border,
+    "on": $color-state-on-success,
   ),
-  'warning': (
-    'base': $color-state-warning,
-    'hover': $color-state-warning-hover,
-    'subtle': $color-state-warning-subtle,
-    'subtle-hover': $color-state-warning-subtle-hover,
-    'border': $color-state-warning-border,
-    'on': $color-state-on-warning,
+  "warning": (
+    "base": $color-state-warning,
+    "hover": $color-state-warning-hover,
+    "subtle": $color-state-warning-subtle,
+    "subtle-hover": $color-state-warning-subtle-hover,
+    "border": $color-state-warning-border,
+    "on": $color-state-on-warning,
   ),
-  'danger': (
-    'base': $color-state-danger,
-    'hover': $color-state-danger-hover,
-    'subtle': $color-state-danger-subtle,
-    'subtle-hover': $color-state-danger-subtle-hover,
-    'border': $color-state-danger-border,
-    'on': $color-state-on-danger,
+  "danger": (
+    "base": $color-state-danger,
+    "hover": $color-state-danger-hover,
+    "subtle": $color-state-danger-subtle,
+    "subtle-hover": $color-state-danger-subtle-hover,
+    "border": $color-state-danger-border,
+    "on": $color-state-on-danger,
   ),
-  'info': (
-    'base': $color-state-info,
-    'hover': $color-state-info-hover,
-    'subtle': $color-state-info-subtle,
-    'subtle-hover': $color-state-info-subtle-hover,
-    'border': $color-state-info-border,
-    'on': $color-state-on-info,
+  "info": (
+    "base": $color-state-info,
+    "hover": $color-state-info-hover,
+    "subtle": $color-state-info-subtle,
+    "subtle-hover": $color-state-info-subtle-hover,
+    "border": $color-state-info-border,
+    "on": $color-state-on-info,
   ),
-  'neutral': (
-    'base': $color-neutral-600,
-    'hover': $color-neutral-700,
-    'subtle': $color-neutral-100,
-    'subtle-hover': $color-neutral-200,
-    'border': $color-neutral-200,
-    'on': $color-neutral-0,
+  "neutral": (
+    "base": $color-neutral-600,
+    "hover": $color-neutral-700,
+    "subtle": $color-neutral-100,
+    "subtle-hover": $color-neutral-200,
+    "border": $color-neutral-200,
+    "on": $color-neutral-0,
   ),
 ) !default;
 
 $spacings: (
-  '0': $space-0,
-  '1': $space-1,
-  '2': $space-2,
-  '3': $space-3,
-  '4': $space-4,
-  '5': $space-5,
-  '6': $space-6,
-  '7': $space-7,
-  '8': $space-8,
-  '10': $space-10,
-  '12': $space-12,
-  '16': $space-16,
+  "0": $space-0,
+  "1": $space-1,
+  "2": $space-2,
+  "3": $space-3,
+  "4": $space-4,
+  "5": $space-5,
+  "6": $space-6,
+  "7": $space-7,
+  "8": $space-8,
+  "10": $space-10,
+  "12": $space-12,
+  "16": $space-16,
 ) !default;
 
 $radii: (
-  'none': $radius-none,
-  'xs': $radius-xs,
-  'sm': $radius-sm,
-  'md': $radius-md,
-  'lg': $radius-lg,
-  'xl': $radius-xl,
-  '2xl': $radius-2xl,
-  '3xl': $radius-3xl,
-  'full': $radius-full,
+  "none": $radius-none,
+  "xs": $radius-xs,
+  "sm": $radius-sm,
+  "md": $radius-md,
+  "lg": $radius-lg,
+  "xl": $radius-xl,
+  "2xl": $radius-2xl,
+  "3xl": $radius-3xl,
+  "full": $radius-full,
 ) !default;
 
 $shadows: (
-  'none': $shadow-none,
-  'xs': $shadow-xs,
-  'sm': $shadow-sm,
-  'md': $shadow-md,
-  'lg': $shadow-lg,
-  'xl': $shadow-xl,
-  '2xl': $shadow-2xl,
-  'inner': $shadow-inner,
-  'card': $shadow-card,
-  'card-hover': $shadow-card-hover,
-  'dropdown': $shadow-dropdown,
-  'modal': $shadow-modal,
-  'tooltip': $shadow-tooltip,
-  'chip': $shadow-chip,
-  'chip-hover': $shadow-chip-hover,
-  'lg-custom': $shadow-lg-custom,
+  "none": $shadow-none,
+  "xs": $shadow-xs,
+  "sm": $shadow-sm,
+  "md": $shadow-md,
+  "lg": $shadow-lg,
+  "xl": $shadow-xl,
+  "2xl": $shadow-2xl,
+  "inner": $shadow-inner,
+  "card": $shadow-card,
+  "card-hover": $shadow-card-hover,
+  "dropdown": $shadow-dropdown,
+  "modal": $shadow-modal,
+  "tooltip": $shadow-tooltip,
+  "chip": $shadow-chip,
+  "chip-hover": $shadow-chip-hover,
+  "lg-custom": $shadow-lg-custom,
 ) !default;
 
 $transitions: (
-  'fast': $transition-fast,
-  'normal': $transition-normal,
-  'slow': $transition-slow,
-  'slower': $transition-slower,
+  "fast": $transition-fast,
+  "normal": $transition-normal,
+  "slow": $transition-slow,
+  "slower": $transition-slower,
 ) !default;
 
 $z-indices: (
-  'hide': $z-hide,
-  'base': $z-base,
-  'dropdown': $z-dropdown,
-  'sticky': $z-sticky,
-  'fixed': $z-fixed,
-  'drawer': $z-drawer,
-  'drawer-backdrop': $z-drawer-backdrop,
-  'modal-backdrop': $z-modal-backdrop,
-  'modal': $z-modal,
-  'popover': $z-popover,
-  'tooltip': $z-tooltip,
-  'toast': $z-toast,
+  "hide": $z-hide,
+  "base": $z-base,
+  "dropdown": $z-dropdown,
+  "sticky": $z-sticky,
+  "fixed": $z-fixed,
+  "drawer": $z-drawer,
+  "drawer-backdrop": $z-drawer-backdrop,
+  "modal-backdrop": $z-modal-backdrop,
+  "modal": $z-modal,
+  "popover": $z-popover,
+  "tooltip": $z-tooltip,
+  "toast": $z-toast,
 ) !default;

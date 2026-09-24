@@ -1,4 +1,4 @@
-export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
 
 export interface BaseModalConfig {
   size?: ModalSize;
@@ -14,11 +14,11 @@ export interface BaseModalConfig {
 }
 
 export const DEFAULT_MODAL_CONFIG: Required<BaseModalConfig> = {
-  size: 'md',
-  title: '',
-  description: '',
-  icon: '',
-  iconColor: '',
+  size: "md",
+  title: "",
+  description: "",
+  icon: "",
+  iconColor: "",
   showHeader: true,
   showFooter: true,
   closable: true,
@@ -27,9 +27,9 @@ export const DEFAULT_MODAL_CONFIG: Required<BaseModalConfig> = {
 };
 
 export const MODAL_SIZE_CLASSES: Record<ModalSize, string> = {
-  sm: 'max-w-md',
-  md: 'max-w-lg',
-  lg: 'max-w-2xl',
-  xl: 'max-w-4xl',
-  full: 'max-w-full mx-4 sm:mx-0',
+  sm: "max-w-md",
+  md: "max-w-lg",
+  lg: "max-w-2xl",
+  xl: "max-w-4xl",
+  full: "max-w-full mx-4 sm:mx-0",
 };

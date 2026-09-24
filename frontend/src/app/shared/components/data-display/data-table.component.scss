@@ -52,11 +52,17 @@
 }
 
 /* Custom checkbox styling */
-::ng-deep .mat-mdc-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+::ng-deep
+  .mat-mdc-checkbox
+  .mdc-checkbox__native-control:enabled:checked
+  ~ .mdc-checkbox__background {
   @apply bg-brand-primary border-brand-primary;
 }
 
-::ng-deep .mat-mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background {
+::ng-deep
+  .mat-mdc-checkbox
+  .mdc-checkbox__native-control:enabled:indeterminate
+  ~ .mdc-checkbox__background {
   @apply bg-brand-primary border-brand-primary;
 }
 

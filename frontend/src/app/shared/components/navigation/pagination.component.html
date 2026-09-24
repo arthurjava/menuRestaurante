@@ -1,11 +1,14 @@
 <nav class="pagination" aria-label="Paginação">
   @if (showTotal && totalItems > 0) {
     <div class="pagination-info text-sm text-gray-500">
-      Mostrando <span class="font-medium">{{ startItem() }}</span> a <span class="font-medium">{{ endItem() }}</span> de <span class="font-medium">{{ totalItems }}</span> resultados
+      Mostrando <span class="font-medium">{{ startItem() }}</span> a
+      <span class="font-medium">{{ endItem() }}</span> de
+      <span class="font-medium">{{ totalItems }}</span> resultados
     </div>
   }
-
-  <div class="pagination-controls flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <div
+    class="pagination-controls flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+  >
     <div class="pagination-pages flex items-center gap-1">
       <button
         type="button"
@@ -13,8 +16,9 @@
         (click)="onFirstPage()"
         [disabled]="!hasPrevious()"
         aria-label="Primeira página"
-        matTooltip="Primeira página">
-        <mat-icon class="text-lg">first_page</mat-icon>
+        matTooltip="Primeira página"
+      >
+        <span aria-hidden="true">«</span>
       </button>
 
       <button
@@ -23,30 +27,35 @@
         (click)="onPreviousPage()"
         [disabled]="!hasPrevious()"
         aria-label="Página anterior"
-        matTooltip="Página anterior">
-        <mat-icon class="text-lg">chevron_left</mat-icon>
+        matTooltip="Página anterior"
+      >
+        <span aria-hidden="true">‹</span>
       </button>
-
       @for (page of visiblePages(); track page) {
         <button
           type="button"
           class="pagination-btn min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors"
-          [class]="page === pageIndex ? 'bg-primary-600 text-white' : 'text-gray-600 hover:bg-gray-100'"
+          [class]="
+            page === pageIndex
+              ? 'bg-primary-600 text-white'
+              : 'text-gray-600 hover:bg-gray-100'
+          "
           (click)="onPageChange(page)"
           [attr.aria-current]="page === pageIndex ? 'page' : null"
-          [attr.aria-label]="'Página ' + (page + 1)">
+          [attr.aria-label]="'Página ' + (page + 1)"
+        >
           {{ page + 1 }}
         </button>
       }
-
       <button
         type="button"
         class="pagination-btn p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         (click)="onNextPage()"
         [disabled]="!hasNext()"
         aria-label="Próxima página"
-        matTooltip="Próxima página">
-        <mat-icon class="text-lg">chevron_right</mat-icon>
+        matTooltip="Próxima página"
+      >
+        <span aria-hidden="true">›</span>
       </button>
 
       <button
@@ -55,20 +64,23 @@
         (click)="onLastPage()"
         [disabled]="!hasNext()"
         aria-label="Última página"
-        matTooltip="Última página">
-        <mat-icon class="text-lg">last_page</mat-icon>
+        matTooltip="Última página"
+      >
+        <span aria-hidden="true">»</span>
       </button>
     </div>
-
     @if (showPageSize) {
       <div class="pagination-size flex items-center gap-2">
-        <label for="page-size" class="text-sm text-gray-500">Itens por página:</label>
+        <label for="page-size" class="text-sm text-gray-500"
+          >Itens por página:</label
+        >
         <mat-form-field appearance="outline" class="w-auto">
           <mat-select
             id="page-size"
             [value]="pageSize"
             (selectionChange)="onPageSizeChange($event.value)"
-            class="text-sm">
+            class="text-sm"
+          >
             @for (size of pageSizeOptions; track size) {
               <mat-option [value]="size">{{ size }}</mat-option>
             }

@@ -27,14 +27,9 @@
   .breadcrumb-list {
     @apply gap-1;
   }
-  
+
   .breadcrumb-link span,
   .breadcrumb-current span {
     @apply hidden;
-  }
-  
-  .breadcrumb-link mat-icon,
-  .breadcrumb-current mat-icon {
-    @apply inline-block;
   }
 }

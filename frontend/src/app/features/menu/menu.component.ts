@@ -11,7 +11,6 @@ import {
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
@@ -31,7 +30,6 @@ import {
 import { ButtonComponent } from "@shared/components/button/button.component";
 import { BadgeComponent } from "@shared/components/badge/badge.component";
 import { ModalComponent } from "@shared/components/modal/modal.component";
-
 export interface PublicDish {
   id: string;
   name: string;
@@ -42,14 +40,12 @@ export interface PublicDish {
   images: { id: string; url: string; isMain: boolean }[];
   active: boolean;
 }
-
 export interface PublicCategory {
   id: string;
   name: string;
   imageUrl?: string;
   displayOrder: number;
 }
-
 export interface RestaurantInfo {
   id?: string;
   name: string;
@@ -58,14 +54,12 @@ export interface RestaurantInfo {
   logoUrl?: string;
   coverUrl?: string;
 }
-
 export interface BusinessHour {
   dayOfWeek: number;
   openTime: string;
   closeTime: string;
   closed?: boolean;
 }
-
 export interface ContactInfo {
   phone?: string;
   email?: string;
@@ -74,7 +68,6 @@ export interface ContactInfo {
   instagram?: string;
   facebook?: string;
 }
-
 @Component({
   selector: "app-menu",
   standalone: true,
@@ -82,7 +75,6 @@ export interface ContactInfo {
     CommonModule,
     FormsModule,
     MatCardModule,
-    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -99,7 +91,9 @@ export interface ContactInfo {
   template: `
     <div class="min-h-screen bg-surface-secondary">
       <!-- Header -->
-      <header class="bg-surface-primary border-b border-border sticky top-0 z-40">
+      <header
+        class="bg-surface-primary border-b border-border sticky top-0 z-40"
+      >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
             class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-4"
@@ -114,11 +108,7 @@ export interface ContactInfo {
               } @else {
                 <div
                   class="h-12 w-12 bg-brand-primary-subtle rounded-lg flex items-center justify-center"
-                >
-                  <mat-icon class="text-brand-primary-hover text-2xl"
-                    >restaurant</mat-icon
-                  >
-                </div>
+                ></div>
               }
               <div>
                 <h1 class="text-h3 font-bold text-text-primary">
@@ -132,10 +122,6 @@ export interface ContactInfo {
 
             <div class="flex items-center gap-3 w-full sm:w-auto">
               <div class="flex-1 sm:w-64 relative">
-                <mat-icon
-                  class="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary"
-                  >search</mat-icon
-                >
                 <input
                   type="text"
                   [(ngModel)]="searchTerm"
@@ -184,10 +170,14 @@ export interface ContactInfo {
       <!-- Main Content -->
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @if (loading()) {
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
             @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
               <div class="animate-pulse">
-                <div class="aspect-[4/3] bg-surface-tertiary rounded-xl mb-3"></div>
+                <div
+                  class="aspect-[4/3] bg-surface-tertiary rounded-xl mb-3"
+                ></div>
                 <div class="h-4 bg-surface-tertiary rounded w-3/4 mb-2"></div>
                 <div class="h-4 bg-surface-tertiary rounded w-1/2 mb-1"></div>
                 <div class="h-5 bg-surface-tertiary rounded w-1/4"></div>
@@ -197,13 +187,12 @@ export interface ContactInfo {
         } @else {
           @if (filteredDishes().length === 0) {
             <div class="text-center py-16">
-              <mat-icon class="text-6xl text-text-tertiary mb-4"
-                >restaurant_menu</mat-icon
-              >
               <h2 class="text-h4 font-medium text-text-primary mb-2">
                 Nenhum prato encontrado
               </h2>
-              <p class="text-text-tertiary">Tente ajustar sua busca ou filtro</p>
+              <p class="text-text-tertiary">
+                Tente ajustar sua busca ou filtro
+              </p>
             </div>
           } @else {
             <!-- Category Sections -->
@@ -220,9 +209,7 @@ export interface ContactInfo {
                     } @else {
                       <div
                         class="h-10 w-10 bg-brand-primary-subtle rounded-lg flex items-center justify-center"
-                      >
-                        <mat-icon class="text-brand-primary-hover">category</mat-icon>
-                      </div>
+                      ></div>
                     }
                     <h2 class="text-h3 font-bold text-text-primary">
                       {{ category.name }}
@@ -254,13 +241,8 @@ export interface ContactInfo {
                         } @else {
                           <div
                             class="w-full h-full flex items-center justify-center"
-                          >
-                            <mat-icon class="text-4xl text-text-tertiary"
-                              >restaurant</mat-icon
-                            >
-                          </div>
+                          ></div>
                         }
-
                         @if (dish.images.length > 1) {
                           <button
                             type="button"
@@ -269,18 +251,20 @@ export interface ContactInfo {
                             matTooltip="Ver todas as imagens"
                             aria-label="Ver todas as imagens de {{ dish.name }}"
                           >
-                            <mat-icon class="text-text-tertiary"
-                              >photo_library</mat-icon
-                            >
+                            <span aria-hidden="true">🖼</span>
                           </button>
                         }
                       </div>
 
-                      <h3 class="font-semibold text-text-primary mb-1 line-clamp-1">
+                      <h3
+                        class="font-semibold text-text-primary mb-1 line-clamp-1"
+                      >
                         {{ dish.name }}
                       </h3>
                       @if (dish.description) {
-                        <p class="text-body-sm text-text-tertiary mb-2 line-clamp-2">
+                        <p
+                          class="text-body-sm text-text-tertiary mb-2 line-clamp-2"
+                        >
                           {{ dish.description }}
                         </p>
                       }
@@ -341,19 +325,16 @@ export interface ContactInfo {
               <div class="space-y-2 text-text-tertiary">
                 @if (contactInfo().phone) {
                   <div class="flex items-center gap-2">
-                    <mat-icon class="text-sm">phone</mat-icon>
                     <span>{{ contactInfo().phone }}</span>
                   </div>
                 }
                 @if (contactInfo().email) {
                   <div class="flex items-center gap-2">
-                    <mat-icon class="text-sm">email</mat-icon>
                     <span>{{ contactInfo().email }}</span>
                   </div>
                 }
                 @if (contactInfo().address) {
                   <div class="flex items-start gap-2">
-                    <mat-icon class="text-sm mt-0.5">location_on</mat-icon>
                     <span>{{ contactInfo().address }}</span>
                   </div>
                 }
@@ -448,41 +429,35 @@ export interface ContactInfo {
       </app-modal>
     </div>
   `,
-styles: [
+  styles: [
     `
       :host {
         display: block;
       }
-
       .chip {
         @apply px-4 py-1.5 text-sm font-medium rounded-full border transition-all duration-200;
         @apply border-border bg-surface-primary text-text-secondary hover:border-brand-primary hover:text-brand-primary-hover;
         box-shadow: var(--shadow-chip, 0 1px 2px 0 rgb(0 0 0 / 0.03));
       }
-
       .chip.active {
         @apply border-brand-primary bg-brand-primary text-brand-on-primary;
         box-shadow: var(--shadow-chip-hover, 0 1px 2px 0 rgb(0 0 0 / 0.05));
       }
-
       .dish-card {
         @apply bg-surface-primary rounded-xl border border-border shadow-card hover:shadow-card-hover transition-all duration-300;
       }
-
       .line-clamp-1 {
         display: -webkit-box;
         -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-
       .line-clamp-2 {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-
       @media (max-width: 640px) {
         .grid-cols-2 {
           grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -496,7 +471,6 @@ export class MenuComponent implements OnInit {
   private apiService = inject(ApiService);
   private notification = inject(NotificationService);
   private loadingService = inject(LoadingService);
-
   // State
   loading = signal(true);
   dishes = signal<PublicDish[]>([]);
@@ -504,23 +478,18 @@ export class MenuComponent implements OnInit {
   restaurantInfo = signal<RestaurantInfo>({} as RestaurantInfo);
   businessHours = signal<BusinessHour[]>([]);
   contactInfo = signal<ContactInfo>({} as ContactInfo);
-
   // Filters
   searchTerm = "";
   selectedCategory = signal<string>("");
   showCategoryFilter = signal(false);
-
   // Modals
   galleryModalOpen = signal(false);
   galleryDish = signal<PublicDish | null>(null);
   galleryImages = signal<GalleryImage[]>([]);
-
   detailModalOpen = signal(false);
   detailDish = signal<PublicDish | null>(null);
-
   filteredDishes = computed(() => {
     let filtered = this.dishes().filter((d) => d.active);
-
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(
@@ -529,16 +498,13 @@ export class MenuComponent implements OnInit {
           dish.description?.toLowerCase().includes(term),
       );
     }
-
     if (this.selectedCategory()) {
       filtered = filtered.filter(
         (dish) => dish.categoryId === this.selectedCategory(),
       );
     }
-
     return filtered;
   });
-
   categoriesWithDishes = computed(() => {
     return this.categories()
       .filter((cat) =>
@@ -546,14 +512,11 @@ export class MenuComponent implements OnInit {
       )
       .sort((a, b) => a.displayOrder - b.displayOrder);
   });
-
   ngOnInit(): void {
     this.loadMenuData();
   }
-
   loadMenuData(): void {
     this.loading.set(true);
-
     // Load categories
     this.apiService.getPublicCategories().subscribe({
       next: (cats: any[]) => {
@@ -572,7 +535,6 @@ export class MenuComponent implements OnInit {
         this.loading.set(false);
       },
     });
-
     // Load dishes
     this.apiService.getPublicMenu().subscribe({
       next: (data: any[]) => {
@@ -599,7 +561,6 @@ export class MenuComponent implements OnInit {
         this.loading.set(false);
       },
     });
-
     // Load restaurant info
     this.apiService.getPublicRestaurantInfo().subscribe({
       next: (info: any) => this.restaurantInfo.set(info),
@@ -609,7 +570,6 @@ export class MenuComponent implements OnInit {
         this.loading.set(false);
       },
     });
-
     // Load business hours
     this.apiService.getPublicBusinessHours().subscribe({
       next: (hours: BusinessHour[]) => this.businessHours.set(hours),
@@ -619,7 +579,6 @@ export class MenuComponent implements OnInit {
         this.loading.set(false);
       },
     });
-
     // Load contact info
     this.apiService.getPublicContactInfo().subscribe({
       next: (contact: ContactInfo) => this.contactInfo.set(contact),
@@ -629,28 +588,22 @@ export class MenuComponent implements OnInit {
         this.loading.set(false);
       },
     });
-
     // Simulate loading delay
     setTimeout(() => this.loading.set(false), 500);
   }
-
   onSearchChange(term: string): void {
     this.searchTerm = term;
   }
-
   selectCategory(categoryId: string): void {
     this.selectedCategory.set(categoryId);
     this.showCategoryFilter.set(false);
   }
-
   toggleCategoryFilter(): void {
     this.showCategoryFilter.update((v) => !v);
   }
-
   getDishesForCategory(categoryId: string): PublicDish[] {
     return this.filteredDishes().filter((d) => d.categoryId === categoryId);
   }
-
   getDayName(dayOfWeek: number): string {
     const days = [
       "Domingo",
@@ -663,7 +616,6 @@ export class MenuComponent implements OnInit {
     ];
     return days[dayOfWeek] ?? "";
   }
-
   openImageGallery(dish: PublicDish | null): void {
     if (!dish) return;
     this.galleryDish.set(dish);
@@ -678,58 +630,47 @@ export class MenuComponent implements OnInit {
     );
     this.galleryModalOpen.set(true);
   }
-
   closeGalleryModal(): void {
     this.galleryModalOpen.set(false);
     this.galleryDish.set(null);
     this.galleryImages.set([]);
   }
-
   openDetailModal(dish: PublicDish): void {
     this.detailDish.set(dish);
     this.detailModalOpen.set(true);
   }
-
   closeDetailModal(): void {
     this.detailModalOpen.set(false);
     setTimeout(() => {
       this.detailDish.set(null);
     }, 250);
   }
-
   onGalleryImageSelect(index: number): void {
     // Handle if needed
   }
-
   addToOrder(dish: PublicDish | null): void {
     if (!dish) return;
     // Emit event or use a cart service
     this.notification.success(`${dish.name} adicionado ao pedido!`);
   }
-
   @HostListener("document:keydown.escape")
   onEscape(): void {
     if (this.galleryModalOpen()) this.closeGalleryModal();
     if (this.detailModalOpen()) this.closeDetailModal();
   }
-
   currentYear(): number {
     return new Date().getFullYear();
   }
-
   getDetailPrice(): string {
     const dish = this.detailDish();
     return dish ? dish.price.toFixed(2).replace(".", ",") : "0,00";
   }
-
   getDetailDish(): PublicDish | null {
     return this.detailDish();
   }
-
   getDetailImages(): { id: string; url: string; isMain: boolean }[] {
     return this.detailDish()?.images ?? [];
   }
-
   getDetailDescription(): string {
     return this.detailDish()?.description ?? "";
   }

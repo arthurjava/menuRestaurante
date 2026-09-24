@@ -8,33 +8,38 @@ import {
   ChangeDetectionStrategy,
   computed,
   signal,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
 
 @Component({
-  selector: 'app-filter-bar',
+  selector: "app-filter-bar",
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatExpansionModule, MatFormFieldModule, MatInputModule],
-  templateUrl: './filter-bar.component.html',
-  styleUrl: './filter-bar.component.scss',
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
+  templateUrl: "./filter-bar.component.html",
+  styleUrl: "./filter-bar.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilterBarComponent {
   @Input() expanded = false;
   @Input() showToggle = true;
-  @Input() searchPlaceholder = 'Buscar...';
-  @Input() searchValue = '';
+  @Input() searchPlaceholder = "Buscar...";
+  @Input() searchValue = "";
   @Output() searchValueChange = new EventEmitter<string>();
   @Output() toggle = new EventEmitter<boolean>();
   @Output() clearFilters = new EventEmitter<void>();
 
-  @ContentChild('filterContent') filterContentTemplate!: TemplateRef<any>;
-  @ContentChild('searchContent') searchContentTemplate!: TemplateRef<any>;
+  @ContentChild("filterContent") filterContentTemplate!: TemplateRef<any>;
+  @ContentChild("searchContent") searchContentTemplate!: TemplateRef<any>;
 
   readonly isExpanded = signal(this.expanded);
 

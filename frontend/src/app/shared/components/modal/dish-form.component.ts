@@ -9,12 +9,7 @@ import {
   ChangeDetectionStrategy,
   HostBinding,
 } from "@angular/core";
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-} from "@angular/animations";
+import { trigger, transition, style, animate } from "@angular/animations";
 import { CommonModule } from "@angular/common";
 import {
   ReactiveFormsModule,
@@ -23,7 +18,6 @@ import {
   Validators,
 } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
@@ -32,7 +26,6 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { ImageUploadComponent } from "../image-upload/image-upload.component";
 import { UploadedImage } from "@core/services/image-upload.service";
-
 export interface DishFormData {
   name: string;
   description: string;
@@ -41,12 +34,10 @@ export interface DishFormData {
   active: boolean;
   displayOrder: number;
 }
-
 export interface CategoryOption {
   value: string;
   label: string;
 }
-
 @Component({
   selector: "app-dish-form",
   standalone: true,
@@ -54,7 +45,6 @@ export interface CategoryOption {
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -96,7 +86,7 @@ export interface CategoryOption {
               (click)="close()"
               aria-label="Fechar modal"
             >
-              <mat-icon>close</mat-icon>
+              <span aria-hidden="true">✕</span>
             </button>
           </div>
 
@@ -273,11 +263,9 @@ export interface CategoryOption {
       :host {
         display: block;
       }
-
       :host(.hidden) {
         display: none;
       }
-
       .modal-sm {
         @apply max-w-sm;
       }
@@ -293,7 +281,6 @@ export interface CategoryOption {
       .modal-full {
         @apply max-w-4xl;
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -302,7 +289,6 @@ export interface CategoryOption {
           opacity: 1;
         }
       }
-
       @keyframes slideUp {
         from {
           opacity: 0;
@@ -313,46 +299,46 @@ export interface CategoryOption {
           transform: translateY(0) scale(1);
         }
       }
-
       .fade-in {
         animation: fadeIn 0.2s ease-out;
       }
       .slide-up {
         animation: slideUp 0.2s ease-out;
       }
-
       :host ::ng-deep .mat-mdc-tab-group {
         @apply w-full;
       }
-
       :host ::ng-deep .mat-mdc-tab-body-wrapper {
         @apply h-auto;
       }
-
       :host ::ng-deep .mat-mdc-form-field {
         @apply w-full;
       }
     `,
   ],
   animations: [
-    trigger('fadeIn', [
-      transition(':enter', [
+    trigger("fadeIn", [
+      transition(":enter", [
         style({ opacity: 0 }),
-        animate('0.2s ease-out', style({ opacity: 1 }))
+        animate("0.2s ease-out", style({ opacity: 1 })),
       ]),
-      transition(':leave', [
-        animate('0.2s ease-out', style({ opacity: 0 }))
-      ])
+      transition(":leave", [animate("0.2s ease-out", style({ opacity: 0 }))]),
     ]),
-    trigger('slideUp', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(20px) scale(0.95)' }),
-        animate('0.2s ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))
+    trigger("slideUp", [
+      transition(":enter", [
+        style({ opacity: 0, transform: "translateY(20px) scale(0.95)" }),
+        animate(
+          "0.2s ease-out",
+          style({ opacity: 1, transform: "translateY(0) scale(1)" }),
+        ),
       ]),
-      transition(':leave', [
-        animate('0.2s ease-out', style({ opacity: 0, transform: 'translateY(20px) scale(0.95)' }))
-      ])
-    ])
+      transition(":leave", [
+        animate(
+          "0.2s ease-out",
+          style({ opacity: 0, transform: "translateY(20px) scale(0.95)" }),
+        ),
+      ]),
+    ]),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -368,16 +354,13 @@ export class DishFormComponent {
   existingImages = input<UploadedImage[]>([]);
   editingDishId = input<string>("");
   size = input<"sm" | "md" | "lg" | "xl" | "full">("xl");
-
   confirmed = output<DishFormData>();
   cancelled = output<void>();
   imagesChange = output<any[]>();
   uploadComplete = output<UploadedImage[]>();
   uploadError = output<string>();
-
   private _wasOpen = signal(false);
   private fb = inject(FormBuilder);
-
   form = this.fb.group({
     name: ["", [Validators.required, Validators.maxLength(100)]],
     description: ["", [Validators.maxLength(1000)]],
@@ -386,12 +369,10 @@ export class DishFormComponent {
     active: [true],
     displayOrder: [0, [Validators.min(0)]],
   });
-
   @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
-
   modalSizeClass = computed(() => {
     const sizes = {
       sm: "modal-sm",
@@ -402,9 +383,7 @@ export class DishFormComponent {
     };
     return sizes[this.size()];
   });
-
   compareById = (a: string, b: string) => a === b;
-
   constructor() {
     effect(() => {
       const open = this.isOpen();
@@ -413,7 +392,6 @@ export class DishFormComponent {
         this.isOpenChange.emit(open);
       }
     });
-
     effect(() => {
       const data = this.initialData();
       if (data && this.isOpen()) {
@@ -429,44 +407,35 @@ export class DishFormComponent {
         });
       }
     });
-
     effect(() => {
       const images = this.existingImages();
       // Images are handled by the image-upload component
     });
   }
-
   onBackdropClick(): void {
     this.close();
   }
-
   close(): void {
     this.isOpenChange.emit(false);
     this.cancelled.emit();
   }
-
   cancel(): void {
     this.cancelled.emit();
     this.close();
   }
-
   onSubmit(): void {
     if (this.form.invalid || this.confirmLoading()) return;
     this.confirmed.emit(this.form.value as DishFormData);
   }
-
   onImagesChange(images: any[]): void {
     this.imagesChange.emit(images);
   }
-
   onImagesUploadComplete(images: UploadedImage[]): void {
     this.uploadComplete.emit(images);
   }
-
   onImageError(error: string): void {
     this.uploadError.emit(error);
   }
-
   onAnimationDone(event: any): void {
     // Animation callback if needed
   }

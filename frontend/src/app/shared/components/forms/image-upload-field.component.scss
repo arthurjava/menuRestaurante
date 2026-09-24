@@ -38,10 +38,6 @@
   @apply text-center py-8 sm:py-12 px-4;
 }
 
-.upload-placeholder mat-icon {
-  @apply text-5xl text-gray-300 mb-3;
-}
-
 .upload-placeholder p {
   @apply text-gray-600 mb-1;
 }
@@ -115,7 +111,9 @@
 
 // Drag over state
 .upload-zone.cdk-drag-preview {
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 .cdk-drag-placeholder {

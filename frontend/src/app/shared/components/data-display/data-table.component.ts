@@ -8,28 +8,27 @@ import {
   signal,
   ContentChild,
   TemplateRef,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule, Sort } from '@angular/material/sort';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { EmptyStateComponent } from '../data-display';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import { ButtonComponent } from '../button/button.component';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MatTableModule } from "@angular/material/table";
+import { MatSortModule, Sort } from "@angular/material/sort";
+import { MatPaginatorModule, PageEvent } from "@angular/material/paginator";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDividerModule } from "@angular/material/divider";
+import { EmptyStateComponent } from "../data-display";
+import { MatCheckboxChange } from "@angular/material/checkbox";
+import { ButtonComponent } from "../button/button.component";
 
 export interface ColumnDef<T = any> {
   key: string;
   header: string;
   sortable?: boolean;
   width?: string;
-  align?: 'left' | 'center' | 'right';
+  align?: "left" | "center" | "right";
   render?: (row: T) => TemplateRef<any>;
   sticky?: boolean;
 }
@@ -37,7 +36,14 @@ export interface ColumnDef<T = any> {
 export interface TableAction<T = any> {
   label: string;
   icon?: string;
-  variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'info' | 'outline' | 'ghost';
+  variant?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "warning"
+    | "info"
+    | "outline"
+    | "ghost";
   tooltip?: string;
   disabled?: (row: T) => boolean;
   hidden?: (row: T) => boolean;
@@ -64,7 +70,7 @@ export interface DataTableConfig<T = any> {
 }
 
 @Component({
-  selector: 'app-data-table',
+  selector: "app-data-table",
   standalone: true,
   imports: [
     CommonModule,
@@ -74,15 +80,14 @@ export interface DataTableConfig<T = any> {
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatIconModule,
     MatMenuModule,
     MatButtonModule,
     MatDividerModule,
     EmptyStateComponent,
     ButtonComponent,
   ],
-  templateUrl: './data-table.component.html',
-  styleUrl: './data-table.component.scss',
+  templateUrl: "./data-table.component.html",
+  styleUrl: "./data-table.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataTableComponent<T = any> {
@@ -101,16 +106,16 @@ export class DataTableComponent<T = any> {
   @Output() rowClick = new EventEmitter<T>();
   @Output() selectionChange = new EventEmitter<T[]>();
 
-  @ContentChild('customCell') customCellTemplate!: TemplateRef<any>;
-  @ContentChild('customRow') customRowTemplate!: TemplateRef<any>;
+  @ContentChild("customCell") customCellTemplate!: TemplateRef<any>;
+  @ContentChild("customRow") customRowTemplate!: TemplateRef<any>;
 
   readonly selection = signal<T[]>([]);
 
   readonly displayedColumns = computed(() => {
-    const cols = this.columns.map(c => c.key);
+    const cols = this.columns.map((c) => c.key);
     const cfg = this.config;
-    if (cfg.selectable) cols.unshift('select');
-    if (this.actions.length > 0) cols.push('actions');
+    if (cfg.selectable) cols.unshift("select");
+    if (this.actions.length > 0) cols.push("actions");
     return cols;
   });
 
@@ -138,7 +143,7 @@ export class DataTableComponent<T = any> {
   onSelectionChange(row: T, event: MatCheckboxChange): void {
     const checked = event.checked;
     this.selection.update((current: T[]) =>
-      checked ? [...current, row] : current.filter((r: T) => r !== row)
+      checked ? [...current, row] : current.filter((r: T) => r !== row),
     );
     this.selectionChange.emit(this.selection());
   }
@@ -169,44 +174,45 @@ export class DataTableComponent<T = any> {
   }
 
   getHeaderClasses(column: ColumnDef<T>): string {
-    const classes = ['text-left'];
+    const classes = ["text-left"];
     if (column.align) classes.push(`text-${column.align}`);
-    if (column.sticky) classes.push('sticky-start');
-    return classes.join(' ');
+    if (column.sticky) classes.push("sticky-start");
+    return classes.join(" ");
   }
 
   getCellClasses(column: ColumnDef<T>): string {
     const classes = [];
     if (column.align) classes.push(`text-${column.align}`);
-    return classes.join(' ');
+    return classes.join(" ");
   }
 
   getCellValue(row: T, key: string): string {
     const value = (row as any)[key];
-    if (value === null || value === undefined) return '';
-    if (typeof value === 'object') return JSON.stringify(value);
+    if (value === null || value === undefined) return "";
+    if (typeof value === "object") return JSON.stringify(value);
     return String(value);
   }
 
   getActionButtonClass(action: TableAction<T>): string {
-    const base = 'p-1.5 rounded-lg transition-colors duration-fast';
+    const base = "p-1.5 rounded-lg transition-colors duration-fast";
     const variants: Record<string, string> = {
-      primary: 'text-brand-primary hover:bg-brand-primary-subtle',
-      secondary: 'text-text-secondary hover:bg-surface-hover',
-      danger: 'text-state-danger hover:bg-state-danger-subtle',
-      warning: 'text-state-warning hover:bg-state-warning-subtle',
-      info: 'text-state-info hover:bg-state-info-subtle',
-      outline: 'text-text-secondary hover:bg-surface-hover',
-      ghost: 'text-text-tertiary hover:bg-surface-hover',
+      primary: "text-brand-primary hover:bg-brand-primary-subtle",
+      secondary: "text-text-secondary hover:bg-surface-hover",
+      danger: "text-state-danger hover:bg-state-danger-subtle",
+      warning: "text-state-warning hover:bg-state-warning-subtle",
+      info: "text-state-info hover:bg-state-info-subtle",
+      outline: "text-text-secondary hover:bg-surface-hover",
+      ghost: "text-text-tertiary hover:bg-surface-hover",
     };
-    return `${base} ${variants[action.variant || 'secondary']}`;
+    return `${base} ${variants[action.variant || "secondary"]}`;
   }
 
   protected readonly hasActions = computed(() => this.actions.length > 0);
-  protected readonly allSelected = computed(() =>
-    this.data.length > 0 && this.selection().length === this.data.length
+  protected readonly allSelected = computed(
+    () => this.data.length > 0 && this.selection().length === this.data.length,
   );
-  protected readonly someSelected = computed(() =>
-    this.selection().length > 0 && this.selection().length < this.data.length
+  protected readonly someSelected = computed(
+    () =>
+      this.selection().length > 0 && this.selection().length < this.data.length,
   );
 }

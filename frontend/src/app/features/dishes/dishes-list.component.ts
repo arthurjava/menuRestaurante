@@ -11,7 +11,6 @@ import {
 import { CommonModule } from "@angular/common";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
@@ -57,7 +56,6 @@ import {
   ReorderItem,
 } from "@shared/components/modal/reorder-wrapper.component";
 import { ButtonComponent } from "@shared/components/button/button.component";
-
 interface Dish {
   id: string;
   name: string;
@@ -71,7 +69,6 @@ interface Dish {
   createdAt?: string;
   updatedAt?: string;
 }
-
 @Component({
   selector: "app-dishes-list",
   standalone: true,
@@ -79,7 +76,6 @@ interface Dish {
     CommonModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -129,7 +125,6 @@ interface Dish {
               [formControl]="searchControl"
               placeholder="Buscar pratos..."
             />
-            <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-full sm:w-56">
@@ -158,11 +153,9 @@ interface Dish {
             (click)="toggleFilters()"
             class="flex items-center gap-2"
           >
-            <mat-icon>filter_list</mat-icon>
             Filtros
           </button>
         </div>
-
         @if (showFilters()) {
           <div class="mt-4 flex flex-col sm:flex-row gap-4">
             <mat-form-field appearance="outline" class="w-full sm:w-56">
@@ -292,35 +285,27 @@ interface Dish {
       :host {
         display: block;
       }
-
       .cdk-drag-preview {
         @apply shadow-dropdown bg-surface-primary;
       }
-
       .cdk-drag-placeholder {
         @apply opacity-0;
       }
-
       .cdk-drag-animating {
         @apply transition-transform duration-200;
       }
-
       :host ::ng-deep .mat-mdc-card {
         @apply shadow-card border border-border;
       }
-
       :host ::ng-deep .mat-mdc-form-field {
         @apply w-full;
       }
-
       :host ::ng-deep .mat-mdc-tab-group {
         @apply w-full;
       }
-
       :host ::ng-deep .mat-mdc-tab-body-wrapper {
         @apply h-auto;
       }
-
       @media (max-width: 768px) {
         :host ::ng-deep .mat-mdc-tab-label {
           @apply px-2 py-2 text-sm;
@@ -334,7 +319,6 @@ export class DishesListComponent implements OnInit {
   private apiService = inject(ApiService);
   private notification = inject(NotificationService);
   private loadingService = inject(LoadingService);
-
   // State
   loading = signal(false);
   dishes = signal<Dish[]>([]);
@@ -345,27 +329,22 @@ export class DishesListComponent implements OnInit {
   sortActive = signal("displayOrder");
   sortDirection = signal<"asc" | "desc">("asc");
   totalItems = signal(0);
-
   // Modal state
   modalOpen = signal(false);
   modalLoading = signal(false);
   editingDish = signal<Dish | null>(null);
-
   // Delete modal
   deleteModalOpen = signal(false);
   deleteLoading = signal(false);
   dishToDelete = signal<Dish | null>(null);
-
   // Reorder modal
   reorderModalOpen = signal(false);
   reorderLoading = signal(false);
   reorderDishes = signal<ReorderItem[]>([]);
-
   // Gallery modal
   galleryModalOpen = signal(false);
   galleryDish = signal<Dish | null>(null);
   galleryImages = signal<GalleryImage[]>([]);
-
   // Table config
   columns: ColumnDef<Dish>[] = [
     {
@@ -407,34 +386,28 @@ export class DishesListComponent implements OnInit {
       render: (dish) => `${dish.images?.length ?? 0}`,
     },
   ];
-
   tableActions: TableAction<Dish>[] = [
     {
       label: "Ver imagens",
-      icon: "photo_library",
       color: "primary",
       action: (dish) => this.openGallery(dish),
     },
     {
       label: "Editar",
-      icon: "edit",
       color: "primary",
       action: (dish) => this.openEditModal(dish),
     },
     {
       label: "Ativar/Desativar",
-      icon: (dish) => (dish.active ? "toggle_on" : "toggle_off"),
       color: (dish) => (dish.active ? "secondary" : "primary"),
       action: (dish) => this.toggleActive(dish),
     },
     {
       label: "Excluir",
-      icon: "delete",
       color: "danger",
       action: (dish) => this.openDeleteModal(dish),
     },
   ];
-
   tableConfig = {
     selectable: true,
     pagination: true,
@@ -443,23 +416,19 @@ export class DishesListComponent implements OnInit {
     sorting: true,
     emptyMessage: "Nenhum prato encontrado",
   };
-
   statusOptions = [
     { value: "all", label: "Todos" },
     { value: "active", label: "Ativos" },
     { value: "inactive", label: "Inativos" },
   ];
-
   sortOptions = [
     { value: "displayOrder", label: "Ordem de exibição" },
     { value: "name", label: "Nome (A-Z)" },
     { value: "price", label: "Preço" },
     { value: "category", label: "Categoria" },
   ];
-
   filteredDishes = computed(() => {
     let filtered = this.dishes();
-
     if (this.searchTerm()) {
       const term = this.searchTerm().toLowerCase();
       filtered = filtered.filter(
@@ -469,19 +438,16 @@ export class DishesListComponent implements OnInit {
           dish.categoryName?.toLowerCase().includes(term),
       );
     }
-
     if (this.categoryFilter()) {
       filtered = filtered.filter(
         (dish) => dish.categoryId === this.categoryFilter(),
       );
     }
-
     if (this.statusFilter() !== "all") {
       filtered = filtered.filter(
         (dish) => dish.active === (this.statusFilter() === "active"),
       );
     }
-
     // Sort
     filtered = [...filtered].sort((a, b) => {
       let comparison = 0;
@@ -504,17 +470,14 @@ export class DishesListComponent implements OnInit {
       }
       return this.sortDirection() === "asc" ? comparison : -comparison;
     });
-
     return filtered;
   });
-
   categoryOptions = computed(() => [
     { value: "", label: "Todas as categorias" },
     ...this.categories()
       .filter((c) => c.active)
       .map((c) => ({ value: c.id, label: c.name })),
   ]);
-
   // FormControls for filters (reactive)
   searchControl = new FormControl("");
   categoryFilterControl = new FormControl("");
@@ -522,7 +485,6 @@ export class DishesListComponent implements OnInit {
   sortByControl = new FormControl<
     "displayOrder" | "name" | "price" | "category"
   >("displayOrder");
-
   // Derived signals from FormControls
   searchTerm = signal("");
   categoryFilter = signal("");
@@ -530,12 +492,10 @@ export class DishesListComponent implements OnInit {
   sortBy = signal<"displayOrder" | "name" | "price" | "category">(
     "displayOrder",
   );
-
   ngOnInit(): void {
     this.setupFilterSubscriptions();
     this.loadData();
   }
-
   private setupFilterSubscriptions(): void {
     this.searchControl.valueChanges.subscribe((value) => {
       this.searchTerm.set(value ?? "");
@@ -554,10 +514,8 @@ export class DishesListComponent implements OnInit {
       this.sortBy.set((value as any) ?? "displayOrder");
     });
   }
-
   loadData(): void {
     this.loading.set(true);
-
     // Load categories first
     this.apiService.listCategories().subscribe({
       next: (cats: any[]) => {
@@ -580,7 +538,6 @@ export class DishesListComponent implements OnInit {
       },
     });
   }
-
   loadDishes(): void {
     this.apiService
       .listDishesAdmin({
@@ -614,54 +571,42 @@ export class DishesListComponent implements OnInit {
         },
       });
   }
-
   toggleFilters(): void {
     this.showFilters.update((v) => !v);
   }
-
   onRowClick(dish: Dish): void {
     this.openEditModal(dish);
   }
-
   onSelectionChange(selection: Dish[]): void {
     // Handle bulk actions
   }
-
   onPageChange(event: any): void {
     this.pageIndex.set(event.pageIndex);
     this.pageSize.set(event.pageSize);
   }
-
   onSortChange(event: { active: string; direction: "asc" | "desc" }): void {
     this.sortActive.set(event.active);
     this.sortDirection.set(event.direction);
   }
-
   onActionClick(event: { action: string; row: Dish }): void {
     // Handled by individual action
   }
-
   openCreateModal(): void {
     this.editingDish.set(null);
     this.modalOpen.set(true);
   }
-
   openEditModal(dish: Dish): void {
     this.editingDish.set(dish);
     this.modalOpen.set(true);
   }
-
   closeModal(): void {
     this.modalOpen.set(false);
     this.editingDish.set(null);
   }
-
   onDishFormConfirmed(formData: DishFormData): void {
     if (this.modalLoading()) return;
-
     this.modalLoading.set(true);
     const editing = this.editingDish();
-
     const dishData = {
       name: formData.name,
       description: formData.description,
@@ -670,7 +615,6 @@ export class DishesListComponent implements OnInit {
       active: formData.active,
       displayOrder: formData.displayOrder,
     };
-
     if (editing) {
       this.apiService.updateDish(editing.id, dishData).subscribe({
         next: () => {
@@ -693,21 +637,17 @@ export class DishesListComponent implements OnInit {
       });
     }
   }
-
   openDeleteModal(dish: Dish): void {
     this.dishToDelete.set(dish);
     this.deleteModalOpen.set(true);
   }
-
   closeDeleteModal(): void {
     this.deleteModalOpen.set(false);
     this.dishToDelete.set(null);
   }
-
   confirmDelete(): void {
     const dish = this.dishToDelete();
     if (!dish || this.deleteLoading()) return;
-
     this.deleteLoading.set(true);
     this.apiService.deleteDish(dish.id).subscribe({
       next: () => {
@@ -719,7 +659,6 @@ export class DishesListComponent implements OnInit {
       error: () => this.deleteLoading.set(false),
     });
   }
-
   toggleActive(dish: Dish): void {
     this.apiService.toggleDishActive(dish.id).subscribe({
       next: () => {
@@ -731,27 +670,22 @@ export class DishesListComponent implements OnInit {
       error: () => {},
     });
   }
-
   openReorderModal(): void {
     this.reorderDishes.set(
       [...this.dishes()].sort((a, b) => a.displayOrder - b.displayOrder),
     );
     this.reorderModalOpen.set(true);
   }
-
   closeReorderModal(): void {
     this.reorderModalOpen.set(false);
   }
-
   onReorderConfirmed(items: ReorderItem[]): void {
     if (this.reorderLoading()) return;
-
     this.reorderLoading.set(true);
     const reordered = items.map((dish) => ({
       id: dish.id,
       displayOrder: dish.displayOrder,
     }));
-
     this.apiService.reorderDishes(reordered).subscribe({
       next: () => {
         this.notification.success("Ordem dos pratos atualizada!");
@@ -762,7 +696,6 @@ export class DishesListComponent implements OnInit {
       error: () => this.reorderLoading.set(false),
     });
   }
-
   reorderConfig = computed(() => ({
     title: "Reordenar Pratos",
     description: "Arraste e solte os pratos para definir a ordem de exibição",
@@ -774,23 +707,19 @@ export class DishesListComponent implements OnInit {
       variant: item.active ? ("success" as const) : ("gray" as const),
     }),
   }));
-
   deleteDescription = computed(() => {
     const dish = this.dishToDelete();
     return dish
       ? `Tem certeza que deseja excluir o prato "${dish.name}"? Esta ação não pode ser desfeita.`
       : "Tem certeza que deseja excluir este prato? Esta ação não pode ser desfeita.";
   });
-
   galleryTitle = computed(() => {
     const dish = this.galleryDish();
     return dish ? `Imagens de ${dish.name}` : "Imagens";
   });
-
   onImageError(error: string): void {
     this.notification.error(error);
   }
-
   openGallery(dish: Dish): void {
     this.galleryDish.set(dish);
     this.galleryImages.set(
@@ -804,16 +733,13 @@ export class DishesListComponent implements OnInit {
     );
     this.galleryModalOpen.set(true);
   }
-
   closeGalleryModal(): void {
     this.galleryModalOpen.set(false);
     this.galleryDish.set(null);
     this.galleryImages.set([]);
   }
-
   onGalleryImageSelect(index: number): void {
     // Handle image selection if needed
   }
-
   compareById = (a: string, b: string) => a === b;
 }

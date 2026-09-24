@@ -2,7 +2,7 @@
   <!-- Loading State -->
   @if (loading) {
     <div class="table-loading">
-      @for (i of [1,2,3,4,5]; track i) {
+      @for (i of [1, 2, 3, 4, 5]; track i) {
         <div class="loading-row">
           @for (col of displayedColumns(); track col) {
             <div class="loading-cell">
@@ -15,7 +15,13 @@
   } @else {
     <!-- Table -->
     <div class="table-container">
-      <table mat-table [dataSource]="data" class="table" matSort (matSortChange)="onSortChange($event)">
+      <table
+        mat-table
+        [dataSource]="data"
+        class="table"
+        matSort
+        (matSortChange)="onSortChange($event)"
+      >
         <!-- Selection Column -->
         @if (config.selectable) {
           <ng-container matColumnDef="select">
@@ -54,7 +60,6 @@
                   [disabled]="loading"
                 >
                   <span>{{ column.header }}</span>
-                  <mat-icon class="text-sm">arrow_upward</mat-icon>
                 </button>
               } @else {
                 <span class="font-medium">{{ column.header }}</span>
@@ -68,7 +73,9 @@
               [style.min-width]="column.width"
             >
               @if (column.render) {
-                <ng-container [ngTemplateOutlet]="column.render(row)"></ng-container>
+                <ng-container
+                  [ngTemplateOutlet]="column.render(row)"
+                ></ng-container>
               } @else {
                 {{ getCellValue(row, column.key) }}
               }
@@ -85,12 +92,14 @@
             <td mat-cell *matCellDef="let row" class="w-24 text-center">
               <div class="inline-flex items-center justify-center">
                 <button
-                  mat-icon-button
+                  mat-button
                   [matMenuTriggerFor]="actionsMenu"
-                  class="text-text-tertiary hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors"
-                  aria-label="Ações para {{ getCellValue(row, 'name') || getCellValue(row, 'id') }}"
+                  class="text-text-tertiary hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors text-sm"
+                  aria-label="Ações para {{
+                    getCellValue(row, 'name') || getCellValue(row, 'id')
+                  }}"
                 >
-                  <mat-icon>more_vert</mat-icon>
+                  Ações
                 </button>
                 <mat-menu #actionsMenu="matMenu" xPosition="before">
                   @for (action of actions; track action.label) {
@@ -104,9 +113,6 @@
                         (click)="onActionClick(action, row, $event)"
                         class="flex items-center gap-2"
                       >
-                        @if (action.icon) {
-                          <mat-icon class="text-sm">{{ action.icon }}</mat-icon>
-                        }
                         <span>{{ action.label }}</span>
                       </button>
                     }
@@ -129,7 +135,7 @@
           [class]="{
             'hover:bg-surface-hover': config.hoverable,
             'bg-brand-primary-subtle': isSelected(row),
-            'border-t border-border': config.striped && i % 2 === 0
+            'border-t border-border': config.striped && i % 2 === 0,
           }"
           (click)="onRowClick(row)"
           [style.cursor]="config.rowClickable ? 'pointer' : 'default'"
@@ -171,3 +177,4 @@
       </mat-paginator>
     }
   }
+</div>

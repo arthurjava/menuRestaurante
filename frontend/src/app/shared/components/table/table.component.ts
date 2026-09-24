@@ -18,7 +18,6 @@ import {
   PageEvent,
 } from "@angular/material/paginator";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import { MatIconModule } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatButtonModule } from "@angular/material/button";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
@@ -38,7 +37,6 @@ export interface ColumnDef<T> {
 
 export interface TableAction<T> {
   label: string;
-  icon?: string | ((row: T) => string);
   color?:
     | "primary"
     | "secondary"
@@ -48,6 +46,7 @@ export interface TableAction<T> {
   disabled?: (row: T) => boolean;
   hidden?: (row: T) => boolean;
   action: (row: T) => void;
+  divider?: boolean;
 }
 
 export interface TableConfig {
@@ -70,7 +69,6 @@ export interface TableConfig {
     MatTableModule,
     MatPaginatorModule,
     MatCheckboxModule,
-    MatIconModule,
     MatMenuModule,
     MatButtonModule,
     MatProgressSpinnerModule,
@@ -168,7 +166,6 @@ export interface TableConfig {
                       <app-button
                         [variant]="getActionColor(action, row)"
                         [size]="'icon'"
-                        [icon]="getActionIcon(action, row)"
                         [label]="action.label"
                         [disabled]="action.disabled?.(row) ?? false"
                         [matTooltip]="action.label"
@@ -209,7 +206,7 @@ export interface TableConfig {
               class="text-center py-12"
             >
               <div class="flex flex-col items-center gap-2 text-gray-500">
-                <mat-icon class="text-4xl">inbox</mat-icon>
+                <span class="text-4xl" aria-hidden="true">📥</span>
                 <p>
                   {{ config().emptyMessage ?? "Nenhum registro encontrado" }}
                 </p>
@@ -386,13 +383,6 @@ export class TableComponent<T> {
     if (odd) classes.push("odd");
     if (this.rowClickable()) classes.push("cursor-pointer");
     return classes.join(" ");
-  }
-
-  getActionIcon(action: TableAction<T>, row: T): string {
-    if (typeof action.icon === "function") {
-      return action.icon(row);
-    }
-    return action.icon ?? "";
   }
 
   getActionColor(

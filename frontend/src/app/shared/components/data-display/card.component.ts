@@ -5,14 +5,14 @@ import {
   ContentChild,
   TemplateRef,
   ChangeDetectionStrategy,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ButtonComponent } from '../button/button.component';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ButtonComponent } from "../button/button.component";
 
-export type CardVariant = 'default' | 'outlined' | 'elevated' | 'filled';
+export type CardVariant = "default" | "outlined" | "elevated" | "filled";
 
 @Component({
-  selector: 'app-card',
+  selector: "app-card",
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   template: `
@@ -24,7 +24,9 @@ export type CardVariant = 'default' | 'outlined' | 'elevated' | 'filled';
               <h3 class="section-title">{{ title() }}</h3>
             }
             @if (subtitle()) {
-              <p class="text-body-sm text-text-secondary mt-0.5">{{ subtitle() }}</p>
+              <p class="text-body-sm text-text-secondary mt-0.5">
+                {{ subtitle() }}
+              </p>
             }
             @if (headerTemplate()) {
               <ng-template [ngTemplateOutlet]="headerTemplate()"></ng-template>
@@ -57,28 +59,30 @@ export type CardVariant = 'default' | 'outlined' | 'elevated' | 'filled';
             <app-button
               [variant]="action.variant"
               [size]="action.size"
-              [icon]="action.icon"
               [label]="action.label"
               [loading]="action.loading"
               [disabled]="action.disabled"
-              (clicked)="action.action($event)">
+              (clicked)="action.action($event)"
+            >
             </app-button>
           }
         </footer>
       }
     </article>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent {
-  title = input<string>('');
-  subtitle = input<string>('');
-  variant = input<CardVariant>('default');
+  title = input<string>("");
+  subtitle = input<string>("");
+  variant = input<CardVariant>("default");
   hoverable = input<boolean>(false);
   padded = input<boolean>(true);
 
@@ -87,48 +91,49 @@ export class CardComponent {
   footerTemplate = input<TemplateRef<any> | null>(null);
   actionsTemplate = input<TemplateRef<any> | null>(null);
 
-footerActions = input<Array<{
-    label: string;
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'danger' | 'outline' | 'ghost';
-    size?: 'sm' | 'md' | 'lg';
-    icon?: string;
-    loading?: boolean;
-    disabled?: boolean;
-    action: (event: MouseEvent) => void;
-  }>>([]);
+  footerActions = input<
+    Array<{
+      label: string;
+      variant?:
+        "primary" | "secondary" | "tertiary" | "danger" | "outline" | "ghost";
+      size?: "sm" | "md" | "lg";
+      loading?: boolean;
+      disabled?: boolean;
+      action: (event: MouseEvent) => void;
+    }>
+  >([]);
 
-  protected readonly footerActionsWithDefaults = computed(() => 
-    this.footerActions().map(action => ({
+  protected readonly footerActionsWithDefaults = computed(() =>
+    this.footerActions().map((action) => ({
       label: action.label,
-      variant: action.variant ?? 'primary',
-      size: action.size ?? 'md',
-      icon: action.icon ?? '',
+      variant: action.variant ?? "primary",
+      size: action.size ?? "md",
       loading: action.loading ?? false,
       disabled: action.disabled ?? false,
       action: action.action,
-    }))
+    })),
   );
 
-  @ContentChild('cardHeader') headerTemplateRef!: TemplateRef<any>;
-  @ContentChild('cardContent') contentTemplateRef!: TemplateRef<any>;
-  @ContentChild('cardFooter') footerTemplateRef!: TemplateRef<any>;
-  @ContentChild('cardActions') actionsTemplateRef!: TemplateRef<any>;
+  @ContentChild("cardHeader") headerTemplateRef!: TemplateRef<any>;
+  @ContentChild("cardContent") contentTemplateRef!: TemplateRef<any>;
+  @ContentChild("cardFooter") footerTemplateRef!: TemplateRef<any>;
+  @ContentChild("cardActions") actionsTemplateRef!: TemplateRef<any>;
 
   computedClasses = computed(() => {
-    const classes = ['card'];
-    if (this.hoverable()) classes.push('card-hover');
-    if (!this.padded()) classes.push('p-0');
+    const classes = ["card"];
+    if (this.hoverable()) classes.push("card-hover");
+    if (!this.padded()) classes.push("p-0");
     switch (this.variant()) {
-      case 'outlined':
-        classes.push('border-2');
+      case "outlined":
+        classes.push("border-2");
         break;
-      case 'elevated':
-        classes.push('shadow-lg');
+      case "elevated":
+        classes.push("shadow-lg");
         break;
-      case 'filled':
-        classes.push('bg-surface-secondary');
+      case "filled":
+        classes.push("bg-surface-secondary");
         break;
     }
-    return classes.join(' ');
+    return classes.join(" ");
   });
 }

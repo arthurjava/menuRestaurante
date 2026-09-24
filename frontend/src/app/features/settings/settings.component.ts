@@ -15,7 +15,6 @@ import {
   ReactiveFormsModule,
 } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
@@ -37,7 +36,6 @@ import { ButtonComponent } from "@shared/components/button/button.component";
 import { InputComponent } from "@shared/components/input/input.component";
 import { SelectComponent } from "@shared/components/select/select.component";
 import { ImageUploadComponent } from "@shared/components/image-upload/image-upload.component";
-
 interface BusinessHour {
   id?: string;
   dayOfWeek: number;
@@ -45,7 +43,6 @@ interface BusinessHour {
   closeTime: string;
   closed: boolean;
 }
-
 interface ContactInfo {
   phone?: string;
   email?: string;
@@ -54,7 +51,6 @@ interface ContactInfo {
   instagram?: string;
   facebook?: string;
 }
-
 interface ProfileData {
   name: string;
   email: string;
@@ -62,7 +58,6 @@ interface ProfileData {
   newPassword?: string;
   confirmPassword?: string;
 }
-
 const DAYS_OF_WEEK = [
   { value: 0, label: "Domingo" },
   { value: 1, label: "Segunda-feira" },
@@ -72,7 +67,6 @@ const DAYS_OF_WEEK = [
   { value: 5, label: "Sexta-feira" },
   { value: 6, label: "Sábado" },
 ];
-
 @Component({
   selector: "app-settings",
   standalone: true,
@@ -80,7 +74,6 @@ const DAYS_OF_WEEK = [
     CommonModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -96,14 +89,16 @@ const DAYS_OF_WEEK = [
     ImageUploadComponent,
   ],
   template: `
-<div class="p-6 space-y-6">
+    <div class="p-6 space-y-6">
       <!-- Header -->
       <div
         class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
         <div>
           <h1 class="text-h2 font-bold text-text-primary">Configurações</h1>
-          <p class="text-text-secondary mt-1">Gerencie as configurações do restaurante</p>
+          <p class="text-text-secondary mt-1">
+            Gerencie as configurações do restaurante
+          </p>
         </div>
       </div>
 
@@ -400,11 +395,7 @@ const DAYS_OF_WEEK = [
                   } @else {
                     <div
                       class="h-24 w-24 bg-indigo-100 rounded-full flex items-center justify-center"
-                    >
-                      <mat-icon class="text-indigo-600 text-3xl"
-                        >person</mat-icon
-                      >
-                    </div>
+                    ></div>
                   }
                   <app-image-upload
                     [maxFiles]="1"
@@ -502,11 +493,9 @@ const DAYS_OF_WEEK = [
       :host {
         display: block;
       }
-
       :host ::ng-deep .mat-mdc-tab-group {
         @apply w-full;
       }
-
       :host ::ng-deep .mat-mdc-form-field {
         @apply w-full;
       }
@@ -521,28 +510,23 @@ export class SettingsComponent implements OnInit {
   private authService = inject(AuthService);
   private imageUploadService = inject(ImageUploadService);
   private fb = inject(FormBuilder);
-
   // State
   savingRestaurantInfo = signal(false);
   savingBusinessHours = signal(false);
   savingContactInfo = signal(false);
   savingProfile = signal(false);
-
   restaurantLogo = signal<string | null>(null);
   restaurantCover = signal<string | null>(null);
   profileAvatar = signal<string | null>(null);
-
   // Forms
   restaurantForm: FormGroup = this.fb.group({
     name: ["", [Validators.required, Validators.maxLength(100)]],
     tagline: ["", [Validators.maxLength(200)]],
     description: ["", [Validators.maxLength(1000)]],
   });
-
   businessHoursForm: FormGroup = this.fb.group({
     hours: this.fb.array([]),
   });
-
   contactForm: FormGroup = this.fb.group({
     phone: ["", [Validators.required, Validators.maxLength(20)]],
     email: ["", [Validators.required, Validators.email]],
@@ -551,7 +535,6 @@ export class SettingsComponent implements OnInit {
     instagram: ["", [Validators.maxLength(50)]],
     facebook: ["", [Validators.maxLength(100)]],
   });
-
   profileForm: FormGroup = this.fb.group(
     {
       name: [
@@ -569,30 +552,25 @@ export class SettingsComponent implements OnInit {
     },
     { validators: this.passwordMatchValidator },
   );
-
   get businessHoursControls() {
     return this.businessHoursForm.get("hours") as any;
   }
-
   ngOnInit(): void {
     this.loadAllSettings();
     this.initializeBusinessHours();
   }
-
   loadAllSettings(): void {
     this.loadRestaurantInfo();
     this.loadBusinessHours();
     this.loadContactInfo();
     this.loadProfile();
   }
-
   initializeBusinessHours(): void {
     // Add default rows for each day
     DAYS_OF_WEEK.forEach((day) => {
       this.addBusinessHour(day.value);
     });
   }
-
   loadRestaurantInfo(): void {
     this.apiService.getRestaurantInfo().subscribe({
       next: (info: any) => {
@@ -607,7 +585,6 @@ export class SettingsComponent implements OnInit {
       error: () => {},
     });
   }
-
   loadBusinessHours(): void {
     this.apiService.getBusinessHours().subscribe({
       next: (hours: any[]) => {
@@ -633,7 +610,6 @@ export class SettingsComponent implements OnInit {
       },
     });
   }
-
   loadContactInfo(): void {
     this.apiService.getContactInfo().subscribe({
       next: (contact: any) => {
@@ -649,7 +625,6 @@ export class SettingsComponent implements OnInit {
       error: () => {},
     });
   }
-
   loadProfile(): void {
     const user = this.authService.user();
     if (user) {
@@ -665,12 +640,10 @@ export class SettingsComponent implements OnInit {
       error: () => {},
     });
   }
-
   // Restaurant Info
   saveRestaurantInfo(): void {
     if (this.restaurantForm.invalid || this.savingRestaurantInfo()) return;
     this.savingRestaurantInfo.set(true);
-
     this.apiService.updateRestaurantInfo(this.restaurantForm.value).subscribe({
       next: () => {
         this.notification.success("Informações do restaurante salvas!");
@@ -679,7 +652,6 @@ export class SettingsComponent implements OnInit {
       error: () => this.savingRestaurantInfo.set(false),
     });
   }
-
   // Business Hours
   addBusinessHour(dayOfWeek?: number): void {
     const group = this.fb.group({
@@ -690,11 +662,9 @@ export class SettingsComponent implements OnInit {
     });
     this.businessHoursControls.push(group);
   }
-
   removeBusinessHour(index: number): void {
     this.businessHoursControls.removeAt(index);
   }
-
   dayError(index: number): string {
     const control = this.businessHoursControls.at(index)?.get("dayOfWeek");
     if (control?.touched && control?.errors?.["required"]) {
@@ -702,18 +672,15 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   }
-
   saveBusinessHours(): void {
     if (this.businessHoursForm.invalid || this.savingBusinessHours()) return;
     this.savingBusinessHours.set(true);
-
     const hours = this.businessHoursControls.value.map((h: any) => ({
       dayOfWeek: h.dayOfWeek,
       openTime: h.closed ? null : h.openTime,
       closeTime: h.closed ? null : h.closeTime,
       closed: h.closed,
     }));
-
     this.apiService.updateBusinessHours(hours).subscribe({
       next: () => {
         this.notification.success("Horários salvos com sucesso!");
@@ -722,12 +689,10 @@ export class SettingsComponent implements OnInit {
       error: () => this.savingBusinessHours.set(false),
     });
   }
-
   // Contact Info
   saveContactInfo(): void {
     if (this.contactForm.invalid || this.savingContactInfo()) return;
     this.savingContactInfo.set(true);
-
     this.apiService.updateContactInfo(this.contactForm.value).subscribe({
       next: () => {
         this.notification.success("Informações de contato salvas!");
@@ -736,23 +701,19 @@ export class SettingsComponent implements OnInit {
       error: () => this.savingContactInfo.set(false),
     });
   }
-
   // Profile
   saveProfile(): void {
     if (this.profileForm.invalid || this.savingProfile()) return;
     this.savingProfile.set(true);
-
     const formValue = this.profileForm.value;
     const profileData: any = {
       name: formValue.name,
       email: formValue.email,
     };
-
     if (formValue.currentPassword && formValue.newPassword) {
       profileData.currentPassword = formValue.currentPassword;
       profileData.newPassword = formValue.newPassword;
     }
-
     this.apiService.updateProfile(profileData).subscribe({
       next: () => {
         this.notification.success("Perfil atualizado com sucesso!");
@@ -766,27 +727,22 @@ export class SettingsComponent implements OnInit {
       error: () => this.savingProfile.set(false),
     });
   }
-
   // Image Upload Handlers
   onLogoChange(images: any[]): void {}
   onLogoUploadComplete(images: UploadedImage[]): void {
     if (images[0]) this.restaurantLogo.set(images[0].url);
   }
-
   onCoverChange(images: any[]): void {}
   onCoverUploadComplete(images: UploadedImage[]): void {
     if (images[0]) this.restaurantCover.set(images[0].url);
   }
-
   onAvatarChange(images: any[]): void {}
   onAvatarUploadComplete(images: UploadedImage[]): void {
     if (images[0]) this.profileAvatar.set(images[0].url);
   }
-
   onImageError(error: string): void {
     this.notification.error(error);
   }
-
   // Validation Helpers
   passwordMatchValidator(
     form: FormGroup,
@@ -796,7 +752,6 @@ export class SettingsComponent implements OnInit {
     if (!newPassword && !confirmPassword) return null;
     return newPassword === confirmPassword ? null : { passwordMismatch: true };
   }
-
   restaurantNameError = computed(() => {
     const control = this.restaurantForm.get("name");
     if (control?.touched && control?.errors) {
@@ -806,7 +761,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   taglineError = computed(() => {
     const control = this.restaurantForm.get("tagline");
     if (control?.touched && control?.errors?.["maxlength"]) {
@@ -814,7 +768,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   descriptionError = computed(() => {
     const control = this.restaurantForm.get("description");
     if (control?.touched && control?.errors?.["maxlength"]) {
@@ -822,7 +775,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   phoneError = computed(() => {
     const control = this.contactForm.get("phone");
     if (control?.touched && control?.errors) {
@@ -832,7 +784,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   contactEmailError = computed(() => {
     const control = this.contactForm.get("email");
     if (control?.touched && control?.errors) {
@@ -841,7 +792,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   addressError = computed(() => {
     const control = this.contactForm.get("address");
     if (control?.touched && control?.errors?.["maxlength"]) {
@@ -849,7 +799,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   websiteError = computed(() => {
     const control = this.contactForm.get("website");
     if (control?.touched && control?.errors?.["maxlength"]) {
@@ -857,7 +806,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   profileNameError = computed(() => {
     const control = this.profileForm.get("name");
     if (control?.touched && control?.errors) {
@@ -869,7 +817,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   profileEmailError = computed(() => {
     const control = this.profileForm.get("email");
     if (control?.touched && control?.errors) {
@@ -878,7 +825,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   currentPasswordError = computed(() => {
     const control = this.profileForm.get("currentPassword");
     const newPassword = this.profileForm.get("newPassword")?.value;
@@ -887,7 +833,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   newPasswordError = computed(() => {
     const control = this.profileForm.get("newPassword");
     if (control?.touched && control?.errors) {
@@ -898,7 +843,6 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   confirmPasswordError = computed(() => {
     const formErrors = this.profileForm.errors;
     const control = this.profileForm.get("confirmPassword");
@@ -907,9 +851,7 @@ export class SettingsComponent implements OnInit {
     }
     return "";
   });
-
   dayOptions = DAYS_OF_WEEK.map((d) => ({ value: d.value, label: d.label }));
-
   getLogoExistingImages(): UploadedImage[] {
     const logo = this.restaurantLogo();
     return logo
@@ -924,7 +866,6 @@ export class SettingsComponent implements OnInit {
         ]
       : [];
   }
-
   getCoverExistingImages(): UploadedImage[] {
     const cover = this.restaurantCover();
     return cover
@@ -939,7 +880,6 @@ export class SettingsComponent implements OnInit {
         ]
       : [];
   }
-
   getAvatarExistingImages(): UploadedImage[] {
     const avatar = this.profileAvatar();
     return avatar

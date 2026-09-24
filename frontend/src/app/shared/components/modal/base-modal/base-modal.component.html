@@ -2,13 +2,13 @@
   <div
     class="modal-backdrop fixed inset-0 z-[400] bg-black/50 backdrop-blur-sm"
     (click)="onBackdropClick($event)"
-    [@fadeIn]>
-  </div>
+    [@fadeIn]
+  ></div>
 }
-
 <div
   class="modal-container fixed inset-0 z-[500] flex items-center justify-center p-4 pointer-events-none"
-  [@slideIn]>
+  [@slideIn]
+>
   <div
     class="modal-content w-full bg-white rounded-xl shadow-xl pointer-events-auto overflow-hidden"
     [class]="modalSizeClass()"
@@ -16,20 +16,20 @@
     role="dialog"
     aria-modal="true"
     [attr.aria-labelledby]="showHeader() ? 'modal-title' : null"
-    [attr.aria-describedby]="configSignal().description ? 'modal-description' : null">
-
+    [attr.aria-describedby]="
+      configSignal().description ? 'modal-description' : null
+    "
+  >
     @if (showHeader()) {
-      <header class="modal-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-6 border-b border-gray-100">
+      <header
+        class="modal-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-6 border-b border-gray-100"
+      >
         <div class="modal-header-content flex items-center gap-3">
-          @if (configSignal().icon) {
-            <div
-              class="modal-icon flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-              [class]="configSignal().iconColor || 'bg-primary-100 text-primary-600'">
-              <mat-icon class="text-xl">{{ configSignal().icon }}</mat-icon>
-            </div>
-          }
           <div>
-            <h2 id="modal-title" class="text-lg sm:text-xl font-semibold text-gray-900">
+            <h2
+              id="modal-title"
+              class="text-lg sm:text-xl font-semibold text-gray-900"
+            >
               {{ configSignal().title }}
             </h2>
             @if (configSignal().description) {
@@ -44,19 +44,20 @@
             type="button"
             class="modal-close flex-shrink-0 p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             (click)="close()"
-            aria-label="Fechar">
-            <mat-icon class="text-xl">close</mat-icon>
+            aria-label="Fechar"
+          >
+            <span aria-hidden="true">✕</span>
           </button>
         }
       </header>
     }
-
     <main class="modal-body p-4 sm:p-6">
       <ng-content></ng-content>
     </main>
-
     @if (showFooter()) {
-      <footer class="modal-footer flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 p-4 sm:p-6 border-t border-gray-100 bg-gray-50">
+      <footer
+        class="modal-footer flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 p-4 sm:p-6 border-t border-gray-100 bg-gray-50"
+      >
         <ng-content select="[modalActions]"></ng-content>
       </footer>
     }

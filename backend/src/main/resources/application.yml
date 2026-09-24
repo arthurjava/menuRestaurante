@@ -5,9 +5,9 @@ spring:
     password: ${DB_PASSWORD:restaurante123}
     hikari:
       maximum-pool-size: 20
-      connection-timeout: 30000
-      validation-timeout: 5000
-      leak-detection-threshold: 60000
+      connection-timeout: 300000
+      validation-timeout: 500000
+      leak-detection-threshold: 600000
       connection-init-sql: "SET search_path TO public"
   sql:
     init:

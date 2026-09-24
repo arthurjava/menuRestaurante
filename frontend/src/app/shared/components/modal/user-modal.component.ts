@@ -16,11 +16,9 @@ import {
   Validators,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { MatIconModule } from "@angular/material/icon";
 import { ButtonComponent } from "../button/button.component";
 import { InputComponent } from "../input/input.component";
 import { SelectComponent } from "../select/select.component";
-
 export interface UserFormData {
   name: string;
   email: string;
@@ -29,19 +27,16 @@ export interface UserFormData {
   role: string;
   active: boolean;
 }
-
 export interface RoleOption {
   value: string;
   label: string;
 }
-
 @Component({
   selector: "app-user-modal",
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatIconModule,
     ButtonComponent,
     InputComponent,
     SelectComponent,
@@ -65,7 +60,6 @@ export interface RoleOption {
           >
             <div>
               <div class="flex items-center gap-2">
-                <mat-icon class="text-indigo-600">person</mat-icon>
                 <h2 class="text-lg font-semibold text-gray-900">
                   {{ title() }}
                 </h2>
@@ -78,7 +72,7 @@ export interface RoleOption {
               (click)="cancel()"
               aria-label="Fechar modal"
             >
-              <mat-icon>close</mat-icon>
+              <span aria-hidden="true">✕</span>
             </button>
           </div>
 
@@ -104,7 +98,6 @@ export interface RoleOption {
               [error]="emailError()"
             >
             </app-input>
-
             @if (!editing()) {
               <app-input
                 formControlName="password"
@@ -145,7 +138,6 @@ export interface RoleOption {
               >
               </app-input>
             }
-
             <app-select
               formControlName="role"
               label="Perfil"
@@ -195,11 +187,9 @@ export interface RoleOption {
       :host {
         display: block;
       }
-
       :host(.hidden) {
         display: none;
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -208,7 +198,6 @@ export interface RoleOption {
           opacity: 1;
         }
       }
-
       @keyframes slideUp {
         from {
           opacity: 0;
@@ -219,7 +208,6 @@ export interface RoleOption {
           transform: translateY(0) scale(1);
         }
       }
-
       .fade-in {
         animation: fadeIn 0.2s ease-out;
       }
@@ -235,13 +223,11 @@ export class UserModalComponent {
   // State
   isOpen = input<boolean>(false);
   isOpenChange = output<boolean>();
-
   // Content
   title = input<string>("Novo Usuário");
   description = input<string>("Preencha os dados para criar um novo usuário");
   confirmLabel = input<string>("Criar usuário");
   confirmLoading = input<boolean>(false);
-
   // Data
   roleOptions = input<RoleOption[]>([
     { value: "ADMIN", label: "Administrador" },
@@ -249,15 +235,12 @@ export class UserModalComponent {
     { value: "STAFF", label: "Funcionário" },
   ]);
   editing = input<boolean>(false);
-
   // Events
   confirmed = output<UserFormData>();
   cancelled = output<void>();
   closed = output<void>();
-
   private fb = inject(FormBuilder);
   private _wasOpen = signal(false);
-
   form: FormGroup = this.fb.group(
     {
       name: [
@@ -276,12 +259,10 @@ export class UserModalComponent {
     },
     { validators: this.passwordMatchValidator },
   );
-
   @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
-
   constructor() {
     effect(() => {
       const open = this.isOpen();
@@ -291,26 +272,21 @@ export class UserModalComponent {
       }
     });
   }
-
   onBackdropClick(): void {
     this.cancel();
   }
-
   cancel(): void {
     this.cancelled.emit();
     this.close();
   }
-
   close(): void {
     this.isOpenChange.emit(false);
     this.closed.emit();
   }
-
   onSubmit(): void {
     if (this.form.invalid || this.confirmLoading()) return;
     this.confirmed.emit(this.form.value as UserFormData);
   }
-
   passwordMatchValidator(
     form: FormGroup,
   ): { passwordMismatch: boolean } | null {
@@ -319,7 +295,6 @@ export class UserModalComponent {
     if (!password && !confirmPassword) return null;
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
-
   nameError = computed(() => {
     const control = this.form.get("name");
     if (control?.touched && control?.errors) {
@@ -331,7 +306,6 @@ export class UserModalComponent {
     }
     return "";
   });
-
   emailError = computed(() => {
     const control = this.form.get("email");
     if (control?.touched && control?.errors) {
@@ -340,7 +314,6 @@ export class UserModalComponent {
     }
     return "";
   });
-
   passwordError = computed(() => {
     const control = this.form.get("password");
     if (control?.touched && control?.errors) {
@@ -351,7 +324,6 @@ export class UserModalComponent {
     }
     return "";
   });
-
   confirmPasswordError = computed(() => {
     const formErrors = this.form.errors;
     const control = this.form.get("confirmPassword");
@@ -360,7 +332,6 @@ export class UserModalComponent {
     }
     return "";
   });
-
   roleError = computed(() => {
     const control = this.form.get("role");
     if (control?.touched && control?.errors?.["required"]) {

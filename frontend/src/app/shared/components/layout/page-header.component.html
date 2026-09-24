@@ -5,15 +5,19 @@
         @for (item of breadcrumbItems; track item.label; let last = $last) {
           <li class="flex items-center gap-2">
             @if (!last && item.url) {
-              <a [href]="item.url" class="text-gray-500 hover:text-gray-700 transition-colors">{{ item.label }}</a>
+              <a
+                [href]="item.url"
+                class="text-gray-500 hover:text-gray-700 transition-colors"
+                >{{ item.label }}</a
+              >
             } @else if (!last) {
               <span class="text-gray-500">{{ item.label }}</span>
             } @else {
-              <span class="text-gray-900 font-medium" aria-current="page">{{ item.label }}</span>
+              <span class="text-gray-900 font-medium" aria-current="page">{{
+                item.label
+              }}</span>
             }
-            @if (!last) {
-              <mat-icon class="text-gray-300 text-sm">chevron_right</mat-icon>
-            }
+            @if (!last) {}
           </li>
         }
       </ol>
@@ -23,26 +27,26 @@
       <ng-container [ngTemplateOutlet]="breadcrumbTemplate"></ng-container>
     </nav>
   }
-
   <div class="page-header-content">
     <div class="page-title-group flex flex-col gap-1">
       <div class="flex items-center gap-3">
-        @if (icon) {
-          <div class="page-icon w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" [class]="iconColor">
-            <mat-icon class="text-xl">{{ icon }}</mat-icon>
-          </div>
-        }
+        @if (icon) {}
         <div>
-          <h1 class="page-title text-xl sm:text-2xl font-semibold text-gray-900">{{ title }}</h1>
+          <h1
+            class="page-title text-xl sm:text-2xl font-semibold text-gray-900"
+          >
+            {{ title }}
+          </h1>
           @if (hasSubtitle()) {
             <p class="page-subtitle text-sm text-gray-500">{{ subtitle }}</p>
           }
         </div>
       </div>
     </div>
-
     @if (hasActions()) {
-      <div class="page-actions flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
+      <div
+        class="page-actions flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto"
+      >
         <ng-container [ngTemplateOutlet]="pageActionsTemplate"></ng-container>
       </div>
     }

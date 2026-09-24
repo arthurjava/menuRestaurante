@@ -8,7 +8,12 @@ import { NotificationComponent } from "./shared/components/notification/notifica
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [CommonModule, RouterOutlet, MatProgressBarModule, NotificationComponent],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    MatProgressBarModule,
+    NotificationComponent,
+  ],
   template: `
     <app-notification />
     <mat-progress-bar

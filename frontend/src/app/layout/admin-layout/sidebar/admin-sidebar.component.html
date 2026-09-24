@@ -1,11 +1,13 @@
-<nav class="admin-sidebar-nav h-full flex flex-col" [class.collapsed]="isCollapsed()">
+<nav
+  class="admin-sidebar-nav h-full flex flex-col"
+  [class.collapsed]="isCollapsed()"
+>
   <!-- Logo/Brand -->
   <div class="sidebar-brand flex items-center gap-3 p-4 border-b border-border">
-    <div class="brand-icon w-10 h-10 rounded-xl bg-brand-primary flex items-center justify-center flex-shrink-0">
-      <mat-icon class="text-white text-xl">restaurant</mat-icon>
-    </div>
     @if (!isCollapsed()) {
-      <span class="brand-text text-h4 font-bold text-text-primary truncate">Restaurante</span>
+      <span class="brand-text text-h4 font-bold text-text-primary truncate"
+        >Restaurante</span
+      >
     }
   </div>
 
@@ -16,10 +18,12 @@
         <div class="nav-section">
           @if (!isCollapsed()) {
             <div class="nav-section-header px-3 py-2">
-              <span class="text-caption font-semibold text-text-tertiary uppercase tracking-wider">{{ section.label }}</span>
+              <span
+                class="text-caption font-semibold text-text-tertiary uppercase tracking-wider"
+                >{{ section.label }}</span
+              >
             </div>
           }
-
           <mat-nav-list class="nav-list" dense>
             @for (item of section.items; track item.route) {
               @if (item.children && item.children.length > 0) {
@@ -27,18 +31,25 @@
                   class="nav-expansion-panel"
                   [expanded]="item.expanded"
                   [disabled]="isCollapsed()"
-                  hideToggle>
-
+                  hideToggle
+                >
                   <mat-expansion-panel-header class="nav-expansion-header">
                     <mat-panel-title class="nav-item flex items-center gap-3">
-                      <mat-icon class="nav-icon text-text-tertiary" [matBadge]="item.badge" matBadgeSize="small" matBadgeColor="primary">{{ item.icon }}</mat-icon>
                       @if (!isCollapsed()) {
-                        <span class="nav-label text-body font-medium text-text-secondary truncate">{{ item.label }}</span>
-                        <mat-icon class="nav-chevron text-text-tertiary ml-auto">chevron_right</mat-icon>
+                        <span
+                          class="nav-label text-body font-medium text-text-secondary truncate"
+                          >{{ item.label }}</span
+                        >
                       }
+                      <span
+                        class="nav-chevron text-text-tertiary ml-auto"
+                        [matBadge]="item.badge"
+                        matBadgeSize="small"
+                        matBadgeColor="primary"
+                        >›</span
+                      >
                     </mat-panel-title>
                   </mat-expansion-panel-header>
-
                   @if (!isCollapsed()) {
                     <mat-nav-list dense>
                       @for (child of item.children; track child.route) {
@@ -51,8 +62,13 @@
                           (click)="onNavClick(child)"
                           matRipple
                           [matTooltip]="isCollapsed() ? child.label : ''"
-                          matTooltipPosition="right">
-                          <span matListItemTitle class="text-body-sm text-text-secondary">{{ child.label }}</span>
+                          matTooltipPosition="right"
+                        >
+                          <span
+                            matListItemTitle
+                            class="text-body-sm text-text-secondary"
+                            >{{ child.label }}</span
+                          >
                         </a>
                       }
                     </mat-nav-list>
@@ -69,10 +85,17 @@
                   matRipple
                   [matTooltip]="isCollapsed() ? item.label : ''"
                   matTooltipPosition="right"
-                  [attr.aria-current]="isActive(item) ? 'page' : null">
-                  <mat-icon matListItemIcon class="nav-icon text-text-tertiary" [matBadge]="item.badge" matBadgeSize="small" matBadgeColor="primary">{{ item.icon }}</mat-icon>
+                  [attr.aria-current]="isActive(item) ? 'page' : null"
+                  [matBadge]="item.badge"
+                  matBadgeSize="small"
+                  matBadgeColor="primary"
+                >
                   @if (!isCollapsed()) {
-                    <span matListItemTitle class="nav-label text-body font-medium text-text-secondary truncate">{{ item.label }}</span>
+                    <span
+                      matListItemTitle
+                      class="nav-label text-body font-medium text-text-secondary truncate"
+                      >{{ item.label }}</span
+                    >
                   }
                 </a>
               }
@@ -82,7 +105,6 @@
       }
     </div>
   }
-
   <!-- Footer info -->
   @if (!isCollapsed()) {
     <div class="sidebar-footer p-4 border-t border-border">

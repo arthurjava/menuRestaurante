@@ -1,1 +1,5 @@
-export { AdminSidebarComponent, type NavSection, type NavItem } from './admin-sidebar.component';
+export {
+  AdminSidebarComponent,
+  type NavSection,
+  type NavItem,
+} from "./admin-sidebar.component";

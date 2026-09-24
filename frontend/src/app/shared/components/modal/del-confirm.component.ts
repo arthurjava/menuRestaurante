@@ -8,21 +8,14 @@ import {
   ChangeDetectionStrategy,
   HostBinding,
 } from "@angular/core";
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-} from "@angular/animations";
+import { trigger, transition, style, animate } from "@angular/animations";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
-import { MatIconModule } from "@angular/material/icon";
 import { ButtonComponent } from "../button/button.component";
-
 @Component({
   selector: "app-del-confirm",
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, ButtonComponent],
+  imports: [CommonModule, MatButtonModule, ButtonComponent],
   template: `
     <div
       class="fixed inset-0 z-50 overflow-y-auto"
@@ -49,7 +42,6 @@ import { ButtonComponent } from "../button/button.component";
             <div>
               @if (icon()) {
                 <div class="flex items-center gap-2">
-                  <mat-icon [class]="iconColor()">{{ icon() }}</mat-icon>
                   <h2 class="text-lg font-semibold text-gray-900">
                     {{ title() }}
                   </h2>
@@ -68,7 +60,6 @@ import { ButtonComponent } from "../button/button.component";
           <div class="p-4 max-h-[calc(100vh-200px)] overflow-y-auto">
             <ng-content></ng-content>
           </div>
-
           @if (showFooter()) {
             <div
               class="flex items-center justify-end gap-3 p-4 border-t border-gray-100 bg-gray-50 rounded-b-xl"
@@ -97,11 +88,9 @@ import { ButtonComponent } from "../button/button.component";
       :host {
         display: block;
       }
-
       :host(.hidden) {
         display: none;
       }
-
       .modal-sm {
         @apply max-w-sm;
       }
@@ -117,7 +106,6 @@ import { ButtonComponent } from "../button/button.component";
       .modal-full {
         @apply max-w-4xl;
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -126,7 +114,6 @@ import { ButtonComponent } from "../button/button.component";
           opacity: 1;
         }
       }
-
       @keyframes slideUp {
         from {
           opacity: 0;
@@ -137,7 +124,6 @@ import { ButtonComponent } from "../button/button.component";
           transform: translateY(0) scale(1);
         }
       }
-
       .fade-in {
         animation: fadeIn 0.2s ease-out;
       }
@@ -147,24 +133,28 @@ import { ButtonComponent } from "../button/button.component";
     `,
   ],
   animations: [
-    trigger('fadeIn', [
-      transition(':enter', [
+    trigger("fadeIn", [
+      transition(":enter", [
         style({ opacity: 0 }),
-        animate('0.2s ease-out', style({ opacity: 1 }))
+        animate("0.2s ease-out", style({ opacity: 1 })),
       ]),
-      transition(':leave', [
-        animate('0.2s ease-out', style({ opacity: 0 }))
-      ])
+      transition(":leave", [animate("0.2s ease-out", style({ opacity: 0 }))]),
     ]),
-    trigger('slideUp', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(20px) scale(0.95)' }),
-        animate('0.2s ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))
+    trigger("slideUp", [
+      transition(":enter", [
+        style({ opacity: 0, transform: "translateY(20px) scale(0.95)" }),
+        animate(
+          "0.2s ease-out",
+          style({ opacity: 1, transform: "translateY(0) scale(1)" }),
+        ),
       ]),
-      transition(':leave', [
-        animate('0.2s ease-out', style({ opacity: 0, transform: 'translateY(20px) scale(0.95)' }))
-      ])
-    ])
+      transition(":leave", [
+        animate(
+          "0.2s ease-out",
+          style({ opacity: 0, transform: "translateY(20px) scale(0.95)" }),
+        ),
+      ]),
+    ]),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -181,17 +171,13 @@ export class DelConfirmComponent {
   cancelLabel = input<string>("Cancelar");
   size = input<"sm" | "md" | "lg" | "xl" | "full">("sm");
   showFooter = input<boolean>(true);
-
   confirmed = output<void>();
   cancelled = output<void>();
-
   private _wasOpen = signal(false);
-
   @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
-
   modalSizeClass = computed(() => {
     const sizes = {
       sm: "modal-sm",
@@ -202,7 +188,6 @@ export class DelConfirmComponent {
     };
     return sizes[this.size()];
   });
-
   constructor() {
     effect(() => {
       const open = this.isOpen();
@@ -212,25 +197,20 @@ export class DelConfirmComponent {
       }
     });
   }
-
   onBackdropClick(): void {
     this.close();
   }
-
   close(): void {
     this.isOpenChange.emit(false);
     this.cancelled.emit();
   }
-
   cancel(): void {
     this.cancelled.emit();
     this.close();
   }
-
   confirm(): void {
     this.confirmed.emit();
   }
-
   onAnimationDone(event: any): void {
     // Animation callback if needed
   }

@@ -16,7 +16,6 @@ import { Router, RouterLink } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatIconModule } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatSelectModule } from "@angular/material/select";
 import { AuthService, RegisterRequest } from "@core/services/auth.service";
@@ -35,7 +34,6 @@ import { SelectComponent } from "@shared/components/select/select.component";
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
-    MatIconModule,
     MatProgressSpinnerModule,
     MatSelectModule,
     ButtonComponent,
@@ -49,7 +47,9 @@ import { SelectComponent } from "@shared/components/select/select.component";
       <mat-card class="w-full max-w-md p-8">
         <div class="text-center mb-8">
           <h1 class="text-h2 font-bold text-text-primary">Criar Conta</h1>
-          <p class="text-text-secondary mt-2">Cadastre-se para acessar o sistema</p>
+          <p class="text-text-secondary mt-2">
+            Cadastre-se para acessar o sistema
+          </p>
         </div>
 
         <form

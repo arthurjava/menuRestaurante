@@ -1,1 +1,1 @@
-export { PublicLayoutComponent } from './public-layout.component';
+export { PublicLayoutComponent } from "./public-layout.component";

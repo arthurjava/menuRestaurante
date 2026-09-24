@@ -1,65 +1,76 @@
 <app-base-modal
   [isOpen]="isOpen"
   (isOpenChange)="isOpenChange.emit($event)"
-  [config]="configSignal()">
+  [config]="configSignal()"
+>
   <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
     @for (item of items(); track item.id; let i = $index) {
       <div
         class="reorder-item flex items-center gap-4 p-3 bg-gray-50 rounded-lg border border-gray-100 transition-colors hover:border-gray-200"
         cdkDrag
-        [cdkDragData]="item">
+        [cdkDragData]="item"
+      >
         <button
           type="button"
           class="drag-handle p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
           cdkDragHandle
-          aria-label="Arrastar para reordenar">
-          <mat-icon class="text-xl">drag_indicator</mat-icon>
+          aria-label="Arrastar para reordenar"
+        >
+          <span aria-hidden="true">⋮</span>
         </button>
-
         @if (item.imageUrl) {
           <img
             [src]="item.imageUrl"
             [alt]="item.name"
-            class="w-12 h-12 rounded-lg object-cover flex-shrink-0">
+            class="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+          />
         }
-
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
-            <span class="font-medium text-gray-900 truncate">{{ item.name }}</span>
+            <span class="font-medium text-gray-900 truncate">{{
+              item.name
+            }}</span>
             <span class="badge badge-sm" [class]="getStatusClass(item.status)">
               {{ getStatusLabel(item.status) }}
             </span>
           </div>
           @if (item.description) {
-            <p class="text-sm text-gray-500 truncate mt-0.5">{{ item.description }}</p>
+            <p class="text-sm text-gray-500 truncate mt-0.5">
+              {{ item.description }}
+            </p>
           }
         </div>
 
-        <span class="text-sm text-gray-400 font-mono w-8 text-right">{{ i + 1 }}</span>
+        <span class="text-sm text-gray-400 font-mono w-8 text-right">{{
+          i + 1
+        }}</span>
       </div>
     }
-
     @if (items().length === 0) {
       <div class="text-center py-8 text-gray-500">
-        <mat-icon class="text-4xl mb-2">inbox</mat-icon>
         <p>Nenhum item para reordenar</p>
       </div>
     }
   </div>
 
-  <div modalActions class="w-full sm:w-auto flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
+  <div
+    modalActions
+    class="w-full sm:w-auto flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3"
+  >
     <button
       type="button"
       class="btn btn-secondary w-full sm:w-auto"
       (click)="onCancel()"
-      [disabled]="config.loading">
+      [disabled]="config.loading"
+    >
       Cancelar
     </button>
     <button
       type="button"
       class="btn btn-primary w-full sm:w-auto"
       (click)="onSave()"
-      [disabled]="config.loading || !isDirty()">
+      [disabled]="config.loading || !isDirty()"
+    >
       @if (config.loading) {
         <mat-spinner diameter="20" class="mr-2"></mat-spinner>
       }

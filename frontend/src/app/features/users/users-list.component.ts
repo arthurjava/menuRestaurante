@@ -10,7 +10,6 @@ import {
 import { CommonModule } from "@angular/common";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
-import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
@@ -39,11 +38,9 @@ import {
 } from "@shared/components/modal/user-form.component";
 import { DelConfirmComponent } from "@shared/components/modal/del-confirm.component";
 import { ButtonComponent } from "@shared/components/button/button.component";
-
 interface UserWithRole extends User {
   roleLabel: string;
 }
-
 @Component({
   selector: "app-users-list",
   standalone: true,
@@ -51,7 +48,6 @@ interface UserWithRole extends User {
     CommonModule,
     ReactiveFormsModule,
     MatCardModule,
-    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -76,7 +72,9 @@ interface UserWithRole extends User {
       >
         <div>
           <h1 class="text-h2 font-bold text-text-primary">Usuários</h1>
-          <p class="text-text-secondary mt-1">Gerencie os usuários do sistema</p>
+          <p class="text-text-secondary mt-1">
+            Gerencie os usuários do sistema
+          </p>
         </div>
         <app-button
           variant="primary"
@@ -97,7 +95,6 @@ interface UserWithRole extends User {
               [formControl]="searchControl"
               placeholder="Buscar usuários..."
             />
-            <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-full sm:w-48">
@@ -123,11 +120,9 @@ interface UserWithRole extends User {
             (click)="toggleFilters()"
             class="flex items-center gap-2"
           >
-            <mat-icon>filter_list</mat-icon>
             Filtros
           </button>
         </div>
-
         @if (showFilters()) {
           <div class="mt-4 flex gap-4">
             <mat-form-field appearance="outline" class="w-full sm:w-56">
@@ -240,7 +235,7 @@ interface UserWithRole extends User {
                 (click)="copyTempPassword()"
                 class="flex items-center gap-2"
               >
-                <mat-icon>content_copy</mat-icon>
+                <span aria-hidden="true">Ⓨ</span>
                 Copiar
               </button>
             </div>
@@ -258,11 +253,9 @@ interface UserWithRole extends User {
       :host {
         display: block;
       }
-
       :host ::ng-deep .mat-mdc-card {
         @apply shadow-card border border-border;
       }
-
       :host ::ng-deep .mat-mdc-form-field {
         @apply w-full;
       }
@@ -275,7 +268,6 @@ export class UsersListComponent implements OnInit {
   private notification = inject(NotificationService);
   private loadingService = inject(LoadingService);
   private authService = inject(AuthService);
-
   // State
   loading = signal(false);
   users = signal<UserWithRole[]>([]);
@@ -297,29 +289,24 @@ export class UsersListComponent implements OnInit {
   sortActive = signal("name");
   sortDirection = signal<"asc" | "desc">("asc");
   totalItems = signal(0);
-
   // Derived signals from FormControls
   searchTerm = signal("");
   roleFilter = signal<"all" | "ADMIN" | "MANAGER" | "STAFF">("all");
   statusFilter = signal<"all" | "active" | "inactive">("all");
   sortBy = signal<"name" | "email" | "role" | "createdAt">("name");
-
   // Modal state
   modalOpen = signal(false);
   modalLoading = signal(false);
   editingUser = signal<UserWithRole | null>(null);
-
   // Delete modal
   deleteModalOpen = signal(false);
   deleteLoading = signal(false);
   userToDelete = signal<UserWithRole | null>(null);
-
   // Reset password modal
   resetPasswordModalOpen = signal(false);
   resetPasswordLoading = signal(false);
   userToResetPassword = signal<UserWithRole | null>(null);
   newTempPassword = signal<string | null>(null);
-
   // Table config
   columns: ColumnDef<UserWithRole>[] = [
     { key: "name", header: "Nome", sortable: true },
@@ -349,36 +336,30 @@ export class UsersListComponent implements OnInit {
         u.createdAt ? new Date(u.createdAt).toLocaleDateString("pt-BR") : "-",
     },
   ];
-
   tableActions: TableAction<UserWithRole>[] = [
     {
       label: "Editar",
-      icon: "edit",
       color: "primary",
       action: (user) => this.openEditModal(user),
     },
     {
       label: "Ativar/Desativar",
-      icon: (user) => (user.active ? "toggle_on" : "toggle_off"),
       color: (user) => (user.active ? "secondary" : "primary"),
       action: (user) => this.toggleActive(user),
     },
     {
       label: "Redefinir Senha",
-      icon: "key",
       color: "primary",
       disabled: (user) => user.id === this.authService.user()?.id,
       action: (user) => this.openResetPasswordModal(user),
     },
     {
       label: "Excluir",
-      icon: "delete",
       color: "danger",
       disabled: (user) => user.id === this.authService.user()?.id,
       action: (user) => this.openDeleteModal(user),
     },
   ];
-
   tableConfig = {
     selectable: true,
     pagination: true,
@@ -387,36 +368,30 @@ export class UsersListComponent implements OnInit {
     sorting: true,
     emptyMessage: "Nenhum usuário encontrado",
   };
-
   roleOptions = [
     { value: "all", label: "Todos" },
     { value: "ADMIN", label: "Administrador" },
     { value: "MANAGER", label: "Gerente" },
     { value: "STAFF", label: "Funcionário" },
   ];
-
   userRoleOptions = [
     { value: "ADMIN", label: "Administrador" },
     { value: "MANAGER", label: "Gerente" },
     { value: "STAFF", label: "Funcionário" },
   ];
-
   statusOptions = [
     { value: "all", label: "Todos" },
     { value: "active", label: "Ativos" },
     { value: "inactive", label: "Inativos" },
   ];
-
   sortOptions = [
     { value: "name", label: "Nome (A-Z)" },
     { value: "email", label: "E-mail" },
     { value: "role", label: "Perfil" },
     { value: "createdAt", label: "Data de criação" },
   ];
-
   filteredUsers = computed(() => {
     let filtered = this.users();
-
     if (this.searchTerm()) {
       const term = this.searchTerm().toLowerCase();
       filtered = filtered.filter(
@@ -425,17 +400,14 @@ export class UsersListComponent implements OnInit {
           user.email.toLowerCase().includes(term),
       );
     }
-
     if (this.roleFilter() !== "all") {
       filtered = filtered.filter((user) => user.role === this.roleFilter());
     }
-
     if (this.statusFilter() !== "all") {
       filtered = filtered.filter(
         (user) => user.active === (this.statusFilter() === "active"),
       );
     }
-
     // Sort
     filtered = [...filtered].sort((a, b) => {
       let comparison = 0;
@@ -457,29 +429,24 @@ export class UsersListComponent implements OnInit {
       }
       return this.sortDirection() === "asc" ? comparison : -comparison;
     });
-
     return filtered;
   });
-
   deleteDescription = computed(() => {
     const user = this.userToDelete();
     return user
       ? `Tem certeza que deseja excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`
       : "Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.";
   });
-
   resetPasswordDescription = computed(() => {
     const user = this.userToResetPassword();
     return user
       ? `Gerar nova senha temporária para "${user.name}"? A nova senha será exibida apenas uma vez.`
       : "Gerar nova senha temporária? A nova senha será exibida apenas uma vez.";
   });
-
   ngOnInit(): void {
     this.loadUsers();
     this.setupFilterSubscriptions();
   }
-
   private setupFilterSubscriptions(): void {
     this.searchControl.valueChanges.subscribe((value) => {
       this.searchTerm.set(value ?? "");
@@ -497,7 +464,6 @@ export class UsersListComponent implements OnInit {
       this.sortBy.set(value);
     });
   }
-
   loadUsers(): void {
     this.loading.set(true);
     this.apiService.listUsers().subscribe({
@@ -527,65 +493,51 @@ export class UsersListComponent implements OnInit {
       },
     });
   }
-
   toggleFilters(): void {
     this.showFilters.update((v) => !v);
   }
-
   onRowClick(user: UserWithRole): void {
     this.openEditModal(user);
   }
-
   onSelectionChange(selection: UserWithRole[]): void {
     // Handle bulk actions
   }
-
   onPageChange(event: any): void {
     this.pageIndex.set(event.pageIndex);
     this.pageSize.set(event.pageSize);
   }
-
   onSortChange(event: { active: string; direction: "asc" | "desc" }): void {
     this.sortActive.set(event.active);
     this.sortDirection.set(event.direction);
   }
-
   onActionClick(event: { action: string; row: UserWithRole }): void {
     // Handled by individual action
   }
-
   openCreateModal(): void {
     this.editingUser.set(null);
     this.modalOpen.set(true);
   }
-
   openEditModal(user: UserWithRole): void {
     this.editingUser.set(user);
     this.modalOpen.set(true);
   }
-
   closeModal(): void {
     this.modalOpen.set(false);
     this.editingUser.set(null);
   }
-
   onUserFormConfirmed(formData: UserFormData): void {
     if (this.modalLoading()) return;
-
     this.modalLoading.set(true);
     const editing = this.editingUser();
-
     const userData: any = {
       name: formData.name,
       email: formData.email,
       role: formData.role,
       active: formData.active,
     };
-
     if (formData.password) {
       userData.password = formData.password;
     }
-
     if (editing) {
       this.apiService.updateUser(editing.id, userData).subscribe({
         next: () => {
@@ -608,22 +560,18 @@ export class UsersListComponent implements OnInit {
       });
     }
   }
-
   openDeleteModal(user: UserWithRole): void {
     if (user.id === this.authService.user()?.id) return;
     this.userToDelete.set(user);
     this.deleteModalOpen.set(true);
   }
-
   closeDeleteModal(): void {
     this.deleteModalOpen.set(false);
     this.userToDelete.set(null);
   }
-
   confirmDelete(): void {
     const user = this.userToDelete();
     if (!user || this.deleteLoading()) return;
-
     this.deleteLoading.set(true);
     this.apiService.deleteUser(user.id).subscribe({
       next: () => {
@@ -635,10 +583,8 @@ export class UsersListComponent implements OnInit {
       error: () => this.deleteLoading.set(false),
     });
   }
-
   toggleActive(user: UserWithRole): void {
     if (user.id === this.authService.user()?.id) return;
-
     this.apiService.toggleUserActive(user.id).subscribe({
       next: () => {
         this.notification.success(
@@ -649,24 +595,20 @@ export class UsersListComponent implements OnInit {
       error: () => {},
     });
   }
-
   openResetPasswordModal(user: UserWithRole): void {
     if (user.id === this.authService.user()?.id) return;
     this.userToResetPassword.set(user);
     this.newTempPassword.set(null);
     this.resetPasswordModalOpen.set(true);
   }
-
   closeResetPasswordModal(): void {
     this.resetPasswordModalOpen.set(false);
     this.userToResetPassword.set(null);
     this.newTempPassword.set(null);
   }
-
   confirmResetPassword(): void {
     const user = this.userToResetPassword();
     if (!user || this.resetPasswordLoading()) return;
-
     this.resetPasswordLoading.set(true);
     this.apiService.resetPassword(user.id).subscribe({
       next: (response: { tempPassword: string }) => {
@@ -678,7 +620,6 @@ export class UsersListComponent implements OnInit {
       },
     });
   }
-
   copyTempPassword(): void {
     const password = this.newTempPassword();
     if (password) {

@@ -5,15 +5,14 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   computed,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatRippleModule } from '@angular/material/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatExpansionModule } from '@angular/material/expansion';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterModule } from "@angular/router";
+import { MatListModule } from "@angular/material/list";
+import { MatRippleModule } from "@angular/material/core";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatBadgeModule } from "@angular/material/badge";
+import { MatExpansionModule } from "@angular/material/expansion";
 
 export interface NavSection {
   label: string;
@@ -31,26 +30,25 @@ export interface NavItem {
 }
 
 @Component({
-  selector: 'app-admin-sidebar',
+  selector: "app-admin-sidebar",
   standalone: true,
   imports: [
     CommonModule,
     RouterModule,
-    MatIconModule,
     MatListModule,
     MatRippleModule,
     MatTooltipModule,
     MatBadgeModule,
     MatExpansionModule,
   ],
-  templateUrl: './admin-sidebar.component.html',
-  styleUrl: './admin-sidebar.component.scss',
+  templateUrl: "./admin-sidebar.component.html",
+  styleUrl: "./admin-sidebar.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminSidebarComponent {
   @Input() collapsed = false;
   @Input() sections: NavSection[] = [];
-  @Input() currentUrl = '';
+  @Input() currentUrl = "";
 
   @Output() navigate = new EventEmitter<string>();
 
@@ -65,11 +63,14 @@ export class AdminSidebarComponent {
   }
 
   isActive(item: NavItem): boolean {
-    return this.currentUrl === item.route || this.currentUrl.startsWith(item.route + '/');
+    return (
+      this.currentUrl === item.route ||
+      this.currentUrl.startsWith(item.route + "/")
+    );
   }
 
   isSectionActive(section: NavSection): boolean {
-    return section.items.some(item => this.isActive(item));
+    return section.items.some((item) => this.isActive(item));
   }
 
   trackByRoute(index: number, item: NavItem): string {

@@ -45,14 +45,6 @@
   @apply bg-brand-primary-subtle text-brand-primary-hover;
 }
 
-.nav-item.active .nav-icon {
-  @apply text-brand-primary;
-}
-
-.nav-icon {
-  @apply text-text-tertiary text-lg flex-shrink-0;
-}
-
 .nav-label {
   @apply text-body font-medium text-text-secondary truncate;
 }

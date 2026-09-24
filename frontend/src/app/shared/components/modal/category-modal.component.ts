@@ -16,11 +16,9 @@ import {
   Validators,
   ReactiveFormsModule,
 } from "@angular/forms";
-import { MatIconModule } from "@angular/material/icon";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { ButtonComponent } from "../button/button.component";
 import { InputComponent } from "../input/input.component";
-
 export interface CategoryFormData {
   name: string;
   description: string;
@@ -28,14 +26,12 @@ export interface CategoryFormData {
   displayOrder: number;
   displayInMenu: boolean;
 }
-
 @Component({
   selector: "app-category-modal",
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatIconModule,
     MatCheckboxModule,
     ButtonComponent,
     InputComponent,
@@ -59,7 +55,6 @@ export interface CategoryFormData {
           >
             <div>
               <div class="flex items-center gap-2">
-                <mat-icon class="text-indigo-600">category</mat-icon>
                 <h2 class="text-lg font-semibold text-gray-900">
                   {{ title() }}
                 </h2>
@@ -72,7 +67,7 @@ export interface CategoryFormData {
               (click)="cancel()"
               aria-label="Fechar modal"
             >
-              <mat-icon>close</mat-icon>
+              <span aria-hidden="true">✕</span>
             </button>
           </div>
 
@@ -160,11 +155,9 @@ export interface CategoryFormData {
       :host {
         display: block;
       }
-
       :host(.hidden) {
         display: none;
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -173,7 +166,6 @@ export interface CategoryFormData {
           opacity: 1;
         }
       }
-
       @keyframes slideUp {
         from {
           opacity: 0;
@@ -184,7 +176,6 @@ export interface CategoryFormData {
           transform: translateY(0) scale(1);
         }
       }
-
       .fade-in {
         animation: fadeIn 0.2s ease-out;
       }
@@ -200,7 +191,6 @@ export class CategoryModalComponent {
   // State
   isOpen = input<boolean>(false);
   isOpenChange = output<boolean>();
-
   // Content
   title = input<string>("Nova Categoria");
   description = input<string>(
@@ -208,18 +198,14 @@ export class CategoryModalComponent {
   );
   confirmLabel = input<string>("Criar categoria");
   confirmLoading = input<boolean>(false);
-
   // Initial data for editing
   initialData = input<CategoryFormData | null>(null);
-
   // Events
   confirmed = output<CategoryFormData>();
   cancelled = output<void>();
   closed = output<void>();
-
   private fb = inject(FormBuilder);
   private _wasOpen = signal(false);
-
   form: FormGroup = this.fb.group({
     name: ["", [Validators.required, Validators.maxLength(100)]],
     description: ["", [Validators.maxLength(500)]],
@@ -227,12 +213,10 @@ export class CategoryModalComponent {
     displayOrder: [0, [Validators.min(0)]],
     displayInMenu: [true],
   });
-
   @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
-
   constructor() {
     effect(() => {
       const open = this.isOpen();
@@ -241,7 +225,6 @@ export class CategoryModalComponent {
         this.isOpenChange.emit(open);
       }
     });
-
     effect(() => {
       const data = this.initialData();
       if (data) {
@@ -260,26 +243,21 @@ export class CategoryModalComponent {
       }
     });
   }
-
   onBackdropClick(): void {
     this.cancel();
   }
-
   cancel(): void {
     this.cancelled.emit();
     this.close();
   }
-
   close(): void {
     this.isOpenChange.emit(false);
     this.closed.emit();
   }
-
   onSubmit(): void {
     if (this.form.invalid || this.confirmLoading()) return;
     this.confirmed.emit(this.form.value as CategoryFormData);
   }
-
   nameError = computed(() => {
     const control = this.form.get("name");
     if (control?.touched && control?.errors) {
@@ -289,7 +267,6 @@ export class CategoryModalComponent {
     }
     return "";
   });
-
   descriptionError = computed(() => {
     const control = this.form.get("description");
     if (control?.touched && control?.errors?.["maxlength"]) {

@@ -5,17 +5,15 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { MatIconModule } from "@angular/material/icon";
 import {
   NotificationService,
   Notification,
   NotificationType,
 } from "../../../core/services/notification.service";
-
 @Component({
   selector: "app-notification",
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule],
   template: `
     @for (notification of notifications(); track notification.id) {
       <div
@@ -24,9 +22,6 @@ import {
         role="alert"
         aria-live="polite"
       >
-        <mat-icon class="text-current shrink-0">{{
-          getIcon(notification.type)
-        }}</mat-icon>
         <p class="flex-1 text-sm font-medium text-gray-900">
           {{ notification.message }}
         </p>
@@ -36,7 +31,7 @@ import {
           (click)="remove(notification.id)"
           aria-label="Fechar notificação"
         >
-          <mat-icon>close</mat-icon>
+          <span aria-hidden="true">✕</span>
         </button>
       </div>
     }
@@ -53,7 +48,6 @@ import {
           transform: translateX(0);
         }
       }
-
       .animate-slide-in {
         animation: slide-in 0.3s ease-out;
       }
@@ -63,9 +57,7 @@ import {
 })
 export class NotificationComponent {
   private notificationService = inject(NotificationService);
-
   notifications = computed(() => this.notificationService.notifications());
-
   getNotificationClasses(type: NotificationType): string {
     const baseClasses = "border-l-4";
     switch (type) {
@@ -81,7 +73,6 @@ export class NotificationComponent {
         return `${baseClasses} border-gray-500 bg-gray-50 text-gray-800`;
     }
   }
-
   getIcon(type: NotificationType): string {
     switch (type) {
       case "success":
@@ -96,7 +87,6 @@ export class NotificationComponent {
         return "info";
     }
   }
-
   remove(id: string): void {
     this.notificationService.remove(id);
   }

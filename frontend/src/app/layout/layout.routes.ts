@@ -1,25 +1,40 @@
-import { Routes } from '@angular/router';
-import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
-import { PublicLayoutComponent } from './public-layout/public-layout.component';
-import { authGuard } from '../core/auth.guard';
-import { roleGuard } from '../core/role.guard';
+import { Routes } from "@angular/router";
+import { AdminLayoutComponent } from "./admin-layout/admin-layout.component";
+import { PublicLayoutComponent } from "./public-layout/public-layout.component";
+import { authGuard } from "../core/auth.guard";
+import { roleGuard } from "../core/role.guard";
 
 export const layoutRoutes: Routes = [
   // Public routes (no auth required)
   {
-    path: '',
+    path: "",
     component: PublicLayoutComponent,
     children: [
-      { path: '', redirectTo: '/menu', pathMatch: 'full' },
+      { path: "", redirectTo: "/menu", pathMatch: "full" },
       {
-        path: 'menu',
-        loadComponent: () => import('../features/menu/menu.component').then(m => m.MenuComponent),
+        path: "menu",
+        loadComponent: () =>
+          import("../features/menu/menu.component").then(
+            (m) => m.MenuComponent,
+          ),
       },
       {
-        path: 'auth',
+        path: "auth",
         children: [
-          { path: 'login', loadComponent: () => import('../features/auth/login/login.component').then(m => m.LoginComponent) },
-          { path: 'register', loadComponent: () => import('../features/auth/register/register.component').then(m => m.RegisterComponent) },
+          {
+            path: "login",
+            loadComponent: () =>
+              import("../features/auth/login/login.component").then(
+                (m) => m.LoginComponent,
+              ),
+          },
+          {
+            path: "register",
+            loadComponent: () =>
+              import("../features/auth/register/register.component").then(
+                (m) => m.RegisterComponent,
+              ),
+          },
         ],
       },
     ],
@@ -27,59 +42,86 @@ export const layoutRoutes: Routes = [
 
   // Admin routes (auth + role required)
   {
-    path: 'admin',
+    path: "admin",
     component: AdminLayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: "", redirectTo: "dashboard", pathMatch: "full" },
       {
-        path: 'dashboard',
-        loadComponent: () => import('../features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+        path: "dashboard",
+        loadComponent: () =>
+          import("../features/dashboard/dashboard.component").then(
+            (m) => m.DashboardComponent,
+          ),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'MANAGER', 'STAFF'] },
+        data: { roles: ["ADMIN", "MANAGER", "STAFF"] },
       },
       {
-        path: 'categories',
+        path: "categories",
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] },
+        data: { roles: ["ADMIN"] },
         children: [
-          { path: '', loadComponent: () => import('../features/categories/categories-list.component').then(m => m.CategoriesListComponent) },
+          {
+            path: "",
+            loadComponent: () =>
+              import("../features/categories/categories-list.component").then(
+                (m) => m.CategoriesListComponent,
+              ),
+          },
         ],
       },
       {
-        path: 'dishes',
+        path: "dishes",
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] },
+        data: { roles: ["ADMIN"] },
         children: [
-          { path: '', loadComponent: () => import('../features/dishes/dishes-list.component').then(m => m.DishesListComponent) },
+          {
+            path: "",
+            loadComponent: () =>
+              import("../features/dishes/dishes-list.component").then(
+                (m) => m.DishesListComponent,
+              ),
+          },
         ],
       },
       {
-        path: 'users',
+        path: "users",
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] },
+        data: { roles: ["ADMIN"] },
         children: [
-          { path: '', loadComponent: () => import('../features/users/users-list.component').then(m => m.UsersListComponent) },
+          {
+            path: "",
+            loadComponent: () =>
+              import("../features/users/users-list.component").then(
+                (m) => m.UsersListComponent,
+              ),
+          },
         ],
       },
       {
-        path: 'settings',
+        path: "settings",
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] },
+        data: { roles: ["ADMIN"] },
         children: [
-          { path: '', loadComponent: () => import('../features/settings/settings.component').then(m => m.SettingsComponent) },
+          {
+            path: "",
+            loadComponent: () =>
+              import("../features/settings/settings.component").then(
+                (m) => m.SettingsComponent,
+              ),
+          },
         ],
       },
     ],
   },
 
   // Redirect legacy routes to new structure
-  { path: 'dashboard', redirectTo: '/admin/dashboard' },
-  { path: 'categories', redirectTo: '/admin/categories' },
-  { path: 'dishes', redirectTo: '/admin/dishes' },
-  { path: 'users', redirectTo: '/admin/users' },
-  { path: 'settings', redirectTo: '/admin/settings' },
+  { path: "dashboard", redirectTo: "/admin/dashboard" },
+  { path: "categories", redirectTo: "/admin/categories" },
+  { path: "dishes", redirectTo: "/admin/dishes" },
+  { path: "users", redirectTo: "/admin/users" },
+  { path: "settings", redirectTo: "/admin/settings" },
 
   // Fallback
-  { path: '**', redirectTo: '/menu' },
+  { path: "**", redirectTo: "/menu" },
 ];

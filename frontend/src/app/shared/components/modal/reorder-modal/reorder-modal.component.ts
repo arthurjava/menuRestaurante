@@ -6,20 +6,23 @@ import {
   computed,
   signal,
   ChangeDetectionStrategy,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { BaseModalComponent } from '../base-modal';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatBadgeModule } from '@angular/material/badge';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { BaseModalComponent } from "../base-modal";
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+} from "@angular/cdk/drag-drop";
+import { MatButtonModule } from "@angular/material/button";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatBadgeModule } from "@angular/material/badge";
 
 export interface ReorderItem {
   id: string | number;
   name: string;
   description?: string;
-  status?: 'active' | 'inactive' | 'pending';
+  status?: "active" | "inactive" | "pending";
   displayOrder: number;
   imageUrl?: string;
 }
@@ -31,7 +34,7 @@ export interface ReorderModalConfig {
   confirmLabel?: string;
   loading?: boolean;
   baseConfig?: Partial<{
-    size: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+    size: "sm" | "md" | "lg" | "xl" | "full";
     showHeader: boolean;
     showFooter: boolean;
     closable: boolean;
@@ -41,17 +44,24 @@ export interface ReorderModalConfig {
 }
 
 const STATUS_CONFIG = {
-  active: { label: 'Ativo', class: 'badge-success' },
-  inactive: { label: 'Inativo', class: 'badge-gray' },
-  pending: { label: 'Pendente', class: 'badge-warning' },
+  active: { label: "Ativo", class: "badge-success" },
+  inactive: { label: "Inativo", class: "badge-gray" },
+  pending: { label: "Pendente", class: "badge-warning" },
 };
 
 @Component({
-  selector: 'app-reorder-modal',
+  selector: "app-reorder-modal",
   standalone: true,
-  imports: [CommonModule, BaseModalComponent, DragDropModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatBadgeModule],
-  templateUrl: './reorder-modal.component.html',
-  styleUrl: './reorder-modal.component.scss',
+  imports: [
+    CommonModule,
+    BaseModalComponent,
+    DragDropModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    MatBadgeModule,
+  ],
+  templateUrl: "./reorder-modal.component.html",
+  styleUrl: "./reorder-modal.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReorderModalComponent {
@@ -60,8 +70,8 @@ export class ReorderModalComponent {
 
   @Input() config: ReorderModalConfig = {
     items: [],
-    title: 'Reordenar',
-    confirmLabel: 'Salvar ordem',
+    title: "Reordenar",
+    confirmLabel: "Salvar ordem",
   };
 
   @Output() reordered = new EventEmitter<ReorderItem[]>();
@@ -72,7 +82,9 @@ export class ReorderModalComponent {
 
   ngOnChanges(): void {
     if (this.config.items) {
-      this.items.set([...this.config.items].sort((a, b) => a.displayOrder - b.displayOrder));
+      this.items.set(
+        [...this.config.items].sort((a, b) => a.displayOrder - b.displayOrder),
+      );
       this.isDirty.set(false);
     }
   }
@@ -98,11 +110,11 @@ export class ReorderModalComponent {
   }
 
   protected readonly configSignal = computed(() => ({
-    size: this.config.baseConfig?.size ?? 'lg',
-    title: this.config.title ?? 'Reordenar',
-    description: this.config.description ?? 'Arraste os itens para reordenar',
-    icon: 'drag_indicator',
-    iconColor: 'bg-primary-100 text-primary-600',
+    size: this.config.baseConfig?.size ?? "lg",
+    title: this.config.title ?? "Reordenar",
+    description: this.config.description ?? "Arraste os itens para reordenar",
+    icon: "drag_indicator",
+    iconColor: "bg-primary-100 text-primary-600",
     showHeader: this.config.baseConfig?.showHeader ?? true,
     showFooter: this.config.baseConfig?.showFooter ?? true,
     closable: this.config.baseConfig?.closable ?? true,
@@ -111,10 +123,14 @@ export class ReorderModalComponent {
   }));
 
   getStatusClass(status?: string): string {
-    return STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.class ?? 'badge-gray';
+    return (
+      STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.class ?? "badge-gray"
+    );
   }
 
   getStatusLabel(status?: string): string {
-    return STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.label ?? status ?? '';
+    return (
+      STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.label ?? status ?? ""
+    );
   }
 }

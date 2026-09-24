@@ -5,28 +5,32 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   computed,
-} from '@angular/core';
-import { ConfirmModalComponent, type ConfirmModalConfig, type ConfirmVariant } from '../modal';
+} from "@angular/core";
+import {
+  ConfirmModalComponent,
+  type ConfirmModalConfig,
+  type ConfirmVariant,
+} from "../modal";
 
 @Component({
-  selector: 'app-confirm-dialog',
+  selector: "app-confirm-dialog",
   standalone: true,
   imports: [ConfirmModalComponent],
-  templateUrl: './confirm-dialog.component.html',
-  styleUrl: './confirm-dialog.component.scss',
+  templateUrl: "./confirm-dialog.component.html",
+  styleUrl: "./confirm-dialog.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialogComponent {
   @Input() isOpen = false;
   @Output() isOpenChange = new EventEmitter<boolean>();
 
-  @Input() title = 'Confirmar';
-  @Input() message = 'Tem certeza que deseja realizar esta ação?';
-  @Input() confirmLabel = 'Confirmar';
-  @Input() cancelLabel = 'Cancelar';
-  @Input() variant: ConfirmVariant = 'danger';
+  @Input() title = "Confirmar";
+  @Input() message = "Tem certeza que deseja realizar esta ação?";
+  @Input() confirmLabel = "Confirmar";
+  @Input() cancelLabel = "Cancelar";
+  @Input() variant: ConfirmVariant = "danger";
   @Input() loading = false;
-  @Input() size: 'sm' | 'md' = 'sm';
+  @Input() size: "sm" | "md" = "sm";
 
   @Output() confirmed = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();

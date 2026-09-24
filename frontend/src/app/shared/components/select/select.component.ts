@@ -17,7 +17,6 @@ import {
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
 import { MatOptionModule } from "@angular/material/core";
-import { MatIconModule } from "@angular/material/icon";
 
 export interface SelectOption<T = any> {
   value: T;
@@ -36,7 +35,6 @@ export interface SelectOption<T = any> {
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
-    MatIconModule,
   ],
   providers: [
     {
@@ -96,10 +94,6 @@ export interface SelectOption<T = any> {
         }
       </mat-select>
 
-      @if (prefixIcon()) {
-        <mat-icon matPrefix class="text-gray-400">{{ prefixIcon() }}</mat-icon>
-      }
-
       @if (error()) {
         <mat-error id="error-{{ id() }}">{{ error() }}</mat-error>
       } @else if (hint()) {
@@ -145,7 +139,6 @@ export class SelectComponent<T = any> implements ControlValueAccessor {
   required = input<boolean>(false);
   error = input<string>("");
   hint = input<string>("");
-  prefixIcon = input<string>("");
   multiple = input<boolean>(false);
   compareWith = input<(a: T, b: T) => boolean>((a, b) => a === b);
 

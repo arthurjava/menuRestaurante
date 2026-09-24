@@ -1,53 +1,61 @@
 <section class="filter-bar" [class.collapsed]="!isExpanded()">
   <div class="filter-bar-content">
-    <div class="filter-bar-main flex flex-col sm:flex-row sm:items-center gap-4">
+    <div
+      class="filter-bar-main flex flex-col sm:flex-row sm:items-center gap-4"
+    >
       @if (hasSearchContent()) {
         <div class="filter-search flex-1">
-          <ng-container [ngTemplateOutlet]="searchContentTemplate"></ng-container>
+          <ng-container
+            [ngTemplateOutlet]="searchContentTemplate"
+          ></ng-container>
         </div>
       } @else {
         <div class="filter-search flex-1">
-          <label for="filter-search" class="sr-only">{{ searchPlaceholder }}</label>
+          <label for="filter-search" class="sr-only">{{
+            searchPlaceholder
+          }}</label>
           <div class="relative">
-            <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">search</mat-icon>
             <input
               id="filter-search"
               type="search"
-              class="input w-full pl-10 pr-4 py-2"
+              class="input w-full pr-4 py-2"
               [placeholder]="searchPlaceholder"
               [value]="searchValue"
               (input)="onSearchChange($any($event.target).value)"
-              autocomplete="off">
+              autocomplete="off"
+            />
           </div>
         </div>
       }
-
       @if (showToggle && hasFilterContent()) {
         <button
           type="button"
           class="filter-toggle btn btn-secondary flex items-center gap-2 whitespace-nowrap"
           (click)="onToggle()"
           [attr.aria-expanded]="isExpanded()"
-          aria-controls="filter-content">
-          <mat-icon>{{ isExpanded() ? 'expand_less' : 'expand_more' }}</mat-icon>
+          aria-controls="filter-content"
+        >
           <span class="hidden sm:inline">Filtros</span>
         </button>
       }
     </div>
-
     @if (hasFilterContent() && isExpanded()) {
       <div id="filter-content" class="filter-content mt-4 animate-slide-down">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
           <div class="filter-fields flex flex-col sm:flex-row gap-4 flex-1">
-            <ng-container [ngTemplateOutlet]="filterContentTemplate"></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="filterContentTemplate"
+            ></ng-container>
           </div>
           <div class="filter-actions flex items-center gap-2 w-full sm:w-auto">
             <button
               type="button"
               class="btn btn-outline btn-sm"
               (click)="onClearFilters()"
-              [disabled]="!hasActiveFilters()">
-              <mat-icon class="mr-1.5 text-sm">filter_alt_off</mat-icon>
+              [disabled]="!hasActiveFilters()"
+            >
               Limpar
             </button>
           </div>

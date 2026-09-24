@@ -3,24 +3,36 @@
   (isOpenChange)="isOpenChange.emit($event)"
   [config]="configSignal()"
   (headerActions)="headerActions.emit($event)"
-  (footerActions)="footerActions.emit($event)">
-  <form id="form-modal-form" [formGroup]="form()!" (ngSubmit)="onSubmit()" class="space-y-4" *ngIf="form()">
+  (footerActions)="footerActions.emit($event)"
+>
+  <form
+    id="form-modal-form"
+    [formGroup]="form()!"
+    (ngSubmit)="onSubmit()"
+    class="space-y-4"
+    *ngIf="form()"
+  >
     <ng-content></ng-content>
   </form>
 
-  <div modalActions class="w-full sm:w-auto flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
+  <div
+    modalActions
+    class="w-full sm:w-auto flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3"
+  >
     <button
       type="button"
       class="btn btn-secondary w-full sm:w-auto"
       (click)="onCancel()"
-      [disabled]="confirmLoading()">
+      [disabled]="confirmLoading()"
+    >
       Cancelar
     </button>
     <button
       type="submit"
       form="form-modal-form"
       class="btn btn-primary w-full sm:w-auto"
-      [disabled]="confirmLoading()">
+      [disabled]="confirmLoading()"
+    >
       @if (confirmLoading()) {
         <mat-spinner diameter="20" class="mr-2"></mat-spinner>
       }

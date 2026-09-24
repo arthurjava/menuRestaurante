@@ -9,12 +9,7 @@ import {
   ChangeDetectionStrategy,
   HostBinding,
 } from "@angular/core";
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-} from "@angular/animations";
+import { trigger, transition, style, animate } from "@angular/animations";
 import { CommonModule } from "@angular/common";
 import {
   CdkDragDrop,
@@ -22,10 +17,8 @@ import {
   moveItemInArray,
 } from "@angular/cdk/drag-drop";
 import { MatButtonModule } from "@angular/material/button";
-import { MatIconModule } from "@angular/material/icon";
 import { BadgeComponent, BadgeVariant } from "../badge/badge.component";
 import { ButtonComponent } from "../button/button.component";
-
 export interface ReorderItem {
   id: string;
   name: string;
@@ -33,7 +26,6 @@ export interface ReorderItem {
   active: boolean;
   subtitle?: string;
 }
-
 export interface ReorderModalConfig {
   title: string;
   description: string;
@@ -45,7 +37,6 @@ export interface ReorderModalConfig {
     variant: BadgeVariant;
   };
 }
-
 @Component({
   selector: "app-reorder-list",
   standalone: true,
@@ -53,7 +44,6 @@ export interface ReorderModalConfig {
     CommonModule,
     DragDropModule,
     MatButtonModule,
-    MatIconModule,
     BadgeComponent,
     ButtonComponent,
   ],
@@ -92,14 +82,13 @@ export interface ReorderModalConfig {
               (click)="close()"
               aria-label="Fechar modal"
             >
-              <mat-icon>close</mat-icon>
+              <span aria-hidden="true">✕</span>
             </button>
           </div>
 
           <div class="p-4 max-h-[calc(100vh-200px)] overflow-y-auto">
             @if (items().length === 0) {
               <div class="text-center py-8 text-gray-500">
-                <mat-icon class="text-3xl mb-2">drag_indicator</mat-icon>
                 <p>{{ config().emptyMessage }}</p>
               </div>
             } @else {
@@ -112,9 +101,6 @@ export interface ReorderModalConfig {
                   <div
                     class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cdk-drag"
                   >
-                    <mat-icon class="text-gray-400 cursor-grab"
-                      >drag_indicator</mat-icon
-                    >
                     <span class="font-medium">{{ i + 1 }}</span>
                     <span class="flex-1">{{ item.name }}</span>
                     @if (item.subtitle) {
@@ -163,11 +149,9 @@ export interface ReorderModalConfig {
       :host {
         display: block;
       }
-
       :host(.hidden) {
         display: none;
       }
-
       .modal-sm {
         @apply max-w-sm;
       }
@@ -183,7 +167,6 @@ export interface ReorderModalConfig {
       .modal-full {
         @apply max-w-4xl;
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -192,7 +175,6 @@ export interface ReorderModalConfig {
           opacity: 1;
         }
       }
-
       @keyframes slideUp {
         from {
           opacity: 0;
@@ -203,46 +185,46 @@ export interface ReorderModalConfig {
           transform: translateY(0) scale(1);
         }
       }
-
       .fade-in {
         animation: fadeIn 0.2s ease-out;
       }
       .slide-up {
         animation: slideUp 0.2s ease-out;
       }
-
       .cdk-drag-preview {
         @apply shadow-lg-custom bg-white;
       }
-
       .cdk-drag-placeholder {
         @apply opacity-0;
       }
-
       .cdk-drag-animating {
         @apply transition-transform duration-200;
       }
     `,
   ],
   animations: [
-    trigger('fadeIn', [
-      transition(':enter', [
+    trigger("fadeIn", [
+      transition(":enter", [
         style({ opacity: 0 }),
-        animate('0.2s ease-out', style({ opacity: 1 }))
+        animate("0.2s ease-out", style({ opacity: 1 })),
       ]),
-      transition(':leave', [
-        animate('0.2s ease-out', style({ opacity: 0 }))
-      ])
+      transition(":leave", [animate("0.2s ease-out", style({ opacity: 0 }))]),
     ]),
-    trigger('slideUp', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(20px) scale(0.95)' }),
-        animate('0.2s ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))
+    trigger("slideUp", [
+      transition(":enter", [
+        style({ opacity: 0, transform: "translateY(20px) scale(0.95)" }),
+        animate(
+          "0.2s ease-out",
+          style({ opacity: 1, transform: "translateY(0) scale(1)" }),
+        ),
       ]),
-      transition(':leave', [
-        animate('0.2s ease-out', style({ opacity: 0, transform: 'translateY(20px) scale(0.95)' }))
-      ])
-    ])
+      transition(":leave", [
+        animate(
+          "0.2s ease-out",
+          style({ opacity: 0, transform: "translateY(20px) scale(0.95)" }),
+        ),
+      ]),
+    ]),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -261,18 +243,14 @@ export class ReorderWrapperComponent {
     emptyMessage: "Nenhum item para reordenar",
   });
   size = input<"sm" | "md" | "lg" | "xl" | "full">("lg");
-
   confirmed = output<ReorderItem[]>();
   cancelled = output<void>();
-
   private _wasOpen = signal(false);
   private _internalItems = signal<ReorderItem[]>([]);
-
   @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
-
   modalSizeClass = computed(() => {
     const sizes = {
       sm: "modal-sm",
@@ -283,7 +261,6 @@ export class ReorderWrapperComponent {
     };
     return sizes[this.size()];
   });
-
   constructor() {
     effect(() => {
       const open = this.isOpen();
@@ -292,31 +269,25 @@ export class ReorderWrapperComponent {
         this.isOpenChange.emit(open);
       }
     });
-
     // Sync internal items with input
     effect(() => {
       this._internalItems.set(this.items());
     });
   }
-
   onBackdropClick(): void {
     this.close();
   }
-
   close(): void {
     this.isOpenChange.emit(false);
     this.cancelled.emit();
   }
-
   cancel(): void {
     this.cancelled.emit();
     this.close();
   }
-
   confirm(): void {
     this.confirmed.emit(this._internalItems());
   }
-
   onDrop(event: CdkDragDrop<ReorderItem[]>): void {
     const updated = [...this._internalItems()];
     moveItemInArray(updated, event.previousIndex, event.currentIndex);
@@ -324,7 +295,6 @@ export class ReorderWrapperComponent {
       updated.map((item, index) => ({ ...item, displayOrder: index })),
     );
   }
-
   onAnimationDone(event: any): void {
     // Animation callback if needed
   }

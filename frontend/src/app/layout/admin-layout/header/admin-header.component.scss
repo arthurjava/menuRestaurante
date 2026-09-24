@@ -111,14 +111,6 @@
   background-color: var(--color-state-danger-subtle);
 }
 
-.user-menu-item mat-icon {
-  @apply text-text-tertiary;
-}
-
-.user-menu-item.text-state-danger mat-icon {
-  color: var(--color-state-danger);
-}
-
 // Focus visible
 .header-menu-btn:focus-visible,
 .header-icon-btn:focus-visible,

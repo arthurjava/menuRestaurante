@@ -2,23 +2,25 @@
   <!-- Mobile menu button -->
   <button
     type="button"
-    class="header-menu-btn lg:hidden p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+    class="header-menu-btn lg:hidden p-2 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors"
     (click)="onToggleSidebar()"
     aria-label="Abrir menu"
     matTooltip="Menu"
-    matTooltipPosition="below">
-    <mat-icon class="text-xl">{{ mobileDrawerOpened ? 'close' : 'menu' }}</mat-icon>
+    matTooltipPosition="below"
+  >
+    <span class="text-xl font-bold">{{ mobileDrawerOpened ? "✕" : "☰" }}</span>
   </button>
 
   <!-- Desktop sidebar toggle -->
   <button
     type="button"
-    class="header-menu-btn hidden lg:flex p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+    class="header-menu-btn hidden lg:flex p-2 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors"
     (click)="onToggleSidebar()"
     [attr.aria-label]="sidebarCollapsed ? 'Expandir menu' : 'Colapsar menu'"
     matTooltip="{{ sidebarCollapsed ? 'Expandir menu' : 'Colapsar menu' }}"
-    matTooltipPosition="right">
-    <mat-icon class="text-xl">{{ sidebarCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    matTooltipPosition="right"
+  >
+    <span class="text-xl font-bold">{{ sidebarCollapsed ? "▸" : "◂" }}</span>
   </button>
 
   <!-- Page title area (filled by PageHeader in content) -->
@@ -28,27 +30,38 @@
   <div class="header-notifications relative">
     <button
       type="button"
-      class="header-icon-btn p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors relative"
+      class="header-icon-btn p-2 rounded-lg text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors relative"
       [matMenuTriggerFor]="notificationsMenu"
       aria-label="Notificações"
       matTooltip="Notificações"
-      matTooltipPosition="below">
-      <mat-icon class="text-xl">notifications_none</mat-icon>
+      matTooltipPosition="below"
+    >
+      <span class="text-xl font-bold">🔔</span>
       @if (notifications().length > 0) {
-        <span class="notification-badge absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-xs font-medium flex items-center justify-center">
-          {{ notifications().length > 9 ? '9+' : notifications().length }}
+        <span
+          class="notification-badge absolute -top-1 -right-1 w-5 h-5 rounded-full bg-state-danger text-state-on-danger text-xs font-medium flex items-center justify-center"
+        >
+          {{ notifications().length > 9 ? "9+" : notifications().length }}
         </span>
       }
     </button>
 
-    <mat-menu #notificationsMenu="matMenu" class="notifications-menu" xPosition="before" yPosition="below">
-      <div class="notifications-header p-4 border-b border-gray-100 flex items-center justify-between">
-        <h3 class="text-sm font-semibold text-gray-900">Notificações</h3>
+    <mat-menu
+      #notificationsMenu="matMenu"
+      class="notifications-menu"
+      xPosition="before"
+      yPosition="below"
+    >
+      <div
+        class="notifications-header p-4 border-b border-border flex items-center justify-between"
+      >
+        <h3 class="text-sm font-semibold text-text-primary">Notificações</h3>
         @if (notifications().length > 0) {
           <button
             type="button"
-            class="text-xs text-primary-600 hover:underline"
-            (click)="clearAllNotifications()">
+            class="text-xs text-brand-primary hover:underline"
+            (click)="clearAllNotifications()"
+          >
             Limpar todas
           </button>
         }
@@ -56,23 +69,34 @@
 
       <div class="notifications-list max-h-96 overflow-y-auto">
         @if (notifications().length === 0) {
-          <div class="p-4 text-center text-gray-500 text-sm">
-            <mat-icon class="text-3xl mb-1">notifications_off</mat-icon>
+          <div class="p-4 text-center text-text-tertiary text-sm">
+            <span class="text-3xl mb-1 block">🔔</span>
             <p>Nenhuma notificação</p>
           </div>
         } @else {
           @for (notification of notifications(); track notification.id) {
             <button
               type="button"
-              class="notification-item w-full p-4 hover:bg-gray-50 transition-colors text-left flex items-start gap-3"
-              (click)="removeNotification(notification.id)">
-              <div class="notification-icon flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
-                [class]="getNotificationIconClass(notification.type)">
-                <mat-icon class="text-sm">{{ getNotificationIcon(notification.type) }}</mat-icon>
+              class="notification-item w-full p-4 hover:bg-surface-hover transition-colors text-left flex items-start gap-3"
+              (click)="removeNotification(notification.id)"
+            >
+              <div
+                class="notification-icon flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
+                [class]="getNotificationIconClass(notification.type)"
+              >
+                <span class="text-sm">{{
+                  getNotificationSymbol(notification.type)
+                }}</span>
               </div>
               <div class="notification-content flex-1 min-w-0">
-                <p class="notification-title text-sm font-medium text-gray-900 truncate">{{ notification.message }}</p>
-                <p class="notification-time text-xs text-gray-400 mt-1">Agora mesmo</p>
+                <p
+                  class="notification-title text-sm font-medium text-text-primary truncate"
+                >
+                  {{ notification.message }}
+                </p>
+                <p class="notification-time text-xs text-text-tertiary mt-1">
+                  Agora mesmo
+                </p>
               </div>
             </button>
           }
@@ -85,30 +109,47 @@
   <div class="header-user-menu relative ml-2">
     <button
       type="button"
-      class="header-user-btn flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+      class="header-user-btn flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface-hover transition-colors"
       [matMenuTriggerFor]="userMenu"
-      aria-label="Menu do usuário">
-      <div class="user-avatar w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-sm font-medium">
+      aria-label="Menu do usuário"
+    >
+      <div
+        class="user-avatar w-8 h-8 rounded-full bg-brand-primary-subtle text-brand-primary-hover flex items-center justify-center text-sm font-medium"
+      >
         {{ userInitials() }}
       </div>
-      <span class="user-name hidden sm:block text-sm font-medium text-gray-700 truncate max-w-[120px]">
-        {{ user()?.name || 'Usuário' }}
+      <span
+        class="user-name hidden sm:block text-body font-medium text-text-secondary truncate max-w-[120px]"
+      >
+        {{ user()?.name || "Usuário" }}
       </span>
-      <mat-icon class="hidden sm:block text-gray-400 text-sm">expand_more</mat-icon>
     </button>
 
-    <mat-menu #userMenu="matMenu" class="user-menu" xPosition="before" yPosition="below">
-      <div class="user-menu-header p-3 border-b border-gray-100">
+    <mat-menu
+      #userMenu="matMenu"
+      class="user-menu"
+      xPosition="before"
+      yPosition="below"
+    >
+      <div class="user-menu-header p-3 border-b border-border">
         <div class="flex items-center gap-3">
-          <div class="user-avatar w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-base font-medium">
+          <div
+            class="user-avatar w-10 h-10 rounded-full bg-brand-primary-subtle text-brand-primary-hover flex items-center justify-center text-base font-medium"
+          >
             {{ userInitials() }}
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-900 truncate">{{ user()?.name || 'Usuário' }}</p>
-            <p class="text-xs text-gray-500 truncate">{{ user()?.email }}</p>
+            <p class="text-sm font-medium text-text-primary truncate">
+              {{ user()?.name || "Usuário" }}
+            </p>
+            <p class="text-xs text-text-tertiary truncate">
+              {{ user()?.email }}
+            </p>
           </div>
         </div>
-        <p class="user-role mt-2 px-2 py-1 bg-primary-50 text-primary-700 text-xs font-medium rounded-full inline-block">
+        <p
+          class="user-role mt-2 px-2 py-1 bg-brand-primary-subtle text-brand-primary-hover text-xs font-medium rounded-full inline-block"
+        >
           {{ userRoleLabel() }}
         </p>
       </div>
@@ -121,8 +162,9 @@
         class="user-menu-item"
         routerLink="/settings"
         routerLinkActive
-        (click)="userMenuOpen.set(false)">
-        <mat-icon matMenuItemIcon class="text-gray-400">settings</mat-icon>
+        (click)="userMenuOpen.set(false)"
+      >
+        <span class="text-sm mr-2">⚙</span>
         <span>Configurações</span>
       </button>
 
@@ -132,8 +174,9 @@
         class="user-menu-item"
         routerLink="/profile"
         routerLinkActive
-        (click)="userMenuOpen.set(false)">
-        <mat-icon matMenuItemIcon class="text-gray-400">person</mat-icon>
+        (click)="userMenuOpen.set(false)"
+      >
+        <span class="text-sm mr-2">👤</span>
         <span>Meu perfil</span>
       </button>
 
@@ -143,8 +186,9 @@
         type="button"
         mat-menu-item
         class="user-menu-item text-state-danger"
-        (click)="onLogout()">
-        <mat-icon matMenuItemIcon>logout</mat-icon>
+        (click)="onLogout()"
+      >
+        <span class="text-sm mr-2">⤴</span>
         <span>Sair</span>
       </button>
     </mat-menu>

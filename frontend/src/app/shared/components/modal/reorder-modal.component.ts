@@ -11,7 +11,6 @@ import {
   Type,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { MatIconModule } from "@angular/material/icon";
 import { MatBadgeModule } from "@angular/material/badge";
 import {
   CdkDragDrop,
@@ -20,7 +19,6 @@ import {
 } from "@angular/cdk/drag-drop";
 import { ButtonComponent } from "../button/button.component";
 import { BadgeComponent, BadgeVariant } from "../badge/badge.component";
-
 export interface ReorderItem {
   id: string;
   name: string;
@@ -28,7 +26,6 @@ export interface ReorderItem {
   active: boolean;
   subtitle?: string;
 }
-
 export interface ReorderModalConfig {
   title: string;
   description: string;
@@ -41,13 +38,11 @@ export interface ReorderModalConfig {
     variant: BadgeVariant;
   };
 }
-
 @Component({
   selector: "app-reorder-modal",
   standalone: true,
   imports: [
     CommonModule,
-    MatIconModule,
     MatBadgeModule,
     DragDropModule,
     ButtonComponent,
@@ -84,7 +79,7 @@ export interface ReorderModalConfig {
               (click)="cancel()"
               aria-label="Fechar modal"
             >
-              <mat-icon>close</mat-icon>
+              <span aria-hidden="true">✕</span>
             </button>
           </div>
 
@@ -93,7 +88,6 @@ export interface ReorderModalConfig {
               <div
                 class="flex flex-col items-center justify-center py-12 text-gray-500"
               >
-                <mat-icon class="text-4xl mb-2">inbox</mat-icon>
                 <p>{{ config().emptyMessage }}</p>
               </div>
             } @else {
@@ -107,9 +101,6 @@ export interface ReorderModalConfig {
                     class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cdk-drag"
                     cdkDrag
                   >
-                    <mat-icon class="text-gray-400 cursor-grab" cdkDragHandle
-                      >drag_indicator</mat-icon
-                    >
                     <span class="font-medium text-gray-900 w-8 text-center">{{
                       i + 1
                     }}</span>
@@ -161,11 +152,9 @@ export interface ReorderModalConfig {
       :host {
         display: block;
       }
-
       :host(.hidden) {
         display: none;
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -174,7 +163,6 @@ export interface ReorderModalConfig {
           opacity: 1;
         }
       }
-
       @keyframes slideUp {
         from {
           opacity: 0;
@@ -185,26 +173,21 @@ export interface ReorderModalConfig {
           transform: translateY(0) scale(1);
         }
       }
-
       .fade-in {
         animation: fadeIn 0.2s ease-out;
       }
       .slide-up {
         animation: slideUp 0.2s ease-out;
       }
-
       .cdk-drag-preview {
         @apply shadow-lg-custom bg-white;
       }
-
       .cdk-drag-placeholder {
         @apply opacity-0;
       }
-
       .cdk-drag-animating {
         @apply transition-transform duration-200;
       }
-
       .cdk-drag-placeholder {
         @apply bg-gray-100 border-2 border-dashed border-gray-300;
       }
@@ -217,7 +200,6 @@ export class ReorderModalComponent {
   // State
   isOpen = input<boolean>(false);
   isOpenChange = output<boolean>();
-
   // Configuration
   config = input<ReorderModalConfig>({
     title: "Reordenar Itens",
@@ -225,26 +207,20 @@ export class ReorderModalComponent {
     confirmLabel: "Salvar ordem",
     emptyMessage: "Nenhum item para reordenar",
   });
-
   // Items
   items = input<ReorderItem[]>([]);
-
   // State
   confirmLoading = input<boolean>(false);
-
   // Events
   confirmed = output<ReorderItem[]>();
   cancelled = output<void>();
   closed = output<void>();
-
   private _wasOpen = signal(false);
   private _items = signal<ReorderItem[]>([]);
-
   @HostBinding("class.hidden")
   get isHidden(): boolean {
     return !this.isOpen();
   }
-
   constructor() {
     effect(() => {
       const open = this.isOpen();
@@ -253,7 +229,6 @@ export class ReorderModalComponent {
         this.isOpenChange.emit(open);
       }
     });
-
     effect(() => {
       const items = this.items();
       if (items.length > 0) {
@@ -263,21 +238,17 @@ export class ReorderModalComponent {
       }
     });
   }
-
   onBackdropClick(): void {
     this.cancel();
   }
-
   cancel(): void {
     this.cancelled.emit();
     this.close();
   }
-
   close(): void {
     this.isOpenChange.emit(false);
     this.closed.emit();
   }
-
   onDrop(event: CdkDragDrop<ReorderItem[]>): void {
     this._items.update((currentItems) => {
       const updated = [...currentItems];
@@ -285,12 +256,10 @@ export class ReorderModalComponent {
       return updated.map((item, index) => ({ ...item, displayOrder: index }));
     });
   }
-
   confirm(): void {
     if (this.confirmLoading()) return;
     this.confirmed.emit(this._items());
   }
-
   // Public method to get current items for parent component
   getCurrentItems(): ReorderItem[] {
     return this._items();

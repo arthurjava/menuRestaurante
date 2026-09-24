@@ -9,12 +9,12 @@ import {
   ChangeDetectionStrategy,
   OnInit,
   OnDestroy,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { BaseModalComponent } from '../base-modal';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ReactiveFormsModule, FormGroup, FormBuilder } from "@angular/forms";
+import { BaseModalComponent } from "../base-modal";
+import { MatButtonModule } from "@angular/material/button";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 export interface FormModalConfig<T = any> {
   formBuilder: () => FormGroup;
@@ -23,7 +23,7 @@ export interface FormModalConfig<T = any> {
   confirmLoading?: boolean;
   validateOnSubmit?: (form: FormGroup) => boolean;
   baseConfig?: Partial<{
-    size: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+    size: "sm" | "md" | "lg" | "xl" | "full";
     title: string;
     description: string;
     icon: string;
@@ -37,11 +37,17 @@ export interface FormModalConfig<T = any> {
 }
 
 @Component({
-  selector: 'app-form-modal',
+  selector: "app-form-modal",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BaseModalComponent, MatButtonModule, MatProgressSpinnerModule],
-  templateUrl: './form-modal.component.html',
-  styleUrl: './form-modal.component.scss',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    BaseModalComponent,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: "./form-modal.component.html",
+  styleUrl: "./form-modal.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormModalComponent<T = any> implements OnInit, OnDestroy {
@@ -50,7 +56,7 @@ export class FormModalComponent<T = any> implements OnInit, OnDestroy {
 
   @Input() config: FormModalConfig<T> = {
     formBuilder: () => inject(FormBuilder).group({}),
-    confirmLabel: 'Salvar',
+    confirmLabel: "Salvar",
   };
 
   @Output() confirmed = new EventEmitter<T>();
@@ -116,7 +122,7 @@ export class FormModalComponent<T = any> implements OnInit, OnDestroy {
   }
 
   private markAllAsTouched(form: FormGroup): void {
-    Object.keys(form.controls).forEach(key => {
+    Object.keys(form.controls).forEach((key) => {
       const control = form.get(key);
       control?.markAsTouched();
       if (control instanceof FormGroup) {
@@ -126,17 +132,21 @@ export class FormModalComponent<T = any> implements OnInit, OnDestroy {
   }
 
   protected readonly configSignal = computed(() => ({
-    size: this.config.baseConfig?.size ?? 'md',
-    title: this.config.baseConfig?.title ?? '',
-    description: this.config.baseConfig?.description ?? '',
-    icon: this.config.baseConfig?.icon ?? '',
-    iconColor: this.config.baseConfig?.iconColor ?? '',
+    size: this.config.baseConfig?.size ?? "md",
+    title: this.config.baseConfig?.title ?? "",
+    description: this.config.baseConfig?.description ?? "",
+    icon: this.config.baseConfig?.icon ?? "",
+    iconColor: this.config.baseConfig?.iconColor ?? "",
     showHeader: this.config.baseConfig?.showHeader ?? true,
     showFooter: this.config.baseConfig?.showFooter ?? true,
     closable: this.config.baseConfig?.closable ?? true,
-    closeOnBackdrop: this.config.baseConfig?.closeOnBackdrop ?? !this.isSubmitting(),
-    closeOnEscape: this.config.baseConfig?.closeOnEscape ?? !this.isSubmitting(),
+    closeOnBackdrop:
+      this.config.baseConfig?.closeOnBackdrop ?? !this.isSubmitting(),
+    closeOnEscape:
+      this.config.baseConfig?.closeOnEscape ?? !this.isSubmitting(),
   }));
 
-  protected readonly confirmLoading = computed(() => this.config.confirmLoading ?? this.isSubmitting());
+  protected readonly confirmLoading = computed(
+    () => this.config.confirmLoading ?? this.isSubmitting(),
+  );
 }

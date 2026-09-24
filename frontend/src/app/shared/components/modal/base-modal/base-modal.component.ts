@@ -10,25 +10,29 @@ import {
   inject,
   ViewEncapsulation,
   ChangeDetectionStrategy,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import {
   BaseModalConfig,
   DEFAULT_MODAL_CONFIG,
   MODAL_SIZE_CLASSES,
   ModalSize,
-} from './base-modal.types';
+} from "./base-modal.types";
 
 @Component({
-  selector: 'app-base-modal',
+  selector: "app-base-modal",
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatDialogModule, MatProgressSpinnerModule],
-  templateUrl: './base-modal.component.html',
-  styleUrl: './base-modal.component.scss',
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: "./base-modal.component.html",
+  styleUrl: "./base-modal.component.scss",
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -53,14 +57,18 @@ export class BaseModalComponent {
   readonly showFooter = computed(() => this.mergedConfig().showFooter);
   readonly isAnimating = signal(false);
 
-  @HostBinding('class') get hostClasses(): string {
-    return `base-modal ${this.modalSizeClass()} ${this.isOpen ? 'open' : ''} ${this.isAnimating() ? 'animating' : ''}`;
+  @HostBinding("class") get hostClasses(): string {
+    return `base-modal ${this.modalSizeClass()} ${this.isOpen ? "open" : ""} ${this.isAnimating() ? "animating" : ""}`;
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
+  @HostListener("document:keydown.escape", ["$event"])
   onEscapeKey(event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
-    if (this.isOpen && this.mergedConfig().closeOnEscape && this.mergedConfig().closable) {
+    if (
+      this.isOpen &&
+      this.mergedConfig().closeOnEscape &&
+      this.mergedConfig().closable
+    ) {
       this.close();
     }
   }

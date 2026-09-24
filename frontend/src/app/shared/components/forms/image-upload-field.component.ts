@@ -8,14 +8,17 @@ import {
   computed,
   ViewChild,
   ElementRef,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatMenuModule } from "@angular/material/menu";
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+} from "@angular/cdk/drag-drop";
 
 export interface UploadedImage {
   id: string;
@@ -39,31 +42,38 @@ export interface ImageUploadFieldConfig {
 }
 
 @Component({
-  selector: 'app-image-upload-field',
+  selector: "app-image-upload-field",
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatProgressBarModule, MatTooltipModule, MatMenuModule, DragDropModule],
-  templateUrl: './image-upload-field.component.html',
-  styleUrl: './image-upload-field.component.scss',
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatMenuModule,
+    DragDropModule,
+  ],
+  templateUrl: "./image-upload-field.component.html",
+  styleUrl: "./image-upload-field.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageUploadFieldComponent {
   @Input() images: UploadedImage[] = [];
   @Input() config: ImageUploadFieldConfig = {};
-  @Input() label = 'Imagens';
-  @Input() hint = '';
+  @Input() label = "Imagens";
+  @Input() hint = "";
   @Input() required = false;
   @Input() disabled = false;
-  @Input() errorMessage = '';
+  @Input() errorMessage = "";
 
   @Output() imagesChange = new EventEmitter<UploadedImage[]>();
   @Output() mainImageChange = new EventEmitter<string>();
 
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild("fileInput") fileInput!: ElementRef<HTMLInputElement>;
 
   readonly defaultConfig = signal<ImageUploadFieldConfig>({
     maxFiles: 10,
     maxSizeMB: 5,
-    acceptedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    acceptedTypes: ["image/jpeg", "image/png", "image/webp"],
     allowReorder: true,
     allowMainSelection: true,
     showDelete: true,
@@ -75,15 +85,19 @@ export class ImageUploadFieldComponent {
     ...this.config,
   }));
 
-  readonly mainImageId = computed(() => this.images.find(img => img.isMain)?.id || '');
+  readonly mainImageId = computed(
+    () => this.images.find((img) => img.isMain)?.id || "",
+  );
 
-  readonly canAddMore = computed(() => this.images.length < this.mergedConfig().maxFiles!);
+  readonly canAddMore = computed(
+    () => this.images.length < this.mergedConfig().maxFiles!,
+  );
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = Array.from(input.files || []);
     this.processFiles(files);
-    input.value = '';
+    input.value = "";
   }
 
   onDragOver(event: DragEvent): void {
@@ -101,15 +115,15 @@ export class ImageUploadFieldComponent {
   private processFiles(files: File[]): void {
     if (this.disabled) return;
 
-    const validFiles = files.filter(file => this.validateFile(file));
+    const validFiles = files.filter((file) => this.validateFile(file));
     const remainingSlots = this.mergedConfig().maxFiles! - this.images.length;
     const filesToAdd = validFiles.slice(0, remainingSlots);
 
-    filesToAdd.forEach(file => {
+    filesToAdd.forEach((file) => {
       const newImage: UploadedImage = {
         id: crypto.randomUUID(),
         file,
-        url: '',
+        url: "",
         preview: URL.createObjectURL(file),
         isMain: this.images.length === 0,
         uploading: false,
@@ -123,7 +137,7 @@ export class ImageUploadFieldComponent {
 
   validateFile(file: File): boolean {
     const config = this.mergedConfig();
-    
+
     if (!config.acceptedTypes!.includes(file.type)) {
       this.errorMessage = `Tipo de arquivo não suportado: ${file.type}`;
       return false;
@@ -139,22 +153,22 @@ export class ImageUploadFieldComponent {
   }
 
   removeImage(imageId: string): void {
-    const image = this.images.find(img => img.id === imageId);
+    const image = this.images.find((img) => img.id === imageId);
     if (image?.preview) {
       URL.revokeObjectURL(image.preview);
     }
     const wasMain = image?.isMain;
-    this.images = this.images.filter(img => img.id !== imageId);
-    
+    this.images = this.images.filter((img) => img.id !== imageId);
+
     if (wasMain && this.images.length > 0) {
       this.images[0] = { ...this.images[0], isMain: true };
     }
-    
+
     this.emitChange();
   }
 
   setMainImage(imageId: string): void {
-    this.images = this.images.map(img => ({
+    this.images = this.images.map((img) => ({
       ...img,
       isMain: img.id === imageId,
     }));

@@ -5,19 +5,18 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   computed,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
+import { MatSelectModule } from "@angular/material/select";
+import { MatFormFieldModule } from "@angular/material/form-field";
 
 @Component({
-  selector: 'app-pagination',
+  selector: "app-pagination",
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatSelectModule, MatFormFieldModule],
-  templateUrl: './pagination.component.html',
-  styleUrl: './pagination.component.scss',
+  imports: [CommonModule, MatButtonModule, MatSelectModule, MatFormFieldModule],
+  templateUrl: "./pagination.component.html",
+  styleUrl: "./pagination.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent {
@@ -29,12 +28,21 @@ export class PaginationComponent {
   @Input() showTotal = true;
   @Input() maxPageLinks = 5;
 
-  @Output() pageChange = new EventEmitter<{ pageIndex: number; pageSize: number }>();
+  @Output() pageChange = new EventEmitter<{
+    pageIndex: number;
+    pageSize: number;
+  }>();
   @Output() pageSizeChange = new EventEmitter<number>();
 
-  readonly totalPages = computed(() => Math.ceil(this.totalItems / this.pageSize));
-  readonly startItem = computed(() => this.totalItems > 0 ? this.pageIndex * this.pageSize + 1 : 0);
-  readonly endItem = computed(() => Math.min((this.pageIndex + 1) * this.pageSize, this.totalItems));
+  readonly totalPages = computed(() =>
+    Math.ceil(this.totalItems / this.pageSize),
+  );
+  readonly startItem = computed(() =>
+    this.totalItems > 0 ? this.pageIndex * this.pageSize + 1 : 0,
+  );
+  readonly endItem = computed(() =>
+    Math.min((this.pageIndex + 1) * this.pageSize, this.totalItems),
+  );
 
   readonly visiblePages = computed(() => {
     const total = this.totalPages();
@@ -53,9 +61,15 @@ export class PaginationComponent {
   });
 
   onPageChange(newPageIndex: number): void {
-    const clampedIndex = Math.max(0, Math.min(newPageIndex, this.totalPages() - 1));
+    const clampedIndex = Math.max(
+      0,
+      Math.min(newPageIndex, this.totalPages() - 1),
+    );
     if (clampedIndex !== this.pageIndex) {
-      this.pageChange.emit({ pageIndex: clampedIndex, pageSize: this.pageSize });
+      this.pageChange.emit({
+        pageIndex: clampedIndex,
+        pageSize: this.pageSize,
+      });
     }
   }
 
@@ -81,5 +95,7 @@ export class PaginationComponent {
   }
 
   protected readonly hasPrevious = computed(() => this.pageIndex > 0);
-  protected readonly hasNext = computed(() => this.pageIndex < this.totalPages() - 1);
+  protected readonly hasNext = computed(
+    () => this.pageIndex < this.totalPages() - 1,
+  );
 }

@@ -1,5 +1,5 @@
 // Design Tokens
-@use 'styles/tokens' as *;
+@use "styles/tokens" as *;
 
 // Tailwind CSS imports
 @tailwind base;
@@ -12,12 +12,12 @@
 @layer base {
   html {
     @apply antialiased;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   body {
     @apply bg-surface-primary text-text-primary font-sans;
-    font-family: theme('fontFamily.sans');
+    font-family: theme("fontFamily.sans");
   }
 
   * {
@@ -27,65 +27,67 @@
   // CSS Custom Properties for Semantic Tokens (used by ::ng-deep in components)
   :root {
     // Brand
-    --color-brand-primary: theme('colors.brand.primary');
-    --color-brand-primary-hover: theme('colors.brand.primary-hover');
-    --color-brand-primary-active: theme('colors.brand.primary-active');
-    --color-brand-primary-subtle: theme('colors.brand.primary-subtle');
-    --color-brand-primary-subtle-hover: theme('colors.brand.primary-subtle-hover');
-    --color-brand-primary-border: theme('colors.brand.primary-border');
-    --color-brand-on-primary: theme('colors.brand.on-primary');
+    --color-brand-primary: theme("colors.brand.primary");
+    --color-brand-primary-hover: theme("colors.brand.primary-hover");
+    --color-brand-primary-active: theme("colors.brand.primary-active");
+    --color-brand-primary-subtle: theme("colors.brand.primary-subtle");
+    --color-brand-primary-subtle-hover: theme(
+      "colors.brand.primary-subtle-hover"
+    );
+    --color-brand-primary-border: theme("colors.brand.primary-border");
+    --color-brand-on-primary: theme("colors.brand.on-primary");
 
     // Surface
-    --color-surface-primary: theme('colors.surface.primary');
-    --color-surface-secondary: theme('colors.surface.secondary');
-    --color-surface-tertiary: theme('colors.surface.tertiary');
-    --color-surface-hover: theme('colors.surface.hover');
-    --color-surface-active: theme('colors.surface.active');
-    --color-surface-disabled: theme('colors.surface.disabled');
-    --color-surface-inverse: theme('colors.surface.inverse');
+    --color-surface-primary: theme("colors.surface.primary");
+    --color-surface-secondary: theme("colors.surface.secondary");
+    --color-surface-tertiary: theme("colors.surface.tertiary");
+    --color-surface-hover: theme("colors.surface.hover");
+    --color-surface-active: theme("colors.surface.active");
+    --color-surface-disabled: theme("colors.surface.disabled");
+    --color-surface-inverse: theme("colors.surface.inverse");
 
     // Border
-    --color-border-subtle: theme('colors.border.subtle');
-    --color-border-default: theme('colors.border.DEFAULT');
-    --color-border-strong: theme('colors.border.strong');
-    --color-border-focus: theme('colors.border.focus');
-    --color-border-error: theme('colors.border.error');
-    --color-border-success: theme('colors.border.success');
-    --color-border-warning: theme('colors.border.warning');
+    --color-border-subtle: theme("colors.border.subtle");
+    --color-border-default: theme("colors.border.DEFAULT");
+    --color-border-strong: theme("colors.border.strong");
+    --color-border-focus: theme("colors.border.focus");
+    --color-border-error: theme("colors.border.error");
+    --color-border-success: theme("colors.border.success");
+    --color-border-warning: theme("colors.border.warning");
 
     // Text
-    --color-text-primary: theme('colors.text.primary');
-    --color-text-secondary: theme('colors.text.secondary');
-    --color-text-tertiary: theme('colors.text.tertiary');
-    --color-text-inverse: theme('colors.text.inverse');
-    --color-text-disabled: theme('colors.text.disabled');
-    --color-text-link: theme('colors.text.link');
-    --color-text-link-hover: theme('colors.text.link-hover');
+    --color-text-primary: theme("colors.text.primary");
+    --color-text-secondary: theme("colors.text.secondary");
+    --color-text-tertiary: theme("colors.text.tertiary");
+    --color-text-inverse: theme("colors.text.inverse");
+    --color-text-disabled: theme("colors.text.disabled");
+    --color-text-link: theme("colors.text.link");
+    --color-text-link-hover: theme("colors.text.link-hover");
 
     // State
-    --color-state-success: theme('colors.state.success');
-    --color-state-success-hover: theme('colors.state.success-hover');
-    --color-state-success-subtle: theme('colors.state.success-subtle');
-    --color-state-success-border: theme('colors.state.success-border');
-    --color-state-on-success: theme('colors.state.on-success');
+    --color-state-success: theme("colors.state.success");
+    --color-state-success-hover: theme("colors.state.success-hover");
+    --color-state-success-subtle: theme("colors.state.success-subtle");
+    --color-state-success-border: theme("colors.state.success-border");
+    --color-state-on-success: theme("colors.state.on-success");
 
-    --color-state-warning: theme('colors.state.warning');
-    --color-state-warning-hover: theme('colors.state.warning-hover');
-    --color-state-warning-subtle: theme('colors.state.warning-subtle');
-    --color-state-warning-border: theme('colors.state.warning-border');
-    --color-state-on-warning: theme('colors.state.on-warning');
+    --color-state-warning: theme("colors.state.warning");
+    --color-state-warning-hover: theme("colors.state.warning-hover");
+    --color-state-warning-subtle: theme("colors.state.warning-subtle");
+    --color-state-warning-border: theme("colors.state.warning-border");
+    --color-state-on-warning: theme("colors.state.on-warning");
 
-    --color-state-danger: theme('colors.state.danger');
-    --color-state-danger-hover: theme('colors.state.danger-hover');
-    --color-state-danger-subtle: theme('colors.state.danger-subtle');
-    --color-state-danger-border: theme('colors.state.danger-border');
-    --color-state-on-danger: theme('colors.state.on-danger');
+    --color-state-danger: theme("colors.state.danger");
+    --color-state-danger-hover: theme("colors.state.danger-hover");
+    --color-state-danger-subtle: theme("colors.state.danger-subtle");
+    --color-state-danger-border: theme("colors.state.danger-border");
+    --color-state-on-danger: theme("colors.state.on-danger");
 
-    --color-state-info: theme('colors.state.info');
-    --color-state-info-hover: theme('colors.state.info-hover');
-    --color-state-info-subtle: theme('colors.state.info-subtle');
-    --color-state-info-border: theme('colors.state.info-border');
-    --color-state-on-info: theme('colors.state.on-info');
+    --color-state-info: theme("colors.state.info");
+    --color-state-info-hover: theme("colors.state.info-hover");
+    --color-state-info-subtle: theme("colors.state.info-subtle");
+    --color-state-info-border: theme("colors.state.info-border");
+    --color-state-on-info: theme("colors.state.on-info");
   }
 
   // Focus visible para acessibilidade
@@ -141,23 +143,23 @@
 
   .btn-sm {
     @apply px-3 py-1.5 text-sm gap-1.5;
-    height: theme('height.btn-sm');
+    height: theme("height.btn-sm");
   }
 
   .btn-md {
     @apply px-4 py-2 text-sm gap-2;
-    height: theme('height.btn-md');
+    height: theme("height.btn-md");
   }
 
   .btn-lg {
     @apply px-6 py-3 text-base gap-2;
-    height: theme('height.btn-lg');
+    height: theme("height.btn-lg");
   }
 
   .btn-icon {
     @apply p-2;
-    height: theme('height.btn-icon');
-    width: theme('height.btn-icon');
+    height: theme("height.btn-icon");
+    width: theme("height.btn-icon");
   }
 
   .btn-primary {
@@ -204,17 +206,17 @@
   // --- INPUTS ---
   .input {
     @apply w-full px-3 py-2 border border-border rounded-lg shadow-sm placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500 transition-colors duration-fast;
-    height: theme('height.input-md');
+    height: theme("height.input-md");
   }
 
   .input-sm {
     @apply px-2.5 py-1.5 text-sm;
-    height: theme('height.input-sm');
+    height: theme("height.input-sm");
   }
 
   .input-lg {
     @apply px-4 py-3 text-base;
-    height: theme('height.input-lg');
+    height: theme("height.input-lg");
   }
 
   .input-error {
@@ -230,7 +232,7 @@
   }
 
   .label-required::after {
-    content: ' *';
+    content: " *";
     @apply text-state-danger;
   }
 
@@ -272,17 +274,17 @@
 
   .badge-sm {
     @apply px-2 py-0.5 text-xs;
-    height: theme('height.badge-sm');
+    height: theme("height.badge-sm");
   }
 
   .badge-md {
     @apply px-2.5 py-1 text-xs;
-    height: theme('height.badge-md');
+    height: theme("height.badge-md");
   }
 
   .badge-lg {
     @apply px-3 py-1 text-sm;
-    height: theme('height.badge-lg');
+    height: theme("height.badge-lg");
   }
 
   .badge-primary {
@@ -315,16 +317,28 @@
   }
 
   .badge-dot::before {
-    content: '';
+    content: "";
     @apply absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full;
   }
 
-  .badge-dot-primary::before { @apply bg-brand-primary; }
-  .badge-dot-success::before { @apply bg-state-success; }
-  .badge-dot-warning::before { @apply bg-state-warning; }
-  .badge-dot-danger::before { @apply bg-state-danger; }
-  .badge-dot-info::before { @apply bg-state-info; }
-  .badge-dot-neutral::before { @apply bg-text-tertiary; }
+  .badge-dot-primary::before {
+    @apply bg-brand-primary;
+  }
+  .badge-dot-success::before {
+    @apply bg-state-success;
+  }
+  .badge-dot-warning::before {
+    @apply bg-state-warning;
+  }
+  .badge-dot-danger::before {
+    @apply bg-state-danger;
+  }
+  .badge-dot-info::before {
+    @apply bg-state-info;
+  }
+  .badge-dot-neutral::before {
+    @apply bg-text-tertiary;
+  }
 
   // Badge with count
   .badge-count {
@@ -359,7 +373,7 @@
   // --- MODALS ---
   .modal-overlay {
     @apply fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4;
-    z-index: theme('zIndex.modal-backdrop');
+    z-index: theme("zIndex.modal-backdrop");
   }
 
   .modal {
@@ -378,11 +392,21 @@
     }
   }
 
-  .modal-sm { @apply w-full max-w-[360px]; }
-  .modal-md { @apply w-full max-w-[480px]; }
-  .modal-lg { @apply w-full max-w-[640px]; }
-  .modal-xl { @apply w-full max-w-[800px]; }
-  .modal-full { @apply w-full max-w-[calc(100vw-2rem)]; }
+  .modal-sm {
+    @apply w-full max-w-[360px];
+  }
+  .modal-md {
+    @apply w-full max-w-[480px];
+  }
+  .modal-lg {
+    @apply w-full max-w-[640px];
+  }
+  .modal-xl {
+    @apply w-full max-w-[800px];
+  }
+  .modal-full {
+    @apply w-full max-w-[calc(100vw-2rem)];
+  }
 
   .modal-header {
     @apply px-6 py-4 border-b border-border flex items-center justify-between;
@@ -494,7 +518,7 @@
   // Scrollbar
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: theme('colors.neutral.300') transparent;
+    scrollbar-color: theme("colors.neutral.300") transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -507,13 +531,13 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: theme('colors.neutral.300');
+    background-color: theme("colors.neutral.300");
     border-radius: 3px;
   }
 
   .scrollbar-thin-custom {
     scrollbar-width: thin;
-    scrollbar-color: theme('colors.neutral.300') transparent;
+    scrollbar-color: theme("colors.neutral.300") transparent;
   }
 
   .scrollbar-thin-custom::-webkit-scrollbar {
@@ -526,7 +550,7 @@
   }
 
   .scrollbar-thin-custom::-webkit-scrollbar-thumb {
-    background-color: theme('colors.neutral.300');
+    background-color: theme("colors.neutral.300");
     border-radius: 3px;
   }
 
@@ -571,8 +595,12 @@
   }
 
   @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes slide-up {

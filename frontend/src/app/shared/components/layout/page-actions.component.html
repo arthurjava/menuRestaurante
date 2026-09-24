@@ -7,7 +7,8 @@
     class="page-actions flex flex-wrap items-center"
     [class]="computedAlignment() + ' ' + gap"
     [class.flex-wrap]="wrap"
-    [class.flex-nowrap]="!wrap">
+    [class.flex-nowrap]="!wrap"
+  >
     @for (action of actions; track action.label) {
       <button
         type="button"
@@ -15,14 +16,15 @@
         [disabled]="action.disabled || action.loading"
         [matTooltip]="action.tooltip"
         [matTooltipPosition]="'above'"
-        (click)="onActionClick(action)">
+        (click)="onActionClick(action)"
+      >
         @if (action.loading) {
           <mat-spinner diameter="16" class="mr-1.5"></mat-spinner>
-        } @else if (action.icon) {
-          <mat-icon class="mr-1.5" [class.icon-size]="action.size">{{ action.icon }}</mat-icon>
-        }
+        } @else if (action.icon) {}
         <span class="hidden sm:inline">{{ action.label }}</span>
-        <span class="sm:hidden" [matTooltip]="action.label">{{ action.label }}</span>
+        <span class="sm:hidden" [matTooltip]="action.label">{{
+          action.label
+        }}</span>
       </button>
     }
   </div>

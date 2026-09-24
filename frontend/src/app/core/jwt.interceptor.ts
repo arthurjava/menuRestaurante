@@ -94,7 +94,7 @@ export class JwtInterceptor implements HttpInterceptor {
           this.isRefreshing = false;
           if (!response?.accessToken) {
             this.authService.logout();
-            return throwError(() => new Error('Token refresh failed'));
+            return throwError(() => new Error("Token refresh failed"));
           }
           this.refreshTokenSubject.next(response.accessToken);
           return next.handle(this.addToken(request, response.accessToken));

@@ -1,6 +1,11 @@
 @if (overlay) {
-  <div class="loading-overlay fixed inset-0 z-50 flex items-center justify-center" [class]="sizeClasses().container[size]">
-    <div class="loading-content bg-white rounded-xl shadow-xl p-6 sm:p-8 max-w-sm w-full mx-4">
+  <div
+    class="loading-overlay fixed inset-0 z-50 flex items-center justify-center"
+    [class]="sizeClasses().container[size]"
+  >
+    <div
+      class="loading-content bg-white rounded-xl shadow-xl p-6 sm:p-8 max-w-sm w-full mx-4"
+    >
       <ng-container [ngTemplateOutlet]="loadingTemplate"></ng-container>
     </div>
   </div>
@@ -12,45 +17,66 @@
 
 <ng-template #loadingTemplate>
   @switch (variant) {
-    @case ('spinner') {
+    @case ("spinner") {
       <div class="flex flex-col items-center gap-4">
-        <mat-spinner [diameter]="spinnerDiameter()" [color]="color"></mat-spinner>
+        <mat-spinner
+          [diameter]="spinnerDiameter()"
+          [color]="color"
+        ></mat-spinner>
         @if (showMessage && message) {
-          <p class="text-center text-gray-600" [class]="sizeClasses().message[size]">{{ message }}</p>
+          <p
+            class="text-center text-gray-600"
+            [class]="sizeClasses().message[size]"
+          >
+            {{ message }}
+          </p>
         }
       </div>
     }
-    @case ('bar') {
+    @case ("bar") {
       <div class="w-full">
-        <mat-progress-bar mode="indeterminate" [color]="color"></mat-progress-bar>
+        <mat-progress-bar
+          mode="indeterminate"
+          [color]="color"
+        ></mat-progress-bar>
         @if (showMessage && message) {
-          <p class="text-center text-gray-600 mt-2" [class]="sizeClasses().message[size]">{{ message }}</p>
+          <p
+            class="text-center text-gray-600 mt-2"
+            [class]="sizeClasses().message[size]"
+          >
+            {{ message }}
+          </p>
         }
       </div>
     }
-    @case ('dots') {
+    @case ("dots") {
       <div class="flex items-center justify-center gap-1.5">
-        @for (i of [0,1,2]; track i) {
+        @for (i of [0, 1, 2]; track i) {
           <div
             class="loading-dot rounded-full animate-bounce"
             [class]="sizeClasses().spinner[size]"
             [style.animation-delay.ms]="i * 150"
-            [style.background-color]="getColorValue()">
-          </div>
+            [style.background-color]="getColorValue()"
+          ></div>
         }
         @if (showMessage && message) {
-          <p class="text-center text-gray-600 mt-4" [class]="sizeClasses().message[size]">{{ message }}</p>
+          <p
+            class="text-center text-gray-600 mt-4"
+            [class]="sizeClasses().message[size]"
+          >
+            {{ message }}
+          </p>
         }
       </div>
     }
-    @case ('pulse') {
+    @case ("pulse") {
       <div class="animate-pulse space-y-3">
         @for (item of skeletonCount(); track item) {
           <ng-container [ngTemplateOutlet]="skeletonTemplate"></ng-container>
         }
       </div>
     }
-    @case ('skeleton') {
+    @case ("skeleton") {
       <div class="space-y-3 animate-pulse">
         @for (item of skeletonCount(); track item) {
           <ng-container [ngTemplateOutlet]="skeletonTemplate"></ng-container>
@@ -62,22 +88,32 @@
 
 <ng-template #skeletonTemplate>
   @switch (skeleton.variant) {
-    @case ('text') {
+    @case ("text") {
       <div class="flex items-center gap-3">
         <div class="flex-1 space-y-2">
-          <div class="skeleton-line h-4 rounded" [style.width]="skeleton.width || '60%'"></div>
-          @for (line of [0,1,2]; track line; let last = $last) {
+          <div
+            class="skeleton-line h-4 rounded"
+            [style.width]="skeleton.width || '60%'"
+          ></div>
+          @for (line of [0, 1, 2]; track line; let last = $last) {
             @if (line < (skeleton.lines || 2) - 1) {
-              <div class="skeleton-line h-3 rounded" [style.width]="last ? '40%' : '80%'"></div>
+              <div
+                class="skeleton-line h-3 rounded"
+                [style.width]="last ? '40%' : '80%'"
+              ></div>
             }
           }
         </div>
       </div>
     }
-    @case ('avatar') {
-      <div class="skeleton-avatar rounded-full" [style.width]="skeleton.width || '40px'" [style.height]="skeleton.height || '40px'"></div>
+    @case ("avatar") {
+      <div
+        class="skeleton-avatar rounded-full"
+        [style.width]="skeleton.width || '40px'"
+        [style.height]="skeleton.height || '40px'"
+      ></div>
     }
-    @case ('card') {
+    @case ("card") {
       <div class="skeleton-card rounded-xl p-4">
         <div class="flex items-start gap-4">
           <div class="skeleton-avatar w-16 h-16 rounded-xl flex-shrink-0"></div>
@@ -89,7 +125,7 @@
         </div>
       </div>
     }
-    @case ('table') {
+    @case ("table") {
       <div class="skeleton-table-row flex items-center gap-4 px-4 py-3">
         <div class="skeleton-cell w-12"></div>
         <div class="flex-1 space-y-2">
@@ -99,11 +135,18 @@
         <div class="skeleton-actions w-32"></div>
       </div>
     }
-    @case ('button') {
-      <div class="skeleton-button h-10 rounded-lg" [style.width]="skeleton.width || '120px'"></div>
+    @case ("button") {
+      <div
+        class="skeleton-button h-10 rounded-lg"
+        [style.width]="skeleton.width || '120px'"
+      ></div>
     }
-    @case ('image') {
-      <div class="skeleton-image rounded-lg" [style.width]="skeleton.width || '100%'" [style.height]="skeleton.height || '200px'"></div>
+    @case ("image") {
+      <div
+        class="skeleton-image rounded-lg"
+        [style.width]="skeleton.width || '100%'"
+        [style.height]="skeleton.height || '200px'"
+      ></div>
     }
   }
 </ng-template>

@@ -4,16 +4,16 @@
   [attr.role]="clickable ? 'button' : null"
   [attr.tabindex]="clickable ? 0 : null"
   [attr.aria-label]="tooltip || effectiveLabel()"
-  [attr.title]="tooltip || null">
+  [attr.title]="tooltip || null"
+>
   @if (showDot) {
     <span
       class="status-dot rounded-full flex-shrink-0"
       [class]="dotSizeClasses()[size]"
-      [style.background-color]="config().dotColor"></span>
+      [style.background-color]="config().dotColor"
+    ></span>
   }
-  @if (showIcon && config().icon) {
-    <mat-icon class="status-icon" [class]="iconSizeClasses()[size]">{{ config().icon }}</mat-icon>
-  }
+  @if (showIcon && config().icon) {}
   @if (effectiveLabel()) {
     <span class="status-label">{{ effectiveLabel() }}</span>
   }

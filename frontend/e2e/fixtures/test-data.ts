@@ -32,7 +32,7 @@ export const selectors = {
     categoryChips: '.chip',
     dishCards: '.dish-card',
     dishImage: '.dish-card img',
-    photoLibraryIcon: 'mat-icon:has-text("photo_library")',
+    photoLibraryIcon: 'button[aria-label*="todas as imagens"]',
     addToOrderButton: 'button:has-text("Adicionar")',
     emptyState: 'text=Nenhum prato encontrado',
     footer: 'footer'

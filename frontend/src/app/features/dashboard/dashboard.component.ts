@@ -9,7 +9,6 @@ import {
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatCardModule } from "@angular/material/card";
-import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatGridListModule } from "@angular/material/grid-list";
@@ -18,7 +17,6 @@ import { AuthService } from "../../core/services/auth.service";
 import { ApiService } from "../../core/services/api.service";
 import { ButtonComponent } from "../../shared/components/button/button.component";
 import { BadgeComponent } from "../../shared/components/badge/badge.component";
-
 interface DashboardStats {
   totalCategories: number;
   totalDishes: number;
@@ -26,7 +24,6 @@ interface DashboardStats {
   totalUsers: number;
   recentActivity: ActivityItem[];
 }
-
 interface ActivityItem {
   id: string;
   type:
@@ -39,7 +36,6 @@ interface ActivityItem {
   timestamp: string;
   userName: string;
 }
-
 interface StatCard {
   label: string;
   value: number;
@@ -48,14 +44,12 @@ interface StatCard {
   iconColor: string;
   change?: number;
 }
-
 @Component({
   selector: "app-dashboard",
   standalone: true,
   imports: [
     CommonModule,
     MatCardModule,
-    MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     MatGridListModule,
@@ -95,9 +89,7 @@ interface StatCard {
           @for (stat of stats(); track stat.label) {
             <mat-card class="stat-card">
               <mat-card-content class="flex items-center gap-4 p-6">
-                <div [class]="stat.iconBg" class="p-3 rounded-xl">
-                  <mat-icon [class]="stat.iconColor">{{ stat.icon }}</mat-icon>
-                </div>
+                <div [class]="stat.iconBg" class="p-3 rounded-xl"></div>
                 <div>
                   <p class="text-label font-medium text-text-tertiary">
                     {{ stat.label }}
@@ -108,9 +100,12 @@ interface StatCard {
                   @if (stat.change !== undefined) {
                     <p
                       class="text-caption"
-                      [class]="stat.change >= 0 ? 'text-state-success' : 'text-state-danger'"
+                      [class]="
+                        stat.change >= 0
+                          ? 'text-state-success'
+                          : 'text-state-danger'
+                      "
                     >
-                      <mat-icon class="inline align-middle text-xs">{{ stat.change >= 0 ? "trending_up" : "trending_down" }}</mat-icon>
                       {{ getAbsChange(stat.change) }}%
                     </p>
                   }
@@ -120,13 +115,14 @@ interface StatCard {
           }
         </div>
       }
-
       <!-- Quick Actions & Recent Activity -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Quick Actions -->
         <mat-card class="lg:col-span-1">
           <mat-card-header>
-            <mat-card-title class="text-h4 font-semibold">Ações Rápidas</mat-card-title>
+            <mat-card-title class="text-h4 font-semibold"
+              >Ações Rápidas</mat-card-title
+            >
           </mat-card-header>
           <mat-card-content class="space-y-3">
             <app-button
@@ -177,7 +173,9 @@ interface StatCard {
           <mat-card-header
             class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
           >
-            <mat-card-title class="text-h4 font-semibold">Atividade Recente</mat-card-title>
+            <mat-card-title class="text-h4 font-semibold"
+              >Atividade Recente</mat-card-title
+            >
             <app-button
               variant="ghost"
               size="sm"
@@ -189,7 +187,6 @@ interface StatCard {
           <mat-card-content>
             @if (activity().length === 0) {
               <div class="text-center py-8 text-text-tertiary">
-                <mat-icon class="text-3xl mb-2">history</mat-icon>
                 <p>Nenhuma atividade recente</p>
               </div>
             } @else {
@@ -201,14 +198,7 @@ interface StatCard {
                     <div
                       [class]="getActivityIconBg(item.type)"
                       class="p-2 rounded-lg flex-shrink-0"
-                    >
-                      <mat-icon
-                        [class]="getActivityIconColor(item.type)"
-                        class="text-sm"
-                      >
-                        {{ getActivityIcon(item.type) }}
-                      </mat-icon>
-                    </div>
+                    ></div>
                     <div class="flex-1 min-w-0">
                       <p class="text-body text-text-primary">
                         {{ item.description }}
@@ -216,10 +206,8 @@ interface StatCard {
                       <p
                         class="text-caption text-text-tertiary flex items-center gap-1 mt-0.5"
                       >
-                        <mat-icon class="text-[10px]">person</mat-icon>
                         {{ item.userName }}
                         <span class="mx-1">•</span>
-                        <mat-icon class="text-[10px]">access_time</mat-icon>
                         {{ formatTime(item.timestamp) }}
                       </p>
                     </div>
@@ -243,11 +231,9 @@ interface StatCard {
       .stat-card {
         @apply border border-border hover:shadow-card-hover transition-shadow;
       }
-
       .animate-pulse {
         @apply bg-surface-tertiary;
       }
-
       :host ::ng-deep .mat-mdc-card {
         @apply shadow-card border border-border;
       }
@@ -259,14 +245,11 @@ export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private apiService = inject(ApiService);
   private router = inject(Router);
-
   loading = signal(true);
   statsData = signal<DashboardStats | null>(null);
-
   stats = computed(() => {
     const data = this.statsData();
     if (!data) return this.statCards;
-
     return [
       {
         label: "Categorias",
@@ -302,9 +285,7 @@ export class DashboardComponent implements OnInit {
       },
     ];
   });
-
   activity = computed(() => this.statsData()?.recentActivity ?? []);
-
   statCards = [
     {
       label: "Categorias",
@@ -339,14 +320,11 @@ export class DashboardComponent implements OnInit {
       change: 0,
     },
   ];
-
   ngOnInit(): void {
     this.loadDashboard();
   }
-
   loadDashboard(): void {
     this.loading.set(true);
-
     // Simulate loading stats (replace with actual API calls)
     setTimeout(() => {
       this.statsData.set({
@@ -390,11 +368,9 @@ export class DashboardComponent implements OnInit {
       this.loading.set(false);
     }, 500);
   }
-
   navigateTo(path: string): void {
     this.router.navigate([path]);
   }
-
   formatTime(timestamp: string): string {
     const date = new Date(timestamp);
     const now = new Date();
@@ -402,14 +378,12 @@ export class DashboardComponent implements OnInit {
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
-
     if (diffMins < 1) return "agora mesmo";
     if (diffMins < 60) return `${diffMins}min atrás`;
     if (diffHours < 24) return `${diffHours}h atrás`;
     if (diffDays < 7) return `${diffDays}d atrás`;
     return date.toLocaleDateString("pt-BR");
   }
-
   getActivityIcon(type: string): string {
     switch (type) {
       case "category_created":
@@ -426,7 +400,6 @@ export class DashboardComponent implements OnInit {
         return "info";
     }
   }
-
   getActivityIconBg(type: string): string {
     switch (type) {
       case "category_created":
@@ -443,7 +416,6 @@ export class DashboardComponent implements OnInit {
         return "bg-surface-tertiary";
     }
   }
-
   getActivityIconColor(type: string): string {
     switch (type) {
       case "category_created":
@@ -460,7 +432,6 @@ export class DashboardComponent implements OnInit {
         return "text-text-tertiary";
     }
   }
-
   getActivityLabel(type: string): string {
     switch (type) {
       case "category_created":
@@ -477,7 +448,6 @@ export class DashboardComponent implements OnInit {
         return "Atividade";
     }
   }
-
   getActivityVariant(
     type: string,
   ):
@@ -503,7 +473,6 @@ export class DashboardComponent implements OnInit {
         return "neutral";
     }
   }
-
   getAbsChange(value: number): number {
     return Math.abs(value);
   }
