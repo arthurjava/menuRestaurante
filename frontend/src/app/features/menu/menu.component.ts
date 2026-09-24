@@ -105,10 +105,6 @@ export interface ContactInfo {
                   alt="Logo"
                   class="h-12 w-auto rounded-lg"
                 />
-              } @else {
-                <div
-                  class="h-12 w-12 bg-brand-primary-subtle rounded-lg flex items-center justify-center"
-                ></div>
               }
               <div>
                 <h1 class="text-h3 font-bold text-text-primary">
@@ -206,10 +202,6 @@ export interface ContactInfo {
                         alt=""
                         class="h-10 w-10 rounded-lg object-cover"
                       />
-                    } @else {
-                      <div
-                        class="h-10 w-10 bg-brand-primary-subtle rounded-lg flex items-center justify-center"
-                      ></div>
                     }
                     <h2 class="text-h3 font-bold text-text-primary">
                       {{ category.name }}
@@ -238,10 +230,6 @@ export interface ContactInfo {
                             crossorigin="anonymous"
                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           />
-                        } @else {
-                          <div
-                            class="w-full h-full flex items-center justify-center"
-                          ></div>
                         }
                         @if (dish.images.length > 1) {
                           <button

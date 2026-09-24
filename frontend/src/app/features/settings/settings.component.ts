@@ -392,10 +392,6 @@ const DAYS_OF_WEEK = [
                       alt="Avatar"
                       class="h-24 w-24 rounded-full object-cover"
                     />
-                  } @else {
-                    <div
-                      class="h-24 w-24 bg-indigo-100 rounded-full flex items-center justify-center"
-                    ></div>
                   }
                   <app-image-upload
                     [maxFiles]="1"
