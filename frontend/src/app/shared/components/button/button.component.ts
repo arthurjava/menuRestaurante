@@ -75,7 +75,8 @@ export type ButtonSize = "sm" | "md" | "lg" | "icon";
 
       /* Variants */
       .variant-primary {
-        @apply bg-brand-primary text-white hover:bg-brand-primary-hover focus:ring-brand-primary/40;
+        @apply bg-brand-primary text-white hover:bg-brand-primary-hover active:bg-brand-primary-active focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+        color: white;
       }
       .variant-secondary {
         @apply bg-surface-tertiary text-text-primary hover:bg-surface-hover focus:ring-neutral-400/40;

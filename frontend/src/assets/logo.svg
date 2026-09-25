@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <!-- Gradiente principal da marca -->
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4f46e5;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gradiente para o prato -->
+    <linearGradient id="plateGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f3f4f6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Sombra suave -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#4f46e5" flood-opacity="0.15"/>
+    </filter>
+    
+    <!-- Brilho no garfo/faca -->
+    <linearGradient id="cutleryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e5e7eb;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d1d5db;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Fundo circular com gradiente da marca -->
+  <circle cx="100" cy="100" r="96" fill="url(#brandGradient)" filter="url(#softShadow)"/>
+  
+  <!-- Anel decorativo interno -->
+  <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+  
+  <!-- Prato -->
+  <ellipse cx="100" cy="118" rx="48" ry="16" fill="url(#plateGradient)" stroke="rgba(0,0,0,0.03)" stroke-width="1"/>
+  <ellipse cx="100" cy="104" rx="44" ry="20" fill="url(#plateGradient)" stroke="rgba(0,0,0,0.02)" stroke-width="0.5"/>
+  
+  <!-- Comida no prato (massa/risoto) -->
+  <path d="M70 104 Q80 90 100 92 Q120 94 130 104 Q120 110 100 108 Q80 112 70 104" 
+        fill="#fef3c7" stroke="#f59e0b" stroke-width="0.5" opacity="0.9"/>
+  
+  <!-- Detalhe da comida (pedacinhos) -->
+  <circle cx="85" cy="100" r="3" fill="#fde68a" opacity="0.8"/>
+  <circle cx="115" cy="98" r="2.5" fill="#fde68a" opacity="0.8"/>
+  <circle cx="105" cy="108" r="2" fill="#fcd34d" opacity="0.7"/>
+  <circle cx="90" cy="108" r="2.5" fill="#fde68a" opacity="0.7"/>
+  <circle cx="118" cy="106" r="1.5" fill="#fbbf24" opacity="0.6"/>
+  
+  <!-- Garfo -->
+  <g transform="translate(50, 85) rotate(-35)">
+    <path d="M0 0 L0 -35 M-5 -35 L5 -35 M-8 -30 L8 -30 M-6 -25 L6 -25" 
+          stroke="url(#cutleryGradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M-3 -35 Q-3 -40 0 -42 Q3 -40 3 -35" 
+          stroke="url(#cutleryGradient)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </g>
+  
+  <!-- Faca -->
+  <g transform="translate(145, 85) rotate(35)">
+    <path d="M0 0 L0 -38 M-6 -38 L6 -38" 
+          stroke="url(#cutleryGradient)" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M0 -38 L0 -48" 
+          stroke="url(#cutleryGradient)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <polygon points="0,-48 -4,-40 4,-40" fill="url(#cutleryGradient)"/>
+  </g>
+  
+  <!-- Vapor saindo do prato -->
+  <g opacity="0.4">
+    <path d="M85 85 Q88 70 85 60 Q82 55 85 50" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="3,3">
+      <animate attributeName="d" dur="3s" repeatCount="indefinite" 
+        values="M85 85 Q88 70 85 60 Q82 55 85 50; M85 85 Q86 70 85 60 Q84 55 85 50; M85 85 Q88 70 85 60 Q82 55 85 50"/>
+    </path>
+    <path d="M115 85 Q118 70 115 60 Q112 55 115 50" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" fill="none" stroke-dasharray="3,3">
+      <animate attributeName="d" dur="3s" repeatCount="indefinite" 
+        values="M115 85 Q118 70 115 60 Q112 55 115 50; M115 85 Q116 70 115 60 Q114 55 115 50; M115 85 Q118 70 115 60 Q112 55 115 50"/>
+    </path>
+  </g>
+  
+  <!-- Estrela/Medalha de qualidade no canto -->
+  <g transform="translate(145, 45)">
+    <circle cx="0" cy="0" r="16" fill="rgba(245, 158, 11, 0.9)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+    <polygon points="0,-10 2,-3 9,-3 3.5,0 5,7 0,3 -5,7 -3.5,0 -9,-3 -2,-3" fill="#fef3c7" stroke="#f59e0b" stroke-width="0.5"/>
+  </g>
+  
+  <!-- Texto "PREMIUM" pequeno -->
+  <text x="100" y="175" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" 
+        font-size="9" font-weight="600" fill="rgba(255,255,255,0.9)" letter-spacing="1.5">
+    PREMIUM
+  </text>
+</svg>

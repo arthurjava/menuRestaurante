@@ -163,7 +163,7 @@
   }
 
   .btn-primary {
-    @apply btn bg-brand-primary text-brand-on-primary hover:bg-brand-primary-hover focus:ring-brand-primary/40;
+    @apply btn bg-brand-primary text-brand-on-primary hover:bg-brand-primary-hover active:bg-brand-primary-active focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2;
   }
 
   .btn-secondary {

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4f46e5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#4f46e5" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <circle cx="32" cy="32" r="30" fill="url(#brandGradient)" filter="url(#shadow)"/>
+  
+  <!-- Prato simplificado -->
+  <ellipse cx="32" cy="40" rx="14" ry="4" fill="white" opacity="0.9"/>
+  <ellipse cx="32" cy="36" rx="12" ry="5" fill="white" opacity="0.9"/>
+  
+  <!-- Comida -->
+  <path d="M22 36 Q26 30 32 31 Q38 32 42 36 Q38 38 32 37 Q26 39 22 36" fill="#fef3c7" stroke="#f59e0b" stroke-width="0.3"/>
+  
+  <!-- Garfo e faca cruzados -->
+  <g stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.9">
+    <path d="M18 22 L18 10 M15 10 L21 10 M13 13 L23 13 M15 16 L21 16"/>
+    <path d="M46 22 L46 10 M43 10 L49 10 M47 10 L47 2"/>
+    <polygon points="46,2 43,8 49,8" fill="#ffffff"/>
+  </g>
+</svg>
