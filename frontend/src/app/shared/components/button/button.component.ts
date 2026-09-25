@@ -76,7 +76,7 @@ export type ButtonSize = "sm" | "md" | "lg" | "icon";
       /* Variants */
       .variant-primary {
         @apply bg-brand-primary text-white hover:bg-brand-primary-hover active:bg-brand-primary-active focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
-        color: white;
+        color: white !important;
       }
       .variant-secondary {
         @apply bg-surface-tertiary text-text-primary hover:bg-surface-hover focus:ring-neutral-400/40;
@@ -86,12 +86,14 @@ export type ButtonSize = "sm" | "md" | "lg" | "icon";
       }
       .variant-danger {
         @apply bg-state-danger text-white hover:bg-state-danger-hover focus:ring-state-danger/40;
+        color: white !important;
       }
       .variant-warning {
         @apply bg-state-warning text-state-on-warning hover:bg-state-warning-hover focus:ring-state-warning/40;
       }
       .variant-info {
         @apply bg-state-info text-white hover:bg-state-info-hover focus:ring-state-info/40;
+        color: white !important;
       }
       .variant-outline {
         @apply border border-border bg-surface-primary text-text-primary hover:bg-surface-hover focus:ring-neutral-400/40;
