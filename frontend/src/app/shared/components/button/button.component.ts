@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 export type ButtonVariant =
   | "primary"
@@ -23,7 +24,7 @@ export type ButtonSize = "sm" | "md" | "lg" | "icon";
 @Component({
   selector: "app-button",
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   template: `
     <button
       matButton
@@ -31,6 +32,7 @@ export type ButtonSize = "sm" | "md" | "lg" | "icon";
       [disabled]="disabled() || loading()"
       [class]="computedClasses()"
       [attr.aria-busy]="loading()"
+      [attr.aria-label]="isIconOnly() ? label() : null"
       (click)="onClick($event)"
     >
       @if (loading()) {
@@ -40,7 +42,12 @@ export type ButtonSize = "sm" | "md" | "lg" | "icon";
           aria-hidden="true"
         ></mat-spinner>
       }
-      <span>{{ label() }}</span>
+      @if (icon()) {
+        <mat-icon aria-hidden="true">{{ icon() }}</mat-icon>
+      }
+      @if (!isIconOnly()) {
+        <span>{{ label() }}</span>
+      }
     </button>
   `,
   styles: [
@@ -68,7 +75,7 @@ export type ButtonSize = "sm" | "md" | "lg" | "icon";
         height: 48px;
       }
       .btn-icon {
-        @apply p-2;
+        @apply p-2 min-w-0;
         height: 40px;
         width: 40px;
       }
@@ -121,6 +128,8 @@ export class ButtonComponent {
   disabled = input<boolean>(false);
   loading = input<boolean>(false);
   fullWidth = input<boolean>(false);
+  /** Nome do ícone (Material Icons). Com size="icon", exibe somente o ícone. */
+  icon = input<string>("");
 
   clicked = output<MouseEvent>();
 
@@ -129,9 +138,16 @@ export class ButtonComponent {
     return this.fullWidth() ? "w-full" : "";
   }
 
+  /** Botão somente com ícone: ícone presente + tamanho "icon". */
+  isIconOnly = computed(() => this.size() === "icon" && !!this.icon());
+
   computedClasses = computed(() => {
     const classes = ["btn"];
-    classes.push(`btn-${this.size()}`);
+    // Fallback seguro: size="icon" sem ícone definido cai para "sm"
+    // para não renderizar um botão vazio de 40x40 com texto transbordando.
+    const effectiveSize =
+      this.size() === "icon" && !this.icon() ? "sm" : this.size();
+    classes.push(`btn-${effectiveSize}`);
     classes.push(`variant-${this.variant()}`);
     if (this.fullWidth()) classes.push("btn-full");
     return classes.join(" ");

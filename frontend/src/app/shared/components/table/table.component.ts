@@ -37,6 +37,8 @@ export interface ColumnDef<T> {
 
 export interface TableAction<T> {
   label: string;
+  /** Nome do ícone (Material Icons) exibido quando a coluna usa botões compactos. */
+  icon?: string;
   color?:
     | "primary"
     | "secondary"
@@ -166,6 +168,7 @@ export interface TableConfig {
                       <app-button
                         [variant]="getActionColor(action, row)"
                         [size]="'icon'"
+                        [icon]="action.icon ?? ''"
                         [label]="action.label"
                         [disabled]="action.disabled?.(row) ?? false"
                         [matTooltip]="action.label"

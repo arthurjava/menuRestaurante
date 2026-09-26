@@ -90,11 +90,7 @@ interface UserWithRole extends User {
         <div class="flex flex-col sm:flex-row gap-4">
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>Buscar usuários...</mat-label>
-            <input
-              matInput
-              [formControl]="searchControl"
-              placeholder="Buscar usuários..."
-            />
+            <input matInput [formControl]="searchControl" />
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-full sm:w-48">
@@ -255,9 +251,6 @@ interface UserWithRole extends User {
       }
       :host ::ng-deep .mat-mdc-card {
         @apply shadow-card border border-border;
-      }
-      :host ::ng-deep .mat-mdc-form-field {
-        @apply w-full;
       }
     `,
   ],

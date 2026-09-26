@@ -97,11 +97,7 @@ import {
         <div class="flex flex-col sm:flex-row gap-4">
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>Buscar categorias...</mat-label>
-            <input
-              matInput
-              [formControl]="searchControl"
-              placeholder="Buscar categorias..."
-            />
+            <input matInput [formControl]="searchControl" />
           </mat-form-field>
           <button
             mat-stroked-button
@@ -226,9 +222,6 @@ import {
       }
       :host ::ng-deep .mat-mdc-card {
         @apply shadow-card border border-border;
-      }
-      :host ::ng-deep .mat-mdc-form-field {
-        @apply w-full;
       }
     `,
   ],

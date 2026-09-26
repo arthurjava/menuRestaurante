@@ -120,11 +120,7 @@ interface Dish {
         <div class="flex flex-col sm:flex-row gap-4">
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>Buscar pratos...</mat-label>
-            <input
-              matInput
-              [formControl]="searchControl"
-              placeholder="Buscar pratos..."
-            />
+            <input matInput [formControl]="searchControl" />
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-full sm:w-56">
@@ -261,7 +257,6 @@ interface Dish {
       <app-del-confirm
         [isOpen]="galleryModalOpen()"
         [title]="galleryTitle()"
-        description=" "
         icon="photo_library"
         iconColor="text-indigo-600"
         confirmLabel="Fechar"
@@ -297,9 +292,6 @@ interface Dish {
       :host ::ng-deep .mat-mdc-card {
         @apply shadow-card border border-border;
       }
-      :host ::ng-deep .mat-mdc-form-field {
-        @apply w-full;
-      }
       :host ::ng-deep .mat-mdc-tab-group {
         @apply w-full;
       }
@@ -326,7 +318,7 @@ export class DishesListComponent implements OnInit {
   showFilters = signal(false);
   pageIndex = signal(0);
   pageSize = signal(10);
-  sortActive = signal("displayOrder");
+  sortActive = signal("name");
   sortDirection = signal<"asc" | "desc">("asc");
   totalItems = signal(0);
   // Modal state
@@ -363,13 +355,6 @@ export class DishesListComponent implements OnInit {
       render: (dish) => `R$ ${dish.price.toFixed(2).replace(".", ",")}`,
     },
     {
-      key: "displayOrder",
-      header: "Ordem",
-      sortable: true,
-      align: "center",
-      width: "80px",
-    },
-    {
       key: "active",
       header: "Status",
       sortable: true,
@@ -389,21 +374,25 @@ export class DishesListComponent implements OnInit {
   tableActions: TableAction<Dish>[] = [
     {
       label: "Ver imagens",
+      icon: "photo_library",
       color: "primary",
       action: (dish) => this.openGallery(dish),
     },
     {
       label: "Editar",
+      icon: "edit",
       color: "primary",
       action: (dish) => this.openEditModal(dish),
     },
     {
       label: "Ativar/Desativar",
+      icon: "toggle_on",
       color: (dish) => (dish.active ? "secondary" : "primary"),
       action: (dish) => this.toggleActive(dish),
     },
     {
       label: "Excluir",
+      icon: "delete",
       color: "danger",
       action: (dish) => this.openDeleteModal(dish),
     },
@@ -422,7 +411,6 @@ export class DishesListComponent implements OnInit {
     { value: "inactive", label: "Inativos" },
   ];
   sortOptions = [
-    { value: "displayOrder", label: "Ordem de exibição" },
     { value: "name", label: "Nome (A-Z)" },
     { value: "price", label: "Preço" },
     { value: "category", label: "Categoria" },
@@ -463,9 +451,8 @@ export class DishesListComponent implements OnInit {
             b.categoryName ?? "",
           );
           break;
-        case "displayOrder":
         default:
-          comparison = a.displayOrder - b.displayOrder;
+          comparison = a.name.localeCompare(b.name);
           break;
       }
       return this.sortDirection() === "asc" ? comparison : -comparison;
@@ -482,16 +469,12 @@ export class DishesListComponent implements OnInit {
   searchControl = new FormControl("");
   categoryFilterControl = new FormControl("");
   statusFilterControl = new FormControl<"all" | "active" | "inactive">("all");
-  sortByControl = new FormControl<
-    "displayOrder" | "name" | "price" | "category"
-  >("displayOrder");
+  sortByControl = new FormControl<"name" | "price" | "category">("name");
   // Derived signals from FormControls
   searchTerm = signal("");
   categoryFilter = signal("");
   statusFilter = signal<"all" | "active" | "inactive">("all");
-  sortBy = signal<"displayOrder" | "name" | "price" | "category">(
-    "displayOrder",
-  );
+  sortBy = signal<"name" | "price" | "category">("name");
   ngOnInit(): void {
     this.setupFilterSubscriptions();
     this.loadData();
